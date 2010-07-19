@@ -233,13 +233,13 @@ class Parser
     {
         switch ($this->peek()->type) {
             case 'tag':
-                return $this->parseTag();
+                return $this->parseTag() . "\n";
             case 'doctype':
-                return $this->parseDoctype();
+                return $this->parseDoctype() . "\n";
             case 'filter':
-                return $this->parseFilter();
+                return $this->parseFilter() . "\n";
             case 'text':
-                return $this->advance()->val;
+                return $this->advance()->val . "\n";
             case 'id':
             case 'class':
                 $tok = $this->advance();
@@ -267,12 +267,12 @@ class Parser
                     }
                     $buf = sprintf('<?php %s', $beg);
                     if ('indent' === $this->peek()->type) {
-                        $buf .= (null === $end ? '{' : ':') . ' ?>';
+                        $buf .= (null === $end ? '{' : ':') . " ?>\n";
                         $buf .= $this->parseBlock();
 
                         $peek = $this->peek();
                         if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
-                            $buf .= sprintf('<?php %s ?>',
+                            $buf .= sprintf("<?php %s ?>\n",
                                 null === $end ? '}' : $end . ';'
                             );
                         }
@@ -286,6 +286,11 @@ class Parser
                 $this->advance();
                 return $this->parseExpr();
         }
+    }
+
+    protected function getIndentation()
+    {
+        return str_repeat(' ', $this->lastIndents);
     }
 
     protected function parseDoctype()
@@ -323,7 +328,7 @@ class Parser
             }
         }
         $this->expect('outdent');
-        return implode('', $buf);
+        return implode("\n", $buf);
     }
 
     protected function parseBlock()
@@ -334,7 +339,7 @@ class Parser
             $buf[] = $this->parseExpr();
         }
         $this->expect('outdent');
-        return implode("\n", $buf);
+        return implode('', $buf);
     }
 
     protected function parseTag()
@@ -404,7 +409,7 @@ class Parser
         if (isset($this->selfClosing[$name])) {
             return '<' . $name . ($html5 ? '' : '/') . '>';
         } else {
-            return '<' . $name . '>' . implode("\n", $buf) . '</' . $name . '>';
+            return '<' . $name . ">\n" . implode("\n", $buf) . '</' . $name . '>';
         }
     }
 }
