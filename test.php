@@ -13,9 +13,12 @@ $parser = new \Everzet\HTAML\Parser(<<<HTAML
 !!! 5
 html
   asd
-    - if
-      asd
-    - else
+    - switch
+      - case 2
+        asd
+      - case 3
+        asd
+    - vd
       as
 HTAML
 );

@@ -43,6 +43,16 @@ class Parser
     protected $filters = array(
         'cdata' => "\\Everzet\\HTAML\\Filters\\CDATA",
     );
+    protected $blocks = array(
+        'if'        => 'endif',
+        'else'      => 'endif',
+        'elseif'    => 'endif',
+        'while'     => 'endwhile',
+        'for'       => 'endfor',
+        'foreach'   => 'endforeach',
+        'switch'    => 'endswitch',
+        'case'      => 'break'
+    );
 
     protected $input;
     protected $deferredTokens = array();
@@ -243,12 +253,33 @@ class Parser
             case 'code':
                 $tok = $this->advance();
                 $val = $tok->val;
-                $buf = sprintf($tok->buffer ? '<?php echo %s ?>' : '<?php %s ?>', trim($val));
-                if ('indent' === $this->peek()->type) {
-                    $buf .= $this->parseBlock();
-                    if ('code' !== $this->peek()->type || !strpos($this->peek()->val, 'else')) {
-                        $buf .= '<?php endif(); ?>';
+                if ($tok->buffer) {
+                    $buf = sprintf('<?php echo %s ?>',
+                        preg_replace(array("/^( *)/", "/( *)$/"), '', $val)
+                    );
+                } else {
+                    $beg = preg_replace(array("/^( *)/", "/( *)$/"), '', $val);
+                    $end = null;
+                    foreach ($this->blocks as $open => $close) {
+                        if (false !== mb_strpos($beg, $open)) {
+                            $end = $close;
+                        }
                     }
+                    $buf = sprintf('<?php %s', $beg);
+                    if ('indent' === $this->peek()->type) {
+                        $buf .= (null === $end ? '{' : ':') . ' ?>';
+                        $buf .= $this->parseBlock();
+
+                        $peek = $this->peek();
+                        if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
+                            $buf .= sprintf('<?php %s ?>',
+                                null === $end ? '}' : $end . ';'
+                            );
+                        }
+                    } else {
+                        $buf .= ' ?>';
+                    }
+
                 }
                 return $buf;
             case 'newline':
