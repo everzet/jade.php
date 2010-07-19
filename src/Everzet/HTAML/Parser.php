@@ -244,8 +244,12 @@ class Parser
                 $tok = $this->advance();
                 $val = $tok->val;
                 $buf = sprintf($tok->buffer ? '<?php echo %s ?>' : '<?php %s ?>', trim($val));
-                                    $buf .= $this->parseBlock();
-
+                if ('indent' === $this->peek()->type) {
+                    $buf .= $this->parseBlock();
+                    if ('code' !== $this->peek()->type || !strpos($this->peek()->val, 'else')) {
+                        $buf .= '<?php endif(); ?>';
+                    }
+                }
                 return $buf;
             case 'newline':
                 $this->advance();
