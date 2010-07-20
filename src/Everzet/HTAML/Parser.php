@@ -12,12 +12,6 @@ use \Everzet\HTAML\ParserException;
  * file that was distributed with this source code.
  */
 
-# h2
-# - use_helper(...)
-# = link_to(...)
-# :markdown
-# | text
-
 /**
  * HTAML Parser.
  *
@@ -60,6 +54,7 @@ class Parser
     protected $lineno = 1;
     protected $stash;
     protected $mode;
+    protected $indent = 0;
 
     public function __construct($str)
     {
@@ -210,7 +205,10 @@ class Parser
         while ('eos' !== $this->peek()->type) {
             $buf[] = $this->parseExpr();
         }
-        return implode('', $buf);
+        $html = implode('', $buf);
+
+        // UTF8 Trim
+        return preg_replace(array("/^\n/", "/\n$/", "/^( *)/", "/( *)$/"), '', $html);
     }
 
     protected function peek()
@@ -272,12 +270,13 @@ class Parser
 
                         $peek = $this->peek();
                         if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
-                            $buf .= sprintf("<?php %s ?>\n",
+                            $buf .= sprintf("%s<?php %s ?>\n",
+                                $this->getIndentation(),
                                 null === $end ? '}' : $end . ';'
                             );
                         }
                     } else {
-                        $buf .= ' ?>';
+                        $buf .= " ?>\n";
                     }
 
                 }
@@ -290,7 +289,7 @@ class Parser
 
     protected function getIndentation()
     {
-        return str_repeat(' ', $this->lastIndents);
+        return str_repeat('  ', $this->lastIndents);
     }
 
     protected function parseDoctype()
@@ -324,7 +323,7 @@ class Parser
                 $this->advance();
                 $buf[] = "\n";
             } else {
-                $buf[] = $this->advance()->val;
+                $buf[] = $this->getIndentation() . $this->advance()->val;
             }
         }
         $this->expect('outdent');
@@ -336,7 +335,7 @@ class Parser
         $buf = array();
         $this->expect('indent');
         while ('outdent' !== $this->peek()->type) {
-            $buf[] = $this->parseExpr();
+            $buf[] = $this->getIndentation() . $this->parseExpr();
         }
         $this->expect('outdent');
         return implode('', $buf);
@@ -352,6 +351,7 @@ class Parser
         $classes = array();
         $attrs = array();
         $buf = array();
+        $indents = str_repeat('  ', $this->lastIndents);
 
         // (attrs | class | id)*
         while (true) {
@@ -382,7 +382,7 @@ class Parser
 
         // Text?
         if ('text' === $this->peek()->type) {
-            $buf[] = $this->advance()->val;
+            $buf[] = str_repeat('  ', $this->lastIndents + 1) . preg_replace(array("/^( *)/", "/( *)$/"), '', $this->advance()->val);
         }
 
         // (code | block)
@@ -407,9 +407,15 @@ class Parser
 
         // Build the tag
         if (isset($this->selfClosing[$name])) {
-            return '<' . $name . ($html5 ? '' : '/') . '>';
+            return $indents . '<' . $name . ($html5 ? '' : '/') . '>';
         } else {
-            return '<' . $name . ">\n" . implode("\n", $buf) . '</' . $name . '>';
+            $buf = implode("\n", $buf);
+
+            if (false === mb_strpos($buf, "\n")) {
+                return '<' . $name . '>' . preg_replace(array("/^( *)/", "/( *)$/"), '', $buf) . '</' . $name . '>';
+            } else {
+                return '<' . $name . ">\n" . $buf . $indents . '</' . $name . '>';
+            }
         }
     }
 }
