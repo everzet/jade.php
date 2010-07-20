@@ -13,22 +13,25 @@ use \Everzet\HTAML\Filters\Filter;
  */
 
 /**
- * JavaScript filter.
+ * PHP filter.
  *
  * @package     HTAML
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class JavaScript implements Filter
+class PHP implements Filter
 {
+    public function replaceHoldersWithEcho($str)
+    {
+        return preg_replace(array("/\{\{/", "/\}\}/"), array('<?php echo ', ' ?>'), $str);
+    }
+
     public function filter($str, $indentation = 0)
     {
-        $js = <<<JS
-<script type="text/javascript">
-//<![CDATA[
+        $php = <<<PHP
+<?php
 $str
-//]]>
-</script>
-JS;
-        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), $js);
+?>
+PHP;
+        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), $php);
     }
 }

@@ -3,9 +3,13 @@
 namespace Everzet\HTAML;
 
 use \Everzet\HTAML\ParserException;
+use \Everzet\HTAML\Filters\Filter;
+use \Everzet\HTAML\Filters\PHP;
+use \Everzet\HTAML\Filters\CDATA;
+use \Everzet\HTAML\Filters\JavaScript;
 
 /*
- * This file is part of the behat package.
+ * This file is part of the HTAML package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,9 +24,19 @@ use \Everzet\HTAML\ParserException;
  */
 class Parser
 {
+    /**
+     * Tags to self-close (<hr "/">).
+     *
+     * @var     array
+     */
     protected $selfClosing = array(
         'meta', 'img', 'link', 'br', 'hr', 'input', 'area', 'base'
     );
+    /**
+     * Doctypes.
+     *
+     * @var     array
+     */
     protected $doctypes = array(
         '5' => '<!DOCTYPE html>',
         'xml' => '<?xml version="1.0" encoding="utf-8" ?>',
@@ -34,9 +48,17 @@ class Parser
         'basic' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
         'mobile' => '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
     );
-    protected $filters = array(
-        'cdata' => "\\Everzet\\HTAML\\Filters\\CDATA",
-    );
+    /**
+     * Available filters.
+     *
+     * @var     array
+     */
+    protected $filters = array();
+    /**
+     * Block definitions (begin => end: if => endif, for => endfor...).
+     *
+     * @var     array
+     */
     protected $blocks = array(
         'if'        => 'endif',
         'else'      => 'endif',
@@ -54,27 +76,85 @@ class Parser
     protected $lineno = 1;
     protected $stash;
     protected $mode;
-    protected $indent = 0;
 
+    /**
+     * Inits HTAML parser with the given input string.
+     *
+     * @param   string  $str    HTAML string
+     */
     public function __construct($str)
     {
         $this->input = preg_replace("/\r\n|\r/", "\n", $str);
         $this->deferredTokens = array();
         $this->lastIndents = 0;
         $this->lineno = 1;
+
+        // Set basic filters
+        $this->setFilter('php', new PHP());
+        $this->setFilter('cdata', new CDATA());
+        $this->setFilter('javascript', new JavaScript());
     }
 
+    /**
+     * Define filter class by filter's name.
+     *
+     * @param   string  $name   filter name
+     * @param   Filter  $class  filter object
+     */
+    public function setFilter($name, Filter $class) {
+        $this->filters[$name] = $class;
+    }
+
+    /**
+     * Sets custom Code block ending.
+     *
+     * @param   string  $begin  code block begin ('if' for example)
+     * @param   string  $end    code block end ('endif' for example)
+     */
+    public function setBlockEnd($begin, $end) {
+        $this->blocks[$begin] = $end;
+    }
+
+    /**
+     * Parse input string.
+     *
+     * @return  string          HTML
+     */
+    public function parse()
+    {
+        $buf = array();
+        while ('eos' !== $this->peek()->type) {
+            $buf[] = $this->parseExpr();
+        }
+        $html = implode('', $buf);
+
+        return preg_replace(array("/^\n/", "/\n$/", "/^( *)/", "/( *)$/"), '', $html);
+    }
+
+    /**
+     * Generate token object.
+     * 
+     * @param   string  $type       token type
+     * @param   array   $matches    regex matches
+     * 
+     * @return  stdClass
+     */
     protected function token($type, array $matches = array('', ''))
     {
         $this->input = mb_substr($this->input, mb_strlen($matches[0]));
         return (object) array(
             'type'  => $type,
             'line'  => $this->lineno,
-            'val'   => $matches[1]
+            'val'   => isset($matches[1]) ? $matches[1] : null
         );
     }
 
-    public function advance()
+    /**
+     * Returns the next token object.
+     *
+     * @return  stdClass
+     */
+    protected function advance()
     {
         $matches = array();
 
@@ -157,6 +237,7 @@ class Parser
                     $val = preg_replace("/^ +| +$|^['\"]|['\"]$/", '', 
                         mb_substr($pair, ++$split, mb_strlen($pair))
                     );
+                    $val = $this->filters['php']->replaceHoldersWithEcho($val);
                 }
                 $tok->attrs[preg_replace("/^ +| +$|^['\"]|['\"]$/", '', $key)] = $val;
             }
@@ -203,23 +284,25 @@ class Parser
         }
     }
 
-    public function parse()
-    {
-        $buf = array();
-        while ('eos' !== $this->peek()->type) {
-            $buf[] = $this->parseExpr();
-        }
-        $html = implode('', $buf);
-
-        // UTF8 Trim
-        return preg_replace(array("/^\n/", "/\n$/", "/^( *)/", "/( *)$/"), '', $html);
-    }
-
+    /**
+     * Single token lookahead.
+     *
+     * @return  stdClass
+     */
     protected function peek()
     {
         return $this->stash = $this->advance();
     }
 
+    /**
+     * Expect the given type, or throw an exception.
+     *
+     * @param   string  $type   token type
+     * 
+     * @return  stdClass
+     * 
+     * @throws  \Everzet\HTAML\ParserException
+     */
     protected function expect($type)
     {
         if ($type === $this->peek()->type) {
@@ -231,6 +314,11 @@ class Parser
         }
     }
 
+    /**
+     * Parse current token expression.
+     *
+     * @return  string
+     */
     protected function parseExpr()
     {
         switch ($this->peek()->type) {
@@ -241,7 +329,7 @@ class Parser
             case 'filter':
                 return $this->parseFilter() . "\n";
             case 'text':
-                return $this->advance()->val . "\n";
+                return $this->filters['php']->replaceHoldersWithEcho($this->advance()->val) . "\n";
             case 'id':
             case 'class':
                 $tok = $this->advance();
@@ -291,33 +379,56 @@ class Parser
         }
     }
 
-    protected function getIndentation()
+    /**
+     * Calculates & generates indentation string.
+     *
+     * @param   integer $plus   adding indentation
+     * 
+     * @return  string          left spaces
+     */
+    protected function getIndentation($plus = 0)
     {
-        return str_repeat('  ', $this->lastIndents);
+        return str_repeat('  ', $this->lastIndents + intval($plus));
     }
 
+    /**
+     * Parse Doctype.
+     *
+     * @return  string
+     */
     protected function parseDoctype()
     {
         $name = $this->expect('doctype')->val;
         if ('5' === $name) {
             $this->mode = 'html 5';
+        } elseif (null === $name) {
+            $name = 'default';
         } elseif (!isset($this->doctypes[$name])) {
             throw new ParserException(sprintf('Unknown Doctype: "%s"', $name));
         }
         return $this->doctypes[$name];
     }
 
+    /**
+     * Parse & execute filter.
+     *
+     * @return  string
+     */
     protected function parseFilter()
     {
         $name = $this->expect('filter')->val;
         if (isset($this->filters[$name])) {
-            $class = $this->filters[$name];
-            return $class::filter($this->parseTextBlock());
+            return $this->filters[$name]->filter($this->parseTextBlock(), $this->lastIndents);
         } else {
             throw new ParserException(sprintf('Unknown filter: "%s"', $name));
         }
     }
 
+    /**
+     * Parse text block.
+     *
+     * @return  string
+     */
     protected function parseTextBlock()
     {
         $buf = array();
@@ -325,26 +436,36 @@ class Parser
         while ('text' === $this->peek()->type || 'newline' === $this->peek()->type) {
             if ('newline' === $this->peek()->type) {
                 $this->advance();
-                $buf[] = "\n";
             } else {
-                $buf[] = $this->getIndentation() . $this->advance()->val;
+                $buf[] = $this->advance()->val;
             }
         }
         $this->expect('outdent');
         return implode("\n", $buf);
     }
 
+    /**
+     * Parse indented block.
+     *
+     * @return  string
+     */
     protected function parseBlock()
     {
         $buf = array();
         $this->expect('indent');
         while ('outdent' !== $this->peek()->type) {
-            $buf[] = $this->getIndentation() . $this->parseExpr();
+            $buf[] = $this->getIndentation() .
+                $this->filters['php']->replaceHoldersWithEcho($this->parseExpr());
         }
         $this->expect('outdent');
         return implode('', $buf);
     }
 
+    /**
+     * Parse tag.
+     *
+     * @return  string
+     */
     protected function parseTag()
     {
         $name = $this->advance()->val;
@@ -355,7 +476,7 @@ class Parser
         $classes = array();
         $attrs = array();
         $buf = array();
-        $indents = str_repeat('  ', $this->lastIndents);
+        $indents = $this->getIndentation();
 
         // (attrs | class | id)*
         while (true) {
@@ -385,7 +506,8 @@ class Parser
 
         // Text?
         if ('text' === $this->peek()->type) {
-            $buf[] = $indents . '  ' . preg_replace(array("/^( *)/", "/( *)$/"), '', $this->advance()->val);
+            $buf[] = $indents . '  ' .
+                preg_replace(array("/^( *)/", "/( *)$/"), '', $this->advance()->val);
         }
 
         // (code | block)
@@ -433,7 +555,8 @@ class Parser
             $buf = implode("\n", $buf);
 
             if (false === mb_strpos($buf, "\n")) {
-                return '<' . $name . $attrBuf . '>' . preg_replace(array("/^( *)/", "/( *)$/"), '', $buf) . '</' . $name . '>';
+                return '<' . $name . $attrBuf . '>' .
+                    preg_replace(array("/^( *)/", "/( *)$/"), '', $buf) . '</' . $name . '>';
             } else {
                 return '<' . $name . $attrBuf . ">\n" . $buf . $indents . '</' . $name . '>';
             }
