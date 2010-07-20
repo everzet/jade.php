@@ -138,6 +138,7 @@ class Parser
             $attrs = preg_split("/ *, *(?=[\w-]+ *[:=]|[\w-]+ *$)/", $tok->val);
             $tok->attrs = array();
             foreach ($attrs as $pair) {
+
                 // Support = and :
                 $colon = mb_strpos($pair, ':');
                 $equal = mb_strpos($pair, '=');
@@ -147,14 +148,17 @@ class Parser
                     $key = $pair;
                     $val = true;
                 } else {
+                    // Split on first = or :
                     $split = false !== $equal ? $equal : $colon;
                     if (false !== $colon && $colon < $equal) {
                         $split = $colon;
                     }
                     $key = mb_substr($pair, 0, $split);
-                    $val = mb_substr($pair, ++$split, mb_strlen($pair));
+                    $val = preg_replace("/^ +| +$|^['\"]|['\"]$/", '', 
+                        mb_substr($pair, ++$split, mb_strlen($pair))
+                    );
                 }
-                $tok->attrs[preg_replace("/^['\"]|['\"]$/g", '', $key)] = $val;
+                $tok->attrs[preg_replace("/^ +| +$|^['\"]|['\"]$/", '', $key)] = $val;
             }
             return $tok;
         }
@@ -347,7 +351,7 @@ class Parser
         $html5 = 'html 5' === $this->mode;
         $hasAttrs = false;
         $attrBuf = '';
-        $codeClass = '';
+        $codeClass = null;
         $classes = array();
         $attrs = array();
         $buf = array();
@@ -358,7 +362,7 @@ class Parser
             switch ($this->peek()->type) {
                 case 'id':
                     $hasAttrs = true;
-                    $attrs['id'] = sprintf('"%s"', $this->advance()->val);
+                    $attrs['id'] = $this->advance()->val;
                     continue;
                 case 'class':
                     $hasAttrs = true;
@@ -366,10 +370,9 @@ class Parser
                     continue;
                 case 'attrs':
                     $hasAttrs = true;
-                    $obj = $this->advance()->attrs;
-                    foreach ($obj as $key => $val) {
+                    foreach ($this->advance()->attrs as $key => $val) {
                         if ('class' === $key) {
-                            $continue = $val;
+                            $codeClass = $val;
                         } else {
                             $attrs[$key] = null === $val ? true : $val;
                         }
@@ -382,7 +385,7 @@ class Parser
 
         // Text?
         if ('text' === $this->peek()->type) {
-            $buf[] = str_repeat('  ', $this->lastIndents + 1) . preg_replace(array("/^( *)/", "/( *)$/"), '', $this->advance()->val);
+            $buf[] = $indents . '  ' . preg_replace(array("/^( *)/", "/( *)$/"), '', $this->advance()->val);
         }
 
         // (code | block)
@@ -402,19 +405,37 @@ class Parser
 
         // Build attrs
         if ($hasAttrs) {
-            // ATTRIBUTES
+            if (count($classes)) {
+                $attrs['class'] = implode(' ', $classes);
+            }
+            if (null !== $codeClass) {
+                if (isset($attrs['class'])) {
+                    $attrs['class'] .= ' ' . $codeClass;
+                } else {
+                    $attrs['class'] = $codeClass;
+                }
+            }
+
+            // Attributes
+            $attributes = array();
+            foreach ($attrs as $key => $value) {
+                $attributes[] = sprintf('%s="%s"', $key, true === $value ? $key : $value);
+            }
+            if (count($attributes)) {
+                $attrBuf .= ' ' . implode(' ', $attributes);
+            }
         }
 
         // Build the tag
         if (isset($this->selfClosing[$name])) {
-            return $indents . '<' . $name . ($html5 ? '' : '/') . '>';
+            return $indents . '<' . $name . $attrBuf . ($html5 ? '' : '/') . '>';
         } else {
             $buf = implode("\n", $buf);
 
             if (false === mb_strpos($buf, "\n")) {
-                return '<' . $name . '>' . preg_replace(array("/^( *)/", "/( *)$/"), '', $buf) . '</' . $name . '>';
+                return '<' . $name . $attrBuf . '>' . preg_replace(array("/^( *)/", "/( *)$/"), '', $buf) . '</' . $name . '>';
             } else {
-                return '<' . $name . ">\n" . $buf . $indents . '</' . $name . '>';
+                return '<' . $name . $attrBuf . ">\n" . $buf . $indents . '</' . $name . '>';
             }
         }
     }
