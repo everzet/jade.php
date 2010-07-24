@@ -342,35 +342,9 @@ class Parser
             case 'code':
                 $tok = $this->advance();
                 $val = $tok->val;
-                if ($tok->buffer) {
-                    $buf = sprintf('<?php echo %s ?>',
-                        preg_replace(array("/^( *)/", "/( *)$/"), '', $val)
-                    );
-                } else {
-                    $beg = preg_replace(array("/^( *)/", "/( *)$/"), '', $val);
-                    $end = null;
-                    foreach ($this->blocks as $open => $close) {
-                        if (false !== mb_strpos($beg, $open)) {
-                            $end = $close;
-                        }
-                    }
-                    $buf = sprintf('<?php %s', $beg);
-                    if ('indent' === $this->peek()->type) {
-                        $buf .= (null === $end ? '{' : ':') . " ?>\n";
-                        $buf .= $this->parseBlock();
-
-                        $peek = $this->peek();
-                        if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
-                            $buf .= sprintf("%s<?php %s ?>\n",
-                                $this->getIndentation(),
-                                null === $end ? '}' : $end . ';'
-                            );
-                        }
-                    } else {
-                        $buf .= " ?>\n";
-                    }
-                }
-                return $buf;
+                $buf = $tok->buffer ? '<?php echo ' . $val . ' ?>' : '<?php ' . $val . ' ?>';
+                return 'indent' === $this->peek()->type
+                    ? $buf . $this->parseBlock() : $buf;
             case 'newline':
                 $this->advance();
                 return $this->parseExpr();
