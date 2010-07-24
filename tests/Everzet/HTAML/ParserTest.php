@@ -10,104 +10,203 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         return $parser->parse();
     }
 
-    public function testBasicIndent()
+    public function testDoctypes()
+    {
+        $this->assertEquals('<?xml version="1.0" encoding="utf-8" ?>', $this->parse('!!! xml'));
+        $this->assertEquals('<!DOCTYPE html>', $this->parse('!!! 5'));
+    }
+
+    public function testUnknownFilter()
+    {
+        $this->setExpectedException("Everzet\\HTAML\\ParserException");
+        $this->parse(":doesNotExist\n");
+    }
+
+    public function testLineEndings()
+    {
+        $tags = array('p', 'div', 'img');
+        $html = implode("\n", array('<p></p>', '<div></div>', '<img />'));
+
+        $this->assertEquals($html, $this->parse(implode("\r\n", $tags)));
+        $this->assertEquals($html, $this->parse(implode("\r", $tags)));
+        $this->assertEquals($html, $this->parse(implode("\n", $tags)));
+    }
+
+    public function testSingleQuotes()
+    {
+        $this->assertEquals("<p>'foo'</p>", $this->parse("p 'foo'"));
+        $this->assertEquals("<p>\n  'foo'\n</p>", $this->parse("p\n  | 'foo'"));
+        $this->assertEquals(<<<HTML
+<?php \$path = 'foo' ?>
+<a href="/<?php echo \$path ?>"></a>
+HTML
+, $this->parse(<<<HTAML
+- \$path = 'foo'
+a(href='/{{\$path}}')
+HTAML
+));
+    }
+
+    public function testTags()
+    {
+        $str = implode("\n", array('p', 'div', 'img'));
+        $html = implode("\n", array('<p></p>', '<div></div>', '<img />'));
+
+        $this->assertEquals($html, $this->parse($str), 'Test basic tags');
+        $this->assertEquals('<div class="something"></div>', $this->parse('div.something'),
+            'Test classes');
+        $this->assertEquals('<div id="something"></div>', $this->parse('div#something'),
+            'Test ids');
+        $this->assertEquals('<div class="something"></div>', $this->parse('.something'),
+            'Test stand-alone classes');
+        $this->assertEquals('<div id="something"></div>', $this->parse('#something'),
+            'Test stand-alone ids');
+        $this->assertEquals('<div id="foo" class="bar"></div>', $this->parse('#foo.bar'));
+        $this->assertEquals('<div id="foo" class="bar"></div>', $this->parse('.bar#foo'));
+        $this->assertEquals('<div id="foo" class="bar"></div>',
+            $this->parse('div#foo(class="bar")'));
+        $this->assertEquals('<div id="foo" class="bar"></div>', 
+            $this->parse('div(class="bar")#foo'));
+        $this->assertEquals('<div id="bar" class="foo"></div>', 
+            $this->parse('div(id="bar").foo'));
+        $this->assertEquals('<div class="foo bar baz"></div>', $this->parse('div.foo.bar.baz'));
+        $this->assertEquals('<div class="bar baz foo"></div>',
+            $this->parse('div(class="foo").bar.baz'));
+        $this->assertEquals('<div class="foo baz bar"></div>',
+            $this->parse('div.foo(class="bar").baz'));
+        $this->assertEquals('<div class="foo bar baz"></div>',
+            $this->parse('div.foo.bar(class="baz")'));
+        $this->assertEquals('<div class="a-b2"></div>',
+            $this->parse('div.a-b2'));
+        $this->assertEquals('<div class="a_b2"></div>',
+            $this->parse('div.a_b2'));
+        $this->assertEquals('<fb:user></fb:user>',
+            $this->parse('fb:user'));
+    }
+
+    public function testNestedTags()
     {
         $htaml = <<<HTAML
-!!! 5
-html
-  head
-    title Test
-  body(id="{{\$item}}")
-    h1#SUPER.inco(class='header one', style='width:350px;') Test
-    p#oh(id="stylo", selected) Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris {{\$nisi}} ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+ul
+  li a
+  li b
+  li
+    ul
+      li c
+      li d
+  li e
 HTAML;
         $html = <<<HTML
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Test</title>
-  </head>
-  <body id="<?php echo \$item ?>">
-    <h1 id="SUPER" style="width:350px;" class="inco header one">Test</h1>
-    <p id="stylo" selected="selected">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris <?php echo \$nisi ?> ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-  </body>
-</html>
+<ul>
+  <li>a</li>
+  <li>b</li>
+  <li>
+    <ul>
+      <li>c</li>
+      <li>d</li>
+    </ul>
+  </li>
+  <li>e</li>
+</ul>
 HTML;
+        $this->assertEquals($html, $this->parse($htaml));
 
+        $htaml = <<<HTAML
+a(href="#") foo
+  | bar
+  | baz
+HTAML;
+        $html = <<<HTML
+<a href="#">
+  foo
+  bar
+  baz
+</a>
+HTML;
+        $this->assertEquals($html, $this->parse($htaml));
+
+        $htaml = <<<HTAML
+ul  
+  li  one
+  ul two
+    li three
+HTAML;
+        $html = <<<HTML
+<ul>
+  
+  <li>one</li>
+  <ul>
+    two
+    <li>three</li>
+  </ul>
+</ul>
+HTML;
         $this->assertEquals($html, $this->parse($htaml));
     }
 
-    public function testComplexTemplate()
+    public function testVariableLengthNewlines()
     {
         $htaml = <<<HTAML
-!!! strict
-html
-  head
-    title Test
-  body
-    h1 Test
-    - if ('Ivan' === \$name)
-      :javascript
-        | $(document).load(function() {
-        |     alert('done');
-        | });
-      h2
-        -header()
-        :php
-          | \$data = 35;
-          | echo \$data;
-        a as
-          span= \$name
-        span- \$blog
-    - else
-      span= \$name
-      h3 40
-    p
-      | Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      | Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+ul
+  li a
+  
+  li b
+ 
+         
+  li
+    ul
+      li c
+
+      li d
+  li e
 HTAML;
         $html = <<<HTML
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-  <head>
-    <title>Test</title>
-  </head>
-  <body>
-    <h1>Test</h1>
-    <?php if ('Ivan' === \$name): ?>
-      <script type="text/javascript">
-      //<![CDATA[
-      $(document).load(function() {
-          alert('done');
-      });
-      //]]>
-      </script>
-      <h2>
-        <?php header() ?>
-        <?php
-        \$data = 35;
-        echo \$data;
-        ?>
-        <a>
-          as
-          <span><?php echo \$name ?></span>
-        </a>
-        <span><?php \$blog ?></span>
-      </h2>
-    <?php else: ?>
-      <span><?php echo \$name ?></span>
-      <h3>40</h3>
-    <?php endif; ?>
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </p>
-  </body>
-</html>
+<ul>
+  <li>a</li>
+  <li>b</li>
+  <li>
+    <ul>
+      <li>c</li>
+      <li>d</li>
+    </ul>
+  </li>
+  <li>e</li>
+</ul>
 HTML;
-
         $this->assertEquals($html, $this->parse($htaml));
     }
 
+    public function testNewlines()
+    {
+        $htaml = <<<HTAML
+ul
+  li a
+  
+  
+  
+  
+  li b
+  li
     
+    ul
+      
+      li c
+      li d
+  li e
+HTAML;
+        $html = <<<HTML
+<ul>
+  <li>a</li>
+  <li>b</li>
+  <li>
+    <ul>
+      <li>c</li>
+      <li>d</li>
+    </ul>
+  </li>
+  <li>e</li>
+</ul>
+HTML;
+        $this->assertEquals($html, $this->parse($htaml));
+    }
 }

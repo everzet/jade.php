@@ -157,7 +157,6 @@ class Parser
     protected function advance()
     {
         $matches = array();
-
         if (null !== $this->stash) {
             $tok = $this->stash;
             $this->stash = null;
@@ -370,7 +369,6 @@ class Parser
                     } else {
                         $buf .= " ?>\n";
                     }
-
                 }
                 return $buf;
             case 'newline':
@@ -437,7 +435,7 @@ class Parser
             if ('newline' === $this->peek()->type) {
                 $this->advance();
             } else {
-                $buf[] = $this->advance()->val;
+                $buf[] = $this->filters['php']->replaceHoldersWithEcho($this->advance()->val);
             }
         }
         $this->expect('outdent');
@@ -549,8 +547,8 @@ class Parser
         }
 
         // Build the tag
-        if (isset($this->selfClosing[$name])) {
-            return $indents . '<' . $name . $attrBuf . ($html5 ? '' : '/') . '>';
+        if (in_array($name, $this->selfClosing)) {
+            return $indents . '<' . $name . $attrBuf . ($html5 ? '' : ' /') . '>';
         } else {
             $buf = implode("\n", $buf);
 
