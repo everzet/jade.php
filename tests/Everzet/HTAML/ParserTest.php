@@ -133,7 +133,6 @@ ul
 HTAML;
         $html = <<<HTML
 <ul>
-  
   <li>one</li>
   <ul>
     two

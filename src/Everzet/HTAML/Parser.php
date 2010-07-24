@@ -128,7 +128,7 @@ class Parser
         }
         $html = implode('', $buf);
 
-        return preg_replace(array("/^\n/", "/\n$/", "/^( *)/", "/( *)$/"), '', $html);
+        return preg_replace(array("/^\n/", "/\n$/", "/^ */", "/ *$/"), '', $html);
     }
 
     /**
@@ -344,10 +344,10 @@ class Parser
                 $val = $tok->val;
                 if ($tok->buffer) {
                     $buf = sprintf('<?php echo %s ?>',
-                        preg_replace(array("/^( *)/", "/( *)$/"), '', $val)
+                        preg_replace(array("/^ */", "/ *$/"), '', $val)
                     );
                 } else {
-                    $beg = preg_replace(array("/^( *)/", "/( *)$/"), '', $val);
+                    $beg = preg_replace(array("/^ */", "/ *$/"), '', $val);
                     $end = null;
                     foreach ($this->blocks as $open => $close) {
                         if (false !== mb_strpos($beg, $open)) {
@@ -504,8 +504,10 @@ class Parser
 
         // Text?
         if ('text' === $this->peek()->type) {
-            $buf[] = $indents . '  ' .
-                preg_replace(array("/^( *)/", "/( *)$/"), '', $this->advance()->val);
+            $val = preg_replace(array("/^ */", "/ *$/"), '', $this->advance()->val);
+            if ('' !== $val) {
+                $buf[] = $indents . '  ' . $val;
+            }
         }
 
         // (code | block)
@@ -554,7 +556,7 @@ class Parser
 
             if (false === mb_strpos($buf, "\n")) {
                 return '<' . $name . $attrBuf . '>' .
-                    preg_replace(array("/^( *)/", "/( *)$/"), '', $buf) . '</' . $name . '>';
+                    preg_replace(array("/^ */", "/ *$/"), '', $buf) . '</' . $name . '>';
             } else {
                 return '<' . $name . $attrBuf . ">\n" . $buf . $indents . '</' . $name . '>';
             }
