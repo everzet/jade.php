@@ -80,14 +80,13 @@ class Parser
     /**
      * Inits HTAML parser with the given input string.
      *
-     * @param   string  $str    HTAML string
+     * @param   string  $input  HTAML string
      */
-    public function __construct($str)
+    public function __construct($input = null)
     {
-        $this->input = preg_replace("/\r\n|\r/", "\n", $str);
-        $this->deferredTokens = array();
-        $this->lastIndents = 0;
-        $this->lineno = 1;
+        if (null !== $input) {
+            $this->setInput($input);
+        }
 
         // Set basic filters
         $this->setFilter('php', new PHP());
@@ -116,12 +115,31 @@ class Parser
     }
 
     /**
+     * Sets HTAML string to parse
+     *
+     * @param   string  $input  HTAML to parse
+     */
+    public function setInput($input)
+    {
+        $this->input = preg_replace("/\r\n|\r/", "\n", $input);
+    }
+
+    /**
      * Parse input string.
+     *
+     * @param   string  $input  HTAML string
      *
      * @return  string          HTML
      */
-    public function parse()
+    public function parse($input = null)
     {
+        if (null !== $input) {
+            $this->setInput($input);
+        }
+        $this->deferredTokens = array();
+        $this->lastIndents = 0;
+        $this->lineno = 1;
+
         $buf = array();
         while ('eos' !== $this->peek()->type) {
             $buf[] = $this->parseExpr();
