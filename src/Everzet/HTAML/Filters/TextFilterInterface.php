@@ -2,6 +2,8 @@
 
 namespace Everzet\HTAML\Filters;
 
+use \Everzet\HTAML\Filters\BaseFilterInterface;
+
 /*
  * This file is part of the HTAML package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
@@ -11,12 +13,12 @@ namespace Everzet\HTAML\Filters;
  */
 
 /**
- * Filter interface.
+ * TextFilter interface.
  *
  * @package     HTAML
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
-interface Filter
+interface TextFilterInterface extends BaseFilterInterface
 {
-    public function filter($str, $indentation = 0);
+    public function filterText($str);
 }

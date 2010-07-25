@@ -2,8 +2,6 @@
 
 namespace Everzet\HTAML\Filters;
 
-use \Everzet\HTAML\Filters\BlockFilterInterface;
-
 /*
  * This file is part of the HTAML package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
@@ -13,15 +11,11 @@ use \Everzet\HTAML\Filters\BlockFilterInterface;
  */
 
 /**
- * CDATA filter.
+ * Base filter interface.
  *
  * @package     HTAML
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class CDATA implements BlockFilterInterface
+interface BaseFilterInterface
 {
-    public function filter($str, $indentation = 0)
-    {
-        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), "<![CDATA[\n$str\n]]>");
-    }
 }

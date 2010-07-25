@@ -2,7 +2,7 @@
 
 namespace Everzet\HTAML\Filters;
 
-use \Everzet\HTAML\Filters\Filter;
+use \Everzet\HTAML\Filters\BlockFilterInterface;
 
 /*
  * This file is part of the HTAML package.
@@ -18,7 +18,7 @@ use \Everzet\HTAML\Filters\Filter;
  * @package     HTAML
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class JavaScript implements Filter
+class JavaScript implements BlockFilterInterface
 {
     public function filter($str, $indentation = 0)
     {

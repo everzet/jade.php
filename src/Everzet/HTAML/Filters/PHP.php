@@ -2,8 +2,8 @@
 
 namespace Everzet\HTAML\Filters;
 
-use \Everzet\HTAML\Filters\Filter;
-use \Everzet\HTAML\Filters\TextFilter;
+use \Everzet\HTAML\Filters\BlockFilterInterface;
+use \Everzet\HTAML\Filters\TextFilterInterface;
 
 /*
  * This file is part of the HTAML package.
@@ -19,7 +19,7 @@ use \Everzet\HTAML\Filters\TextFilter;
  * @package     HTAML
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class PHP implements Filter, TextFilter
+class PHP implements BlockFilterInterface, TextFilterInterface
 {
     public function filterText($str)
     {

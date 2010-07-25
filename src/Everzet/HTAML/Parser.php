@@ -3,8 +3,9 @@
 namespace Everzet\HTAML;
 
 use \Everzet\HTAML\ParserException;
-use \Everzet\HTAML\Filters\Filter;
-use \Everzet\HTAML\Filters\TextFilter;
+use \Everzet\HTAML\Filters\BaseFilterInterface as Filter;
+use \Everzet\HTAML\Filters\BlockFilterInterface as BlockFilter;
+use \Everzet\HTAML\Filters\TextFilterInterface as TextFilter;
 use \Everzet\HTAML\Filters\PHP;
 use \Everzet\HTAML\Filters\CDATA;
 use \Everzet\HTAML\Filters\JavaScript;
@@ -454,7 +455,14 @@ class Parser
     {
         $name = $this->expect('filter')->val;
         if (isset($this->filters[$name])) {
-            return $this->filters[$name]->filter($this->parseTextBlock(), $this->lastIndents);
+            $filter = $this->filters[$name];
+            if ($filter instanceof BlockFilter) {
+                return $filter->filter($this->parseTextBlock(), $this->lastIndents);
+            } else {
+                throw new ParserException(
+                    sprintf('Filter: "%s" must implements BlockFilterInterface', $name)
+                );
+            }
         } else {
             throw new ParserException(sprintf('Unknown filter: "%s"', $name));
         }
