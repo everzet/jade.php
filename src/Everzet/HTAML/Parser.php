@@ -233,10 +233,9 @@ class Parser
                         $split = $colon;
                     }
                     $key = mb_substr($pair, 0, $split);
-                    $val = preg_replace("/^ +| +$|^['\"]|['\"]$/", '', 
+                    $val = preg_replace("/^ *(?:['\"])?|(?:['\"])? *$/", '', 
                         mb_substr($pair, ++$split, mb_strlen($pair))
                     );
-                    $val = $this->filters['php']->replaceHoldersWithEcho($val);
                 }
                 $tok->attrs[preg_replace("/^ +| +$|^['\"]|['\"]$/", '', $key)] = $val;
             }
@@ -349,6 +348,7 @@ class Parser
                 } else {
                     $beg = preg_replace(array("/^ */", "/ *$/"), '', $val);
                     $end = null;
+                    $indents = $this->getIndentation();
                     foreach ($this->blocks as $open => $close) {
                         if (false !== mb_strpos($beg, $open)) {
                             $end = $close;
@@ -358,11 +358,12 @@ class Parser
                     if ('indent' === $this->peek()->type) {
                         $buf .= (null === $end ? '{' : ':') . " ?>\n";
                         $buf .= $this->parseBlock();
+                        $buf .= "\n" === $buf[mb_strlen($buf) - 1] ? '' : "\n";
 
                         $peek = $this->peek();
                         if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
                             $buf .= sprintf("%s<?php %s ?>\n",
-                                $this->getIndentation(),
+                                $indents,
                                 null === $end ? '}' : $end . ';'
                             );
                         }
@@ -452,8 +453,9 @@ class Parser
         $buf = array();
         $this->expect('indent');
         while ('outdent' !== $this->peek()->type) {
-            $buf[] = $this->getIndentation() .
-                $this->filters['php']->replaceHoldersWithEcho($this->parseExpr());
+            $buf[] = $this->getIndentation() . $this->filters['php']->replaceHoldersWithEcho(
+                preg_replace("/^ */", '', $this->parseExpr())
+            );
         }
         $this->expect('outdent');
         return implode('', $buf);
@@ -506,7 +508,7 @@ class Parser
         if ('text' === $this->peek()->type) {
             $val = preg_replace(array("/^ */", "/ *$/"), '', $this->advance()->val);
             if ('' !== $val) {
-                $buf[] = $indents . '  ' . $val;
+                $buf[] = $indents . '  ' . $this->filters['php']->replaceHoldersWithEcho($val);
             }
         }
 
@@ -541,7 +543,13 @@ class Parser
             // Attributes
             $attributes = array();
             foreach ($attrs as $key => $value) {
-                $attributes[] = sprintf('%s="%s"', $key, true === $value ? $key : $value);
+                if (true === $value || 'true' === $value) {
+                    $attributes[] = $html5 ? $key : sprintf('%s="%s"', $key, $key);
+                } elseif (false !== $value && 'false' !== $value && 'null' !== $value && '' !== $value) {
+                    $attributes[] = sprintf('%s="%s"', $key,
+                        $this->filters['php']->replaceHoldersWithEcho(htmlentities($value))
+                    );
+                }
             }
             if (count($attributes)) {
                 $attrBuf .= ' ' . implode(' ', $attributes);

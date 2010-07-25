@@ -22,7 +22,9 @@ class PHP implements Filter
 {
     public function replaceHoldersWithEcho($str)
     {
-        return preg_replace(array("/\{\{/", "/\}\}/"), array('<?php echo ', ' ?>'), $str);
+        return preg_replace_callback("/{{((?!}}).*)}}/", function($matches) {
+            return sprintf('<?php echo %s ?>', html_entity_decode($matches[1]));
+        }, $str);
     }
 
     public function filter($str, $indentation = 0)
