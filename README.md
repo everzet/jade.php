@@ -1,9 +1,7 @@
-# HTAML - template engine for PHP5.3
+# HTAML - template compiler for PHP5.3
 
-*HTAML* is Jade's port to PHP5.3.
-
-*Jade* is a high performance template engine heavily influenced by [Haml](http://haml-lang.com)
-and implemented with JavaScript for [node](http://nodejs.org).
+*HTAML* is a high performance template compiler heavily influenced by [Haml](http://haml-lang.com)
+and implemented for PHP 5.3.
 
 ## Features
 
@@ -13,7 +11,7 @@ and implemented with JavaScript for [node](http://nodejs.org).
   - html 5 mode (using the _!!! 5_ doctype)
   - combine dynamic and static tag classes
   - no tag prefix
-  - beautify HTML output
+  - clear & beautiful HTML output
   - filters
     - :php
     - :cdata
@@ -23,10 +21,10 @@ and implemented with JavaScript for [node](http://nodejs.org).
 
 ## Public API
 
-	$parser = new \Everzet\HTAML\Parser('string of HTAML');
+	$parser = new \Everzet\HTAML\Parser();
 	
 	// Parse a string
-	echo $parser->parse();
+	echo $parser->parse('!!! 5');
 
 ## Syntax
 
