@@ -3,6 +3,7 @@
 namespace Everzet\HTAML\Filters;
 
 use \Everzet\HTAML\Filters\Filter;
+use \Everzet\HTAML\Filters\TextFilter;
 
 /*
  * This file is part of the HTAML package.
@@ -18,9 +19,9 @@ use \Everzet\HTAML\Filters\Filter;
  * @package     HTAML
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class PHP implements Filter
+class PHP implements Filter, TextFilter
 {
-    public function replaceHoldersWithEcho($str)
+    public function filterText($str)
     {
         return preg_replace_callback("/{{((?!}}).*)}}/", function($matches) {
             return sprintf('<?php echo %s ?>', html_entity_decode($matches[1]));

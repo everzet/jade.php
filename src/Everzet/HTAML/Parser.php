@@ -4,6 +4,7 @@ namespace Everzet\HTAML;
 
 use \Everzet\HTAML\ParserException;
 use \Everzet\HTAML\Filters\Filter;
+use \Everzet\HTAML\Filters\TextFilter;
 use \Everzet\HTAML\Filters\PHP;
 use \Everzet\HTAML\Filters\CDATA;
 use \Everzet\HTAML\Filters\JavaScript;
@@ -345,7 +346,7 @@ class Parser
             case 'filter':
                 return $this->parseFilter() . "\n";
             case 'text':
-                return $this->filters['php']->replaceHoldersWithEcho($this->advance()->val) . "\n";
+                return $this->filterText($this->advance()->val) . "\n";
             case 'id':
             case 'class':
                 $tok = $this->advance();
@@ -409,6 +410,24 @@ class Parser
     }
 
     /**
+     * Filter text with all filters, that implements TextFilter interface
+     *
+     * @param   string  $text   text to filter
+     * 
+     * @return  string          filtered text
+     */
+    protected function filterText($text)
+    {
+        foreach ($this->filters as $filter) {
+            if ($filter instanceof TextFilter) {
+                $text = $filter->filterText($text);
+            }
+        }
+
+        return $text;
+    }
+
+    /**
      * Parse Doctype.
      *
      * @return  string
@@ -454,7 +473,7 @@ class Parser
             if ('newline' === $this->peek()->type) {
                 $this->advance();
             } else {
-                $buf[] = $this->filters['php']->replaceHoldersWithEcho($this->advance()->val);
+                $buf[] = $this->filterText($this->advance()->val);
             }
         }
         $this->expect('outdent');
@@ -471,7 +490,7 @@ class Parser
         $buf = array();
         $this->expect('indent');
         while ('outdent' !== $this->peek()->type) {
-            $buf[] = $this->getIndentation() . $this->filters['php']->replaceHoldersWithEcho(
+            $buf[] = $this->getIndentation() . $this->filterText(
                 preg_replace("/^ */", '', $this->parseExpr())
             );
         }
@@ -526,7 +545,7 @@ class Parser
         if ('text' === $this->peek()->type) {
             $val = preg_replace(array("/^ */", "/ *$/"), '', $this->advance()->val);
             if ('' !== $val) {
-                $buf[] = $indents . '  ' . $this->filters['php']->replaceHoldersWithEcho($val);
+                $buf[] = $indents . '  ' . $this->filterText($val);
             }
         }
 
@@ -565,7 +584,7 @@ class Parser
                     $attributes[] = $html5 ? $key : sprintf('%s="%s"', $key, $key);
                 } elseif (false !== $value && 'false' !== $value && 'null' !== $value && '' !== $value) {
                     $attributes[] = sprintf('%s="%s"', $key,
-                        $this->filters['php']->replaceHoldersWithEcho(htmlentities($value))
+                        $this->filterText(htmlentities($value))
                     );
                 }
             }
