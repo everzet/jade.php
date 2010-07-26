@@ -123,7 +123,7 @@ class Parser
      */
     public function setInput($input)
     {
-        $this->input = preg_replace("/\r\n|\r/", "\n", $input);
+        $this->input = preg_replace("/\r\n|\r/", "\n", trim($input));
     }
 
     /**
@@ -141,6 +141,8 @@ class Parser
         $this->deferredTokens = array();
         $this->lastIndents = 0;
         $this->lineno = 1;
+        $this->stash = null;
+        $this->mode = null;
 
         $buf = array();
         while ('eos' !== $this->peek()->type) {
@@ -232,7 +234,7 @@ class Parser
         }
 
         // Attributes
-        if (preg_match("/^\( *(.+) *\)/", $this->input, $matches)) {
+        if (preg_match("/^\( *([^)]+) *\)/", $this->input, $matches)) {
             $tok = $this->token('attrs', $matches);
             $attrs = preg_split("/ *, *(?=[\w-]+ *[:=]|[\w-]+ *$)/", $tok->val);
             $tok->attrs = array();
