@@ -17,7 +17,7 @@ and implemented for PHP 5.3.
     - :cdata
     - :javascript
 	- you even can write & add own filters throught API
-  - [TextMate Bundle](http://github.com/miksago/jade-tmbundle)
+  - [TextMate Bundle](http://github.com/everzet/HTAML-tmbundle)
 
 ## Public API
 
