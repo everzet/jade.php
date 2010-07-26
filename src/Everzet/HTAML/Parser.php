@@ -123,7 +123,7 @@ class Parser
      */
     public function setInput($input)
     {
-        $this->input = preg_replace("/\r\n|\r/", "\n", trim($input));
+        $this->input = preg_replace("/\r\n|\r/", "\n", $input);
     }
 
     /**
@@ -135,6 +135,11 @@ class Parser
      */
     public function parse($input = null)
     {
+        if (function_exists('mb_internal_encoding')) {
+            $mbEncoding = mb_internal_encoding();
+            mb_internal_encoding('UTF-8');
+        }
+
         if (null !== $input) {
             $this->setInput($input);
         }
@@ -149,8 +154,13 @@ class Parser
             $buf[] = $this->parseExpr();
         }
         $html = implode('', $buf);
+        $html = preg_replace(array("/^\n/", "/\n$/", "/^ */", "/ *$/"), '', $html);
 
-        return preg_replace(array("/^\n/", "/\n$/", "/^ */", "/ *$/"), '', $html);
+        if (isset($mbEncoding)) {
+            mb_internal_encoding($mbEncoding);
+        }
+
+        return $html;
     }
 
     /**
