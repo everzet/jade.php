@@ -423,4 +423,61 @@ HTAML;
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
     }
+
+    public function testCorrectEndings()
+    {
+        $htaml = <<<HTAML
+!!! strict
+html
+  - use_helper('LESS')
+  head
+    - include_http_metas()
+    - include_metas()
+    - include_title()
+    - include_less_stylesheets()
+    - include_javascripts()
+  body
+    a#logo( href = '#' ) logo
+
+    ul#main-menu
+      li
+        a( href = '#' ) Item 1
+      li
+        a( href = '#' ) Второй итем
+      li
+        a( href = '#' ) Третий
+
+    = \$sf_content
+HTAML;
+        $html = <<<HTML
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <?php use_helper('LESS') ?>
+  <head>
+    <?php include_http_metas() ?>
+    <?php include_metas() ?>
+    <?php include_title() ?>
+    <?php include_less_stylesheets() ?>
+    <?php include_javascripts() ?>
+  </head>
+  <body>
+    <a id="logo" href="#">logo</a>
+    <ul id="main-menu">
+      <li>
+        <a href="#">Item 1</a>
+      </li>
+      <li>
+        <a href="#">Второй итем</a>
+      </li>
+      <li>
+        <a href="#">Третий</a>
+      </li>
+    </ul>
+    <?php echo \$sf_content ?>
+  </body>
+</html>
+HTML;
+
+        $this->assertEquals($html, $this->parse($htaml));
+    }
 }

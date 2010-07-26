@@ -374,7 +374,7 @@ class Parser
                 $tok = $this->advance();
                 $val = $tok->val;
                 if ($tok->buffer) {
-                    $buf = sprintf('<?php echo %s ?>',
+                    $buf = sprintf("<?php echo %s ?>\n",
                         preg_replace(array("/^ */", "/ *$/"), '', $val)
                     );
                 } else {
@@ -623,7 +623,7 @@ class Parser
                 return '<' . $name . $attrBuf . '>' .
                     preg_replace(array("/^ */", "/ *$/"), '', $buf) . '</' . $name . '>';
             } else {
-                return '<' . $name . $attrBuf . ">\n" . $buf . $indents . '</' . $name . '>';
+                return '<' . $name . $attrBuf . ">\n" . preg_replace("/\n *$/", "\n", $buf) . $indents . '</' . $name . '>';
             }
         }
     }
