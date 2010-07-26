@@ -32,12 +32,18 @@ class Cached extends Renderer
         parent::__construct($parser);
     }
 
-    public function renderHTAML($htamlFile)
+    public function compileTemplate($htamlFile, $filename = null)
     {
-        $htmlFile = sprintf('%s/%s.%s', $this->path, md5($htamlFile), $this->extension);
+        if (null === $filename) {
+            $filename = md5($htamlFile);
+        }
+
+        $htmlFile = sprintf('%s/%s.%s', $this->path, $filename, $this->extension);
 
         if (!file_exists($htmlFile) || filemtime($htamlFile) > filemtime($htmlFile)) {
-            $this->renderHTAMLTo($htamlFile, $htmlFile);
+            return $this->compile($htamlFile, $htmlFile);
+        } else {
+            return false;
         }
     }
 }

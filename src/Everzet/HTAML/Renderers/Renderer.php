@@ -28,8 +28,8 @@ class Renderer
         $this->parser = $parser;
     }
 
-    public function renderHTAMLTo($htamlFile, $htmlFile)
+    public function compile($htamlFile, $htmlFile)
     {
-        file_put_contents($htmlFile, $this->parser->parse(file_get_contents($htamlFile)));
+        return file_put_contents($htmlFile, $this->parser->parse(file_get_contents($htamlFile)));
     }
 }
