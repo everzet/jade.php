@@ -43,7 +43,7 @@ class Cached extends Renderer
         if (!file_exists($htmlFile) || filemtime($htamlFile) > filemtime($htmlFile)) {
             return $this->compile($htamlFile, $htmlFile);
         } else {
-            return false;
+            return $htmlFile;
         }
     }
 }

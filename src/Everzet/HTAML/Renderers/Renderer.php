@@ -30,6 +30,12 @@ class Renderer
 
     public function compile($htamlFile, $htmlFile)
     {
-        return file_put_contents($htmlFile, $this->parser->parse(file_get_contents($htamlFile)));
+        $parsed = $this->parser->parse(file_get_contents($htamlFile));
+
+        if (false !== file_put_contents($htmlFile, $parsed)) {
+            return $htmlFile;
+        } else {
+            throw new RuntimeException(sprintf('Can\'t write to "%s"', $htmlFile));
+        }
     }
 }
