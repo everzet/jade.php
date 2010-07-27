@@ -1,12 +1,12 @@
 <?php
 
-namespace Everzet\HTAML\Renderers;
+namespace Everzet\Jade\Renderers;
 
-use \Everzet\HTAML\Parser;
-use \Everzet\HTAML\Renderers\Renderer;
+use \Everzet\Jade\Parser;
+use \Everzet\Jade\Renderers\Renderer;
 
 /*
- * This file is part of the HTAML package.
+ * This file is part of the Jade package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,9 +14,9 @@ use \Everzet\HTAML\Renderers\Renderer;
  */
 
 /**
- * HTAML cached renderer
+ * Jade cached renderer
  *
- * @package     HTAML
+ * @package     Jade
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
 class Cached extends Renderer

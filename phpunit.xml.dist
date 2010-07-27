@@ -12,14 +12,14 @@
          bootstrap="tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="HTAML Test Suite">
-            <directory>./tests/Everzet/HTAML/</directory>
+        <testsuite name="Jade Test Suite">
+            <directory>./tests/Everzet/Jade/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>./src/Everzet/HTAML/</directory>
+            <directory>./src/Everzet/Jade/</directory>
         </whitelist>
     </filter>
 </phpunit>

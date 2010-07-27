@@ -1,6 +1,6 @@
-# HTAML - template compiler for PHP5.3
+# Jade - template compiler for PHP5.3
 
-*HTAML* is a high performance template compiler heavily influenced by [Haml](http://haml-lang.com)
+*Jade* is a high performance template compiler heavily influenced by [Haml](http://haml-lang.com)
 and implemented for PHP 5.3.
 
 ## Features
@@ -17,11 +17,11 @@ and implemented for PHP 5.3.
     - :cdata
     - :javascript
 	- you even can write & add own filters throught API
-  - [TextMate Bundle](http://github.com/everzet/HTAML-tmbundle)
+  - [TextMate Bundle](http://github.com/everzet/Jade-tmbundle)
 
 ## Public API
 
-	$parser = new \Everzet\HTAML\Parser();
+	$parser = new \Everzet\Jade\Parser();
 	
 	// Parse a string
 	echo $parser->parse('!!! 5');
@@ -34,7 +34,7 @@ and implemented for PHP 5.3.
 
 ### Indentation
 
-HTAML is indentation based, however currently only supports a _2 space_ indent.
+Jade is indentation based, however currently only supports a _2 space_ indent.
 
 ### Tags
 
@@ -85,7 +85,7 @@ well cool, but how about large bodies of text:
 	  | foo bar baz
 	  | rawr rawr
 	  | super cool
-	  | go HTAML go
+	  | go Jade go
 
 renders `<p>foo bar baz rawr.....</p>`
 
@@ -104,7 +104,7 @@ now we have `<p><?php echo $something ?></p>`
 
 ### Attributes
 
-HTAML currently supports '(' and ')' as attribute delimiters.
+Jade currently supports '(' and ')' as attribute delimiters.
 
 	a(href='/login', title='View login page') Login
 
@@ -173,7 +173,7 @@ Renders:
 
 ### Buffered / Non-buffered output
 
-HTAML currently supports three classifications of executable code. The first
+Jade currently supports three classifications of executable code. The first
 is prefixed by `-`, and is not buffered:
 
 	- var $foo = 'bar';
@@ -183,7 +183,7 @@ This can be used for conditionals, or iteration:
 	- foreach ($items as $item)
 	  p= $item
 
-Due to HTAML's buffering techniques the following is valid as well:
+Due to Jade's buffering techniques the following is valid as well:
 
 	- if ($foo)
 	  ul
@@ -204,7 +204,7 @@ Which outputs `bar<h1>bar<h1/>`.
 
 ### Code blocks
 
-Also, HTAML has Code Blocks, that supports basic PHP template syntax:
+Also, Jade has Code Blocks, that supports basic PHP template syntax:
 
 	ul
 	  - while (true)

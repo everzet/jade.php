@@ -1,12 +1,12 @@
 <?php
 
-namespace Everzet\HTAML\Renderers;
+namespace Everzet\Jade\Renderers;
 
-use \Everzet\HTAML\Parser;
-use \Everzet\HTAML\ParserException;
+use \Everzet\Jade\Parser;
+use \Everzet\Jade\ParserException;
 
 /*
- * This file is part of the HTAML package.
+ * This file is part of the Jade package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,9 +14,9 @@ use \Everzet\HTAML\ParserException;
  */
 
 /**
- * HTAML basic renderer
+ * Jade basic renderer
  *
- * @package     HTAML
+ * @package     Jade
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
 class Renderer

@@ -1,9 +1,9 @@
 <?php
 
-use \Everzet\HTAML\Parser;
+use \Everzet\Jade\Parser;
 
 /*
- * This file is part of the HTAML package.
+ * This file is part of the Jade package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -26,7 +26,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     public function testUnknownFilter()
     {
-        $this->setExpectedException("Everzet\\HTAML\\ParserException");
+        $this->setExpectedException("Everzet\\Jade\\ParserException");
         $this->parse(":doesNotExist\n");
     }
 
@@ -48,10 +48,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 <?php \$path = 'foo' ?>
 <a href="/<?php echo \$path ?>"></a>
 HTML
-, $this->parse(<<<HTAML
+, $this->parse(<<<Jade
 - \$path = 'foo'
 a(href='/{{\$path}}')
-HTAML
+Jade
 ));
     }
 
@@ -94,7 +94,7 @@ HTAML
 
     public function testNestedTags()
     {
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 ul
   li a
   li b
@@ -103,7 +103,7 @@ ul
       li c
       li d
   li e
-HTAML;
+Jade;
         $html = <<<HTML
 <ul>
   <li>a</li>
@@ -119,11 +119,11 @@ HTAML;
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
 
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 a(href="#") foo
   | bar
   | baz
-HTAML;
+Jade;
         $html = <<<HTML
 <a href="#">
   foo
@@ -133,12 +133,12 @@ HTAML;
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
 
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 ul  
   li  one
   ul two
     li three
-HTAML;
+Jade;
         $html = <<<HTML
 <ul>
   <li>one</li>
@@ -153,7 +153,7 @@ HTML;
 
     public function testVariableLengthNewlines()
     {
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 ul
   li a
   
@@ -166,7 +166,7 @@ ul
 
       li d
   li e
-HTAML;
+Jade;
         $html = <<<HTML
 <ul>
   <li>a</li>
@@ -185,7 +185,7 @@ HTML;
 
     public function testNewlines()
     {
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 ul
   li a
   
@@ -201,7 +201,7 @@ ul
       li c
       li d
   li e
-HTAML;
+Jade;
         $html = <<<HTML
 <ul>
   <li>a</li>
@@ -302,21 +302,21 @@ HTML;
 
     public function testCode()
     {
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 - \$foo = "<script>";
 = \$foo
-HTAML;
+Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <?php echo \$foo ?>
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
 
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 - \$foo = "<script>";
 - if (null !== \$foo)
   = \$foo
-HTAML;
+Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <?php if (null !== \$foo): ?>
@@ -325,12 +325,12 @@ HTAML;
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
 
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 - \$foo = "<script>";
 p
   - if (null !== \$foo)
     = \$foo
-HTAML;
+Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
@@ -341,12 +341,12 @@ HTAML;
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
 
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 - \$foo = "<script>";
 p
   - if (null !== \$foo)
     strong= \$foo
-HTAML;
+Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
@@ -357,14 +357,14 @@ HTAML;
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
 
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 - \$foo = "<script>";
 p
   - if (null !== \$foo)
     strong= \$foo
   - else
     h2= \$foo / 2
-HTAML;
+Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
@@ -377,14 +377,14 @@ HTAML;
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
 
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 - \$foo = "<script>";
 p
   - if (null !== \$foo)
     strong= \$foo
   - else
     h2= \$foo / 2
-HTAML;
+Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
@@ -397,7 +397,7 @@ HTAML;
 HTML;
         $this->assertEquals($html, $this->parse($htaml));
 
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 - \$foo = "<script>";
 p
   - switch (\$foo)
@@ -407,7 +407,7 @@ p
       strong#name= \$foo * 2
     -   case 5
       p some text
-HTAML;
+Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
@@ -429,7 +429,7 @@ HTML;
 
     public function testCorrectEndings()
     {
-        $htaml = <<<HTAML
+        $htaml = <<<Jade
 !!! strict
 html
   - use_helper('LESS')
@@ -451,7 +451,7 @@ html
         a( href = '#' ) Третий
 
     = \$sf_content
-HTAML;
+Jade;
         $html = <<<HTML
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>

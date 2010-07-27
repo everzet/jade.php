@@ -1,9 +1,9 @@
 <?php
 
-use \Everzet\HTAML\Parser;
+use \Everzet\Jade\Parser;
 
 /*
- * This file is part of the HTAML package.
+ * This file is part of the Jade package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -22,10 +22,10 @@ class FiltersTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             "<script type=\"text/javascript\">\n//<![CDATA[\nvar name = \"<?php echo \$name ?>\";\n//]]>\n</script>",
-            $this->parse(<<<HTAML
+            $this->parse(<<<Jade
 :javascript
   | var name = "{{\$name}}";
-HTAML
+Jade
             )
         );
     }
@@ -34,29 +34,29 @@ HTAML
     {
         $this->assertEquals(
             "<![CDATA[\nfoo\n]]>",
-            $this->parse(<<<HTAML
+            $this->parse(<<<Jade
 :cdata
   | foo
-HTAML
+Jade
             )
         );
         $this->assertEquals(
             "<![CDATA[\nfoo\nbar\n]]>",
-            $this->parse(<<<HTAML
+            $this->parse(<<<Jade
 :cdata
   | foo
   | bar
-HTAML
+Jade
             )
         );
         $this->assertEquals(
             "<![CDATA[\nfoo\nbar\n]]>\n<p>something else</p>",
-            $this->parse(<<<HTAML
+            $this->parse(<<<Jade
 :cdata
   | foo
   | bar
 p something else
-HTAML
+Jade
             )
         );
     }
@@ -65,10 +65,10 @@ HTAML
     {
         $this->assertEquals(
             "<script type=\"text/javascript\">\n//<![CDATA[\nalert('foo')\n//]]>\n</script>",
-            $this->parse(<<<HTAML
+            $this->parse(<<<Jade
 :javascript
   | alert('foo')
-HTAML
+Jade
             )
         );
     }
@@ -77,12 +77,12 @@ HTAML
     {
         $this->assertEquals(
             "<?php\n\$bar = 10;\n\$bar++;\necho \$bar;\n?>",
-            $this->parse(<<<HTAML
+            $this->parse(<<<Jade
 :php
   | \$bar = 10;
   | \$bar++;
   | echo \$bar;
-HTAML
+Jade
             )
         );
     }

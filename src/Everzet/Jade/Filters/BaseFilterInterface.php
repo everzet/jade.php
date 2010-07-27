@@ -1,9 +1,9 @@
 <?php
 
-namespace Everzet\HTAML;
+namespace Everzet\Jade\Filters;
 
 /*
- * This file is part of the HTAML package.
+ * This file is part of the Jade package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -11,11 +11,11 @@ namespace Everzet\HTAML;
  */
 
 /**
- * HTAML Parser Basic Exception.
+ * Base filter interface.
  *
- * @package     HTAML
+ * @package     Jade
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class ParserException extends \Exception
+interface BaseFilterInterface
 {
 }

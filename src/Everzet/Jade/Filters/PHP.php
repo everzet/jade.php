@@ -1,12 +1,12 @@
 <?php
 
-namespace Everzet\HTAML\Filters;
+namespace Everzet\Jade\Filters;
 
-use \Everzet\HTAML\Filters\BlockFilterInterface;
-use \Everzet\HTAML\Filters\TextFilterInterface;
+use \Everzet\Jade\Filters\BlockFilterInterface;
+use \Everzet\Jade\Filters\TextFilterInterface;
 
 /*
- * This file is part of the HTAML package.
+ * This file is part of the Jade package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -16,7 +16,7 @@ use \Everzet\HTAML\Filters\TextFilterInterface;
 /**
  * PHP filter.
  *
- * @package     HTAML
+ * @package     Jade
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
 class PHP implements BlockFilterInterface, TextFilterInterface

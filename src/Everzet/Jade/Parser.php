@@ -1,17 +1,17 @@
 <?php
 
-namespace Everzet\HTAML;
+namespace Everzet\Jade;
 
-use \Everzet\HTAML\ParserException;
-use \Everzet\HTAML\Filters\BaseFilterInterface as Filter;
-use \Everzet\HTAML\Filters\BlockFilterInterface as BlockFilter;
-use \Everzet\HTAML\Filters\TextFilterInterface as TextFilter;
-use \Everzet\HTAML\Filters\PHP;
-use \Everzet\HTAML\Filters\CDATA;
-use \Everzet\HTAML\Filters\JavaScript;
+use \Everzet\Jade\ParserException;
+use \Everzet\Jade\Filters\BaseFilterInterface as Filter;
+use \Everzet\Jade\Filters\BlockFilterInterface as BlockFilter;
+use \Everzet\Jade\Filters\TextFilterInterface as TextFilter;
+use \Everzet\Jade\Filters\PHP;
+use \Everzet\Jade\Filters\CDATA;
+use \Everzet\Jade\Filters\JavaScript;
 
 /*
- * This file is part of the HTAML package.
+ * This file is part of the Jade package.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -19,9 +19,9 @@ use \Everzet\HTAML\Filters\JavaScript;
  */
 
 /**
- * HTAML Parser.
+ * Jade Parser.
  *
- * @package     HTAML
+ * @package     Jade
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
 class Parser
@@ -80,9 +80,9 @@ class Parser
     protected $mode;
 
     /**
-     * Inits HTAML parser with the given input string.
+     * Inits Jade parser with the given input string.
      *
-     * @param   string  $input  HTAML string
+     * @param   string  $input  Jade string
      */
     public function __construct($input = null)
     {
@@ -117,9 +117,9 @@ class Parser
     }
 
     /**
-     * Sets HTAML string to parse
+     * Sets Jade string to parse
      *
-     * @param   string  $input  HTAML to parse
+     * @param   string  $input  Jade to parse
      */
     public function setInput($input)
     {
@@ -129,7 +129,7 @@ class Parser
     /**
      * Parse input string.
      *
-     * @param   string  $input  HTAML string
+     * @param   string  $input  Jade string
      *
      * @return  string          HTML
      */
@@ -347,7 +347,7 @@ class Parser
      * 
      * @return  stdClass
      * 
-     * @throws  \Everzet\HTAML\ParserException
+     * @throws  \Everzet\Jade\ParserException
      */
     protected function expect($type)
     {
