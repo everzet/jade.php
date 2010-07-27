@@ -243,8 +243,21 @@ class Parser
             return $this->token('class', $matches);
         }
 
+        // Starting attributes RegEx
+        $attrRegex  = "/^\( *((?:";
+        // Paired brackets
+        $attrRegex .= "(?:\([^\)]*\))|";
+        // Brackets inside double quotes
+        $attrRegex .= "(?:\"[^\"]*\")|";
+        // Brackets inside single quotes
+        $attrRegex .= "(?:'[^']*')|";
+        // Not brackets
+        $attrRegex .= "[^\)]";
+        // Ending attributes RegEx
+        $attrRegex .= ")+) *\)/";
+
         // Attributes
-        if (preg_match("/^\( *([^)]+) *\)/", $this->input, $matches)) {
+        if (preg_match($attrRegex, $this->input, $matches)) {
             $tok = $this->token('attrs', $matches);
             $attrs = preg_split("/ *, *(?=[\w-]+ *[:=]|[\w-]+ *$)/", $tok->val);
             $tok->attrs = array();
@@ -265,7 +278,7 @@ class Parser
                         $split = $colon;
                     }
                     $key = mb_substr($pair, 0, $split);
-                    $val = preg_replace("/^ *(?:['\"])?|(?:['\"])? *$/", '', 
+                    $val = preg_replace("/^\s*(?:['\"])?|(?:['\"])?\s*$/", '', 
                         mb_substr($pair, ++$split, mb_strlen($pair))
                     );
                 }
