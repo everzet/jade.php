@@ -290,10 +290,6 @@ class Parser
         if (preg_match("/^\n( *)/", $this->input, $matches)) {
             ++$this->lineno;
             $tok = $this->token('indent', $matches);
-            // Skip whitelines
-            if (preg_match("/^ *\n/", $this->input)) {
-                return $this->advance();
-            }
             $indents = mb_strlen($tok->val) / 2;
             if ("\n" === $this->input[0]) {
                 $tok->type = 'newline';
@@ -575,6 +571,11 @@ class Parser
                 default:
                     break 2;
             }
+        }
+
+        // newline?
+        while ('newline' === $this->peek()->type) {
+            $this->advance();
         }
 
         // Text?
