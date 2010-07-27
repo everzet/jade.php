@@ -262,7 +262,6 @@ class Parser
             $attrs = preg_split("/ *, *(?=[\w-]+ *[:=]|[\w-]+ *$)/", $tok->val);
             $tok->attrs = array();
             foreach ($attrs as $pair) {
-
                 // Support = and :
                 $colon = mb_strpos($pair, ':');
                 $equal = mb_strpos($pair, '=');
@@ -291,6 +290,10 @@ class Parser
         if (preg_match("/^\n( *)/", $this->input, $matches)) {
             ++$this->lineno;
             $tok = $this->token('indent', $matches);
+            // Skip whitelines
+            if (preg_match("/^ *\n/", $this->input)) {
+                return $this->advance();
+            }
             $indents = mb_strlen($tok->val) / 2;
             if ("\n" === $this->input[0]) {
                 $tok->type = 'newline';

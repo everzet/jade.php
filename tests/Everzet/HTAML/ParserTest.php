@@ -194,7 +194,8 @@ ul
   
   li b
   li
-    
+      
+
     ul
       
       li c
@@ -214,7 +215,7 @@ HTAML;
   <li>e</li>
 </ul>
 HTML;
-        //$this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($htaml));
     }
 
     public function testTagText()
