@@ -71,6 +71,23 @@ class Parser
         'switch'    => 'endswitch',
         'case'      => 'break'
     );
+    /**
+     * Autoreplaceable tags
+     *
+     * @var     array
+     */
+    protected $autotags = array(
+        'input:button'      => array('tag' => 'input', 'attrs' => array('type' => 'button')),
+        'input:checkbox'    => array('tag' => 'input', 'attrs' => array('type' => 'checkbox')),
+        'input:file'        => array('tag' => 'input', 'attrs' => array('type' => 'file')),
+        'input:hidden'      => array('tag' => 'input', 'attrs' => array('type' => 'hidden')),
+        'input:image'       => array('tag' => 'input', 'attrs' => array('type' => 'image')),
+        'input:password'    => array('tag' => 'input', 'attrs' => array('type' => 'password')),
+        'input:radio'       => array('tag' => 'input', 'attrs' => array('type' => 'radio')),
+        'input:reset'       => array('tag' => 'input', 'attrs' => array('type' => 'reset')),
+        'input:submit'      => array('tag' => 'input', 'attrs' => array('type' => 'submit')),
+        'input:text'        => array('tag' => 'input', 'attrs' => array('type' => 'text')),
+    );
 
     protected $input;
     protected $deferredTokens = array();
@@ -102,7 +119,8 @@ class Parser
      * @param   string  $name   filter name
      * @param   Filter  $class  filter object
      */
-    public function setFilter($name, Filter $class) {
+    public function setFilter($name, Filter $class)
+    {
         $this->filters[$name] = $class;
     }
 
@@ -112,8 +130,21 @@ class Parser
      * @param   string  $begin  code block begin ('if' for example)
      * @param   string  $end    code block end ('endif' for example)
      */
-    public function setBlockEnd($begin, $end) {
+    public function setBlockEnd($begin, $end)
+    {
         $this->blocks[$begin] = $end;
+    }
+
+    /**
+     * Sets custom autotag for further autoreplaces
+     *
+     * @param   string  $holder     tag holder (input:text for example)
+     * @param   string  $tagName    output tag name (input)
+     * @param   array   $attrs      output tag attributes (array('type' => 'text'))
+     */
+    public function setAutotag($holder, $tagName, array $attrs)
+    {
+        $this->autotags[$holder] = array('tag' => $tagName, 'attrs' => $attrs);
     }
 
     /**
@@ -546,6 +577,17 @@ class Parser
         $attrs = array();
         $buf = array();
         $indents = $this->getIndentation();
+
+        // autoreplace tag definition with autotag
+        if (array_key_exists($name, $this->autotags)) {
+            $autotag = $this->autotags[$name];
+            $name = $autotag['tag'];
+
+            if (isset($autotag['attrs']) && count($autotag['attrs'])) {
+                $hasAttrs = true;
+                $attrs = array_merge($attrs, $autotag['attrs']);
+            }
+        }
 
         // (attrs | class | id)*
         while (true) {

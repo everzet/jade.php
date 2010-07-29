@@ -221,3 +221,22 @@ Will be rendered to:
 There's bunch of default ones: `if`, `else`, `elseif`, `while`, `for`, `foreach`, `switch`, `case`. And you can add new with:
 
 	$parser->setBlockEnd('slot', 'endslot');
+
+### Autotags
+
+jade.php has feature, called "autotags". It's just snippets for tags. Autotags will expand to basic tags with custom attributes. For example:
+
+	input:text
+
+will expand to `<input type="text" />` & it's the same as `input( type="text" )`, but shorter.
+Another examples:
+
+	input:submit( value="Send" )
+
+will become `<input type="submit" value="Send" />`.
+
+You can even add you own autotags with:
+
+	$parser->setAutotag('input:progress', 'input', array('type'=>'text', class=>'progress-bar'));
+
+that will expands to `<input type="text" class="progress-bar" />`.
