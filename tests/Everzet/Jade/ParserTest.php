@@ -489,4 +489,11 @@ HTML;
         $this->assertEquals('<input type="text" value="Search" />', $this->parse('input( type="text", value="Search" )'));
         $this->assertEquals('<input type="текст" value="Поиск" />', $this->parse('input( type="текст", value="Поиск" )'));
     }
+
+    public function testAutotags()
+    {
+        $this->assertEquals('<input type="text" value="Search" />', $this->parse('input:text(value = "Search")'));
+        $this->assertEquals('<input type="checkbox" />', $this->parse('input:checkbox'));
+        $this->assertEquals('<input type="submit" value="Send" />', $this->parse('input:submit( value = "Send" )'));
+    }
 }
