@@ -71,10 +71,6 @@ class Parser
         'switch'    => 'endswitch',
         'case'      => 'break'
     );
-    protected $autotags = array(
-        'input:button'  => array('tag' => 'input', 'attrs' => array('type' => 'button')),
-        'input:button'  => array('tag' => 'input', 'attrs' => array('type' => 'button')),
-    );
 
     protected $input;
     protected $deferredTokens = array();
