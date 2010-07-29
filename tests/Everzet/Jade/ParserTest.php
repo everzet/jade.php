@@ -94,7 +94,7 @@ Jade
 
     public function testNestedTags()
     {
-        $htaml = <<<Jade
+        $jade = <<<Jade
 ul
   li a
   li b
@@ -117,9 +117,9 @@ Jade;
   <li>e</li>
 </ul>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
 
-        $htaml = <<<Jade
+        $jade = <<<Jade
 a(href="#") foo
   | bar
   | baz
@@ -131,9 +131,9 @@ Jade;
   baz
 </a>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
 
-        $htaml = <<<Jade
+        $jade = <<<Jade
 ul  
   li  one
   ul two
@@ -148,12 +148,12 @@ Jade;
   </ul>
 </ul>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testVariableLengthNewlines()
     {
-        $htaml = <<<Jade
+        $jade = <<<Jade
 ul
   li a
   
@@ -180,12 +180,12 @@ Jade;
   <li>e</li>
 </ul>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testNewlines()
     {
-        $htaml = <<<Jade
+        $jade = <<<Jade
 ul
   li a
   
@@ -215,7 +215,7 @@ Jade;
   <li>e</li>
 </ul>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testTagText()
@@ -232,10 +232,10 @@ HTML;
 
     public function testTagTextCodeInsertion()
     {
-        $this->assertEquals('yo, <?php echo $htaml ?> is cool', $this->parse('| yo, {{$htaml}} is cool'));
-        $this->assertEquals('<p>yo, <?php echo $htaml ?> is cool</p>', $this->parse('p yo, {{$htaml}} is cool'));
-        $this->assertEquals('<p>yo, <?php echo $htaml || $jade ?> is cool</p>', $this->parse('p yo, {{$htaml || $jade}} is cool'));
-        $this->assertEquals('yo, <?php echo $htaml || $jade ?> is cool', $this->parse('| yo, {{$htaml || $jade}} is cool'));
+        $this->assertEquals('yo, <?php echo $jade ?> is cool', $this->parse('| yo, {{$jade}} is cool'));
+        $this->assertEquals('<p>yo, <?php echo $jade ?> is cool</p>', $this->parse('p yo, {{$jade}} is cool'));
+        $this->assertEquals('<p>yo, <?php echo $jade || $jade ?> is cool</p>', $this->parse('p yo, {{$jade || $jade}} is cool'));
+        $this->assertEquals('yo, <?php echo $jade || $jade ?> is cool', $this->parse('| yo, {{$jade || $jade}} is cool'));
     }
 
     public function testHtml5Mode()
@@ -302,7 +302,7 @@ HTML;
 
     public function testCode()
     {
-        $htaml = <<<Jade
+        $jade = <<<Jade
 - \$foo = "<script>";
 = \$foo
 Jade;
@@ -310,9 +310,9 @@ Jade;
 <?php \$foo = "<script>"; ?>
 <?php echo \$foo ?>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
 
-        $htaml = <<<Jade
+        $jade = <<<Jade
 - \$foo = "<script>";
 - if (null !== \$foo)
   = \$foo
@@ -323,9 +323,9 @@ Jade;
   <?php echo \$foo ?>
 <?php endif; ?>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
 
-        $htaml = <<<Jade
+        $jade = <<<Jade
 - \$foo = "<script>";
 p
   - if (null !== \$foo)
@@ -339,9 +339,9 @@ Jade;
   <?php endif; ?>
 </p>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
 
-        $htaml = <<<Jade
+        $jade = <<<Jade
 - \$foo = "<script>";
 p
   - if (null !== \$foo)
@@ -355,29 +355,9 @@ Jade;
   <?php endif; ?>
 </p>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
 
-        $htaml = <<<Jade
-- \$foo = "<script>";
-p
-  - if (null !== \$foo)
-    strong= \$foo
-  - else
-    h2= \$foo / 2
-Jade;
-        $html = <<<HTML
-<?php \$foo = "<script>"; ?>
-<p>
-  <?php if (null !== \$foo): ?>
-    <strong><?php echo \$foo ?></strong>
-  <?php else: ?>
-    <h2><?php echo \$foo / 2 ?></h2>
-  <?php endif; ?>
-</p>
-HTML;
-        $this->assertEquals($html, $this->parse($htaml));
-
-        $htaml = <<<Jade
+        $jade = <<<Jade
 - \$foo = "<script>";
 p
   - if (null !== \$foo)
@@ -395,9 +375,29 @@ Jade;
   <?php endif; ?>
 </p>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
 
-        $htaml = <<<Jade
+        $jade = <<<Jade
+- \$foo = "<script>";
+p
+  - if (null !== \$foo)
+    strong= \$foo
+  - else
+    h2= \$foo / 2
+Jade;
+        $html = <<<HTML
+<?php \$foo = "<script>"; ?>
+<p>
+  <?php if (null !== \$foo): ?>
+    <strong><?php echo \$foo ?></strong>
+  <?php else: ?>
+    <h2><?php echo \$foo / 2 ?></h2>
+  <?php endif; ?>
+</p>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
 - \$foo = "<script>";
 p
   - switch (\$foo)
@@ -424,12 +424,12 @@ Jade;
   <?php endswitch; ?>
 </p>
 HTML;
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testCorrectEndings()
     {
-        $htaml = <<<Jade
+        $jade = <<<Jade
 !!! strict
 html
   - use_helper('LESS')
@@ -481,6 +481,12 @@ Jade;
 </html>
 HTML;
 
-        $this->assertEquals($html, $this->parse($htaml));
+        $this->assertEquals($html, $this->parse($jade));
+    }
+
+    public function test18NStringInAttrs()
+    {
+        $this->assertEquals('<input type="text" value="Search" />', $this->parse('input( type="text", value="Search" )'));
+        $this->assertEquals('<input type="текст" value="Поиск" />', $this->parse('input( type="текст", value="Поиск" )'));
     }
 }

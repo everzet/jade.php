@@ -621,7 +621,7 @@ class Parser
                     $attributes[] = $html5 ? $key : sprintf('%s="%s"', $key, $key);
                 } elseif (false !== $value && 'false' !== $value && 'null' !== $value && '' !== $value) {
                     $attributes[] = sprintf('%s="%s"', $key,
-                        $this->filterText(htmlentities($value))
+                        $this->filterText(htmlentities($value, ENT_COMPAT, 'UTF-8'))
                     );
                 }
             }
