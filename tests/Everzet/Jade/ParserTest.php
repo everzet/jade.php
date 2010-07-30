@@ -425,6 +425,17 @@ Jade;
 </p>
 HTML;
         $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+p
+  - if (5 === \$num) \$num++;
+Jade;
+        $html = <<<HTML
+<p>
+  <?php if (5 === \$num) \$num++; ?>
+</p>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testCorrectEndings()
