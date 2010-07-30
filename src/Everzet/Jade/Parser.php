@@ -322,7 +322,7 @@ class Parser
             ++$this->lineno;
             $tok = $this->token('indent', $matches);
             $indents = mb_strlen($tok->val) / 2;
-            if ("\n" === $this->input[0]) {
+            if (mb_strlen($this->input) && "\n" === $this->input[0]) {
                 $tok->type = 'newline';
                 return $tok;
             } elseif (0 !== $indents % 1) {
