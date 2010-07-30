@@ -319,7 +319,7 @@ HTML;
 Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
-<?php if (null !== \$foo): ?>
+<?php if (null !== \$foo) ?>
   <?php echo \$foo ?>
 <?php endif; ?>
 HTML;
@@ -334,7 +334,7 @@ Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
-  <?php if (null !== \$foo): ?>
+  <?php if (null !== \$foo) ?>
     <?php echo \$foo ?>
   <?php endif; ?>
 </p>
@@ -344,7 +344,7 @@ HTML;
         $jade = <<<Jade
 - \$foo = "<script>";
 p
-  - if (null !== \$foo)
+  - if (null !== \$foo):
     strong= \$foo
 Jade;
         $html = <<<HTML
@@ -360,9 +360,9 @@ HTML;
         $jade = <<<Jade
 - \$foo = "<script>";
 p
-  - if (null !== \$foo)
+  - if (null !== \$foo):
     strong= \$foo
-  - else
+  - else:
     h2= \$foo / 2
 Jade;
         $html = <<<HTML
@@ -388,9 +388,9 @@ Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
-  <?php if (null !== \$foo): ?>
+  <?php if (null !== \$foo) ?>
     <strong><?php echo \$foo ?></strong>
-  <?php else: ?>
+  <?php else ?>
     <h2><?php echo \$foo / 2 ?></h2>
   <?php endif; ?>
 </p>
@@ -411,14 +411,14 @@ Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
-  <?php switch (\$foo): ?>
-    <?php case 2: ?>
+  <?php switch (\$foo) ?>
+    <?php case 2 ?>
       <p class="foo"><?php echo \$foo ?></p>
     <?php break; ?>
-    <?php case 'strong': ?>
+    <?php case 'strong' ?>
       <strong id="name"><?php echo \$foo * 2 ?></strong>
     <?php break; ?>
-    <?php case 5: ?>
+    <?php case 5 ?>
       <p>some text</p>
     <?php break; ?>
   <?php endswitch; ?>

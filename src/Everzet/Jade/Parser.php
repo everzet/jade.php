@@ -431,7 +431,7 @@ class Parser
                     }
                     $buf = sprintf('<?php %s', $beg);
                     if ('indent' === $this->peek()->type) {
-                        $buf .= (null === $end ? '{' : ':') . " ?>\n";
+                        $buf .= (null === $end ? '{' : '') . " ?>\n";
                         $buf .= $this->parseBlock();
                         $buf .= "\n" === $buf[mb_strlen($buf) - 1] ? '' : "\n";
 
