@@ -87,6 +87,19 @@ class Parser
         'input:reset'       => array('tag' => 'input', 'attrs' => array('type' => 'reset')),
         'input:submit'      => array('tag' => 'input', 'attrs' => array('type' => 'submit')),
         'input:text'        => array('tag' => 'input', 'attrs' => array('type' => 'text')),
+        'input:search'      => array('tag' => 'input', 'attrs' => array('type' => 'search')),
+        'input:tel'         => array('tag' => 'input', 'attrs' => array('type' => 'tel')),
+        'input:url'         => array('tag' => 'input', 'attrs' => array('type' => 'url')),
+        'input:email'       => array('tag' => 'input', 'attrs' => array('type' => 'email')),
+        'input:datetime'    => array('tag' => 'input', 'attrs' => array('type' => 'datetime')),
+        'input:date'        => array('tag' => 'input', 'attrs' => array('type' => 'date')),
+        'input:month'       => array('tag' => 'input', 'attrs' => array('type' => 'month')),
+        'input:week'        => array('tag' => 'input', 'attrs' => array('type' => 'week')),
+        'input:time'        => array('tag' => 'input', 'attrs' => array('type' => 'time')),
+        'input:number'      => array('tag' => 'input', 'attrs' => array('type' => 'number')),
+        'input:range'       => array('tag' => 'input', 'attrs' => array('type' => 'range')),
+        'input:color'       => array('tag' => 'input', 'attrs' => array('type' => 'color')),
+        'input:datetime-local' => array('tag' => 'input', 'attrs' => array('type' => 'datetime-local'))
     );
 
     protected $input;
