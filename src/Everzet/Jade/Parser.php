@@ -351,6 +351,11 @@ class Parser
             return $tok;
         }
 
+        // Comment
+        if (preg_match("/^\/([^\n]*)/", $this->input, $matches)) {
+            return $this->token('comment', $matches);
+        }
+
         // Text
         if (preg_match("/^(?:\| ?)?([^\n]+)/", $this->input, $matches)) {
             return $this->token('text', $matches);
@@ -447,6 +452,29 @@ class Parser
                     }
                 }
                 return $buf;
+            case 'comment':
+                $tok = $this->advance();
+                $val = preg_replace(array("/^ */", "/ *$/"), '', $tok->val);
+                if (preg_match("/^\[if[^\]]+\]$/", $val)) {
+                    $beg = sprintf('<!--%s>', $val);
+                    $end = '<![endif]-->';
+                    $val = '';
+                } else {
+                    $beg = "<!--";
+                    $end = "-->";
+                }
+                if ('indent' === $this->peek()->type) {
+                    $indents = $this->getIndentation();
+                    $buf = $beg . "\n";
+                    if ('' !== $val) {
+                        $buf .= $indents . $val . "\n";
+                    }
+                    $buf .= $this->parseBlock();
+                    $buf .= $end;
+                } else {
+                    $buf = sprintf("<!-- %s -->", $val);
+                }
+                return $buf . "\n";
             case 'newline':
                 $this->advance();
                 return $this->parseExpr();

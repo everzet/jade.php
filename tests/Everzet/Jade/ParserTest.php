@@ -507,4 +507,54 @@ HTML;
         $this->assertEquals('<input type="checkbox" />', $this->parse('input:checkbox'));
         $this->assertEquals('<input type="submit" value="Send" />', $this->parse('input:submit( value="Send" )'));
     }
+
+    public function testComments()
+    {
+        $jade = <<<Jade
+peanutbutterjelly
+  / This is the peanutbutterjelly element
+  | I like sandwiches!
+Jade;
+        $html = <<<HTML
+<peanutbutterjelly>
+  <!-- This is the peanutbutterjelly element -->
+  I like sandwiches!
+</peanutbutterjelly>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+/
+  p This doesn't render...
+  div
+    h1 Because it's commented out!
+Jade;
+        $html = <<<HTML
+<!--
+  <p>This doesn't render...</p>
+  <div>
+    <h1>Because it's commented out!</h1>
+  </div>
+-->
+HTML;
+
+        $this->assertEquals($html, $this->parse($jade));
+    }
+
+    public function testConditionalComments()
+    {
+        $jade = <<<Jade
+/[if IE]
+  a( href = 'http://www.mozilla.com/en-US/firefox/' )
+    h1 Get Firefox
+Jade;
+        $html = <<<HTML
+<!--[if IE]>
+  <a href="http://www.mozilla.com/en-US/firefox/">
+    <h1>Get Firefox</h1>
+  </a>
+<![endif]-->
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+    }
 }
