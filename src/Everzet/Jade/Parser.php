@@ -483,6 +483,7 @@ class Parser
             case 'comment':
                 $tok = $this->advance();
                 $val = preg_replace(array("/^ */", "/ *$/"), '', $tok->val);
+                $indents = $this->getIndentation();
                 if (preg_match("/^\[if[^\]]+\]$/", $val)) {
                     $beg = sprintf('<!--%s>', $val);
                     $end = '<![endif]-->';
@@ -492,13 +493,12 @@ class Parser
                     $end = "-->";
                 }
                 if ('indent' === $this->peek()->type) {
-                    $indents = $this->getIndentation();
                     $buf = $beg . "\n";
                     if ('' !== $val) {
                         $buf .= $indents . $val . "\n";
                     }
                     $buf .= $this->parseBlock();
-                    $buf .= $end;
+                    $buf .= $indents . $end;
                 } else {
                     $buf = sprintf("<!-- %s -->", $val);
                 }

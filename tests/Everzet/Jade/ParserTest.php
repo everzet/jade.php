@@ -579,6 +579,48 @@ Jade;
 <![endif]-->
 HTML;
         $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+!!! 5
+html
+  - use_helper('LESS')
+
+  head
+    - include_http_metas()
+    - include_metas()
+    - include_title()
+    - include_less_stylesheets()
+    - include_javascripts()
+
+    /[if lt IE 9]
+      script( src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js" )
+    /[if IE]
+      script( src="http://html5shiv.googlecode.com/svn/trunk/html5.js" )
+      script( src="http://html5shiv.googlecode.com/svn/trunk/html6.js" )
+      script( src="http://html5shiv.googlecode.com/svn/trunk/html7.js" )
+Jade;
+        $html = <<<HTML
+<!DOCTYPE html>
+<html>
+  <?php use_helper('LESS') ?>
+  <head>
+    <?php include_http_metas() ?>
+    <?php include_metas() ?>
+    <?php include_title() ?>
+    <?php include_less_stylesheets() ?>
+    <?php include_javascripts() ?>
+    <!--[if lt IE 9]>
+      <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+    <![endif]-->
+    <!--[if IE]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html6.js"></script>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html7.js"></script>
+    <![endif]-->
+  </head>
+</html>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testJadeComments()
