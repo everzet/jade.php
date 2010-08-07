@@ -127,6 +127,16 @@ class Parser
     }
 
     /**
+     * Sets parser mode
+     *
+     * @param   string  $mode
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
+
+    /**
      * Define filter class by filter's name.
      *
      * @param   string  $name   filter name
