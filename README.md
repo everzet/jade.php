@@ -170,17 +170,17 @@ defined by default, which can easily be extended:
 
 ### Jade Comments
 
-Jade supports sharp comments (`# COMMENT`). So jade block:
+Jade supports sharp comments (`// COMMENT`). So jade block:
 
-	# JADE
+	// JADE
 	- $foo = "<script>";
 	p
 	##### COMMENTS ARE SUPPER! ######
 	  - switch ($foo)
 	    -case 2
 	      p.foo= $foo
-	#    - case 'strong'
-	  #      strong#name= $foo * 2
+	//    - case 'strong'
+	  //      strong#name= $foo * 2
 	    -   case 5
 	      p some text
 
@@ -219,6 +219,8 @@ As with multiline comments:
 	  p This doesn't render...
 	  div
 	    h1 Because it's commented out!
+
+that compile to:
 
 	<!--
 	  <p>This doesn't render...</p>

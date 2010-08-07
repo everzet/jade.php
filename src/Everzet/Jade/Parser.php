@@ -331,7 +331,7 @@ class Parser
         }
 
         // Jade comment
-        if (preg_match("/^(?:\n)? *#([^\n]*)/", $this->input, $matches)) {
+        if (preg_match("/^(?:\n)? *\/\/([^\n]*)/", $this->input, $matches)) {
             return $this->token('newline', $matches);
         }
 
