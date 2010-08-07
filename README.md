@@ -71,6 +71,25 @@ which is syntactic sugar for what we have already been doing, and outputs:
 
 	<div id="foo"></div><div class="bar"></div>
 
+jade.php has a feature, called "autotags". It's just snippets for tags. Autotags will expand to basic tags with custom attributes. For example:
+
+	input:text
+
+will expand to `<input type="text" />` & it's the same as `input( type="text" )`, but shorter.
+Another examples:
+
+	input:submit( value="Send" )
+
+will become `<input type="submit" value="Send" />`.
+
+You can even add you own autotags with:
+
+	$parser->setAutotag('input:progress', 'input', array('type'=>'text', class=>'progress-bar'));
+
+that will expands to `<input type="text" class="progress-bar" />`.
+
+It also supports new HTML5 tags (`input:email` => `<input type="email"/>`).
+
 ### Tag Text
 
 Simply place some content after the tag:
@@ -147,6 +166,83 @@ defined by default, which can easily be extended:
 	       'mobile' => '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
 	   );
 
+## Comments
+
+### Jade Comments
+
+Jade supports sharp comments (`# COMMENT`). So jade block:
+
+	# JADE
+	- $foo = "<script>";
+	p
+	##### COMMENTS ARE SUPPER! ######
+	  - switch ($foo)
+	    -case 2
+	      p.foo= $foo
+	#    - case 'strong'
+	  #      strong#name= $foo * 2
+	    -   case 5
+	      p some text
+
+will be compiled into:
+
+	<?php $foo = "<script>"; ?>
+	<p>
+	  <?php switch ($foo) ?>
+	    <?php case 2 ?>
+	      <p class="foo"><?php echo $foo ?></p>
+	    <?php break; ?>
+	    <?php case 5 ?>
+	      <p>some text</p>
+	    <?php break; ?>
+	  <?php endswitch; ?>
+	</p>
+
+### HTML Comments
+
+Jade supports HTML comments (`/ comment`). So block:
+
+	peanutbutterjelly
+	  / This is the peanutbutterjelly element
+	  | I like sandwiches!
+
+will become:
+
+	<peanutbutterjelly>
+	  <!-- This is the peanutbutterjelly element -->
+	  I like sandwiches!
+	</peanutbutterjelly>
+
+As with multiline comments:
+
+	/
+	  p This doesn't render...
+	  div
+	    h1 Because it's commented out!
+
+	<!--
+	  <p>This doesn't render...</p>
+	  <div>
+	    <h1>Because it's commented out!</h1>
+	  </div>
+	-->
+
+### IE Conditional Comments
+
+Also, Jade supports IE conditional comments, so:
+
+	/[if IE]
+	  a( href = 'http://www.mozilla.com/en-US/firefox/' )
+	    h1 Get Firefox
+
+will be parsed to:
+
+	<!--[if IE]>
+	  <a href="http://www.mozilla.com/en-US/firefox/">
+	    <h1>Get Firefox</h1>
+	  </a>
+	<![endif]-->
+
 ## Filters
 
 Filters are prefixed with `:`, for example `:javascript` or `:cdata` and
@@ -221,22 +317,3 @@ Will be rendered to:
 There's bunch of default ones: `if`, `else`, `elseif`, `while`, `for`, `foreach`, `switch`, `case`. And you can add new with:
 
 	$parser->setBlockEnd('slot', 'endslot');
-
-### Autotags
-
-jade.php has feature, called "autotags". It's just snippets for tags. Autotags will expand to basic tags with custom attributes. For example:
-
-	input:text
-
-will expand to `<input type="text" />` & it's the same as `input( type="text" )`, but shorter.
-Another examples:
-
-	input:submit( value="Send" )
-
-will become `<input type="submit" value="Send" />`.
-
-You can even add you own autotags with:
-
-	$parser->setAutotag('input:progress', 'input', array('type'=>'text', class=>'progress-bar'));
-
-that will expands to `<input type="text" class="progress-bar" />`.
