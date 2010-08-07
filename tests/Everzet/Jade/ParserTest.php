@@ -189,17 +189,18 @@ HTML;
 ul
   li a
   
-  
-  
-  
+    
+      
+    
   li b
   li
       
 
     ul
-      
+            
       li c
       li d
+              
   li e
 Jade;
         $html = <<<HTML
@@ -213,6 +214,21 @@ Jade;
     </ul>
   </li>
   <li>e</li>
+</ul>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+ul
+  li visit 
+    a(href="/foo") foo
+Jade;
+        $html = <<<HTML
+<ul>
+  <li>
+    visit
+    <a href="/foo">foo</a>
+  </li>
 </ul>
 HTML;
         $this->assertEquals($html, $this->parse($jade));
