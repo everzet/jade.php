@@ -417,10 +417,15 @@ HTML;
 - \$foo = "<script>";
 p
   - switch (\$foo)
+
     -case 2
+        
       p.foo= \$foo
+
     - case 'strong'
+            
       strong#name= \$foo * 2
+
     -   case 5
       p some text
 Jade;
@@ -524,7 +529,7 @@ HTML;
         $this->assertEquals('<input type="submit" value="Send" />', $this->parse('input:submit( value="Send" )'));
     }
 
-    public function testComments()
+    public function testHTMLComments()
     {
         $jade = <<<Jade
 peanutbutterjelly
@@ -557,7 +562,7 @@ HTML;
         $this->assertEquals($html, $this->parse($jade));
     }
 
-    public function testConditionalComments()
+    public function testHTMLConditionalComments()
     {
         $jade = <<<Jade
 /[if IE]
@@ -570,6 +575,37 @@ Jade;
     <h1>Get Firefox</h1>
   </a>
 <![endif]-->
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+    }
+
+    public function testJadeComments()
+    {
+        $jade = <<<Jade
+# JADE
+- \$foo = "<script>";
+p
+##### COMMENTS ARE SUPPER! ######
+  - switch (\$foo)
+    -case 2
+      p.foo= \$foo
+#    - case 'strong'
+  #      strong#name= \$foo * 2
+    -   case 5
+      p some text
+Jade;
+        $html = <<<HTML
+<?php \$foo = "<script>"; ?>
+<p>
+  <?php switch (\$foo) ?>
+    <?php case 2 ?>
+      <p class="foo"><?php echo \$foo ?></p>
+    <?php break; ?>
+    <?php case 5 ?>
+      <p>some text</p>
+    <?php break; ?>
+  <?php endswitch; ?>
+</p>
 HTML;
         $this->assertEquals($html, $this->parse($jade));
     }

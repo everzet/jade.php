@@ -330,6 +330,11 @@ class Parser
             return $tok;
         }
 
+        // Jade comment
+        if (preg_match("/^(?:\n)? *#([^\n]*)/", $this->input, $matches)) {
+            return $this->token('newline', $matches);
+        }
+
         // Indent
         if (preg_match("/^\n( *)/", $this->input, $matches)) {
             ++$this->lineno;
@@ -364,7 +369,7 @@ class Parser
             return $tok;
         }
 
-        // Comment
+        // HTML comment
         if (preg_match("/^\/([^\n]*)/", $this->input, $matches)) {
             return $this->token('comment', $matches);
         }
@@ -448,11 +453,11 @@ class Parser
                         }
                     }
                     $buf = sprintf('<?php %s', $beg);
+                    $this->skipNewlines();
                     if ('indent' === $this->peek()->type) {
                         $buf .= (null === $end ? '{' : '') . " ?>\n";
                         $buf .= $this->parseBlock();
-                        $buf .= "\n" === $buf[mb_strlen($buf) - 1] ? '' : "\n";
-
+                        $buf  = preg_replace(array("/^ */", "/ *$/"), '', $buf);
                         $peek = $this->peek();
                         if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
                             $buf .= sprintf("%s<?php %s ?>\n",
@@ -491,6 +496,17 @@ class Parser
             case 'newline':
                 $this->advance();
                 return $this->parseExpr();
+        }
+    }
+
+    /**
+     * Skipping newlines
+     *
+     */
+    protected function skipNewlines()
+    {
+        while ('newline' === $this->peek()->type) {
+            $this->advance();
         }
     }
 
@@ -656,10 +672,8 @@ class Parser
             }
         }
 
-        // newline?
-        while ('newline' === $this->peek()->type) {
-            $this->advance();
-        }
+        // Skip newlines
+        $this->skipNewlines();
 
         // Text?
         if ('text' === $this->peek()->type) {
