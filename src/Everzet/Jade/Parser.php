@@ -77,6 +77,13 @@ class Parser
      * @var     array
      */
     protected $autotags = array(
+        'link:css'          => array('tag' => 'link', 'attrs' => array(
+            'rel'   => 'stylesheet',
+            'type'  => 'text/css'
+        )),
+        'script:js'         => array('tag' => 'script', 'attrs' => array(
+            'type'  => 'text/javascript'
+        )),
         'input:button'      => array('tag' => 'input', 'attrs' => array('type' => 'button')),
         'input:checkbox'    => array('tag' => 'input', 'attrs' => array('type' => 'checkbox')),
         'input:file'        => array('tag' => 'input', 'attrs' => array('type' => 'file')),
@@ -99,7 +106,9 @@ class Parser
         'input:number'      => array('tag' => 'input', 'attrs' => array('type' => 'number')),
         'input:range'       => array('tag' => 'input', 'attrs' => array('type' => 'range')),
         'input:color'       => array('tag' => 'input', 'attrs' => array('type' => 'color')),
-        'input:datetime-local' => array('tag' => 'input', 'attrs' => array('type' => 'datetime-local'))
+        'input:datetime-local' => array('tag' => 'input', 'attrs' => array(
+            'type'  => 'datetime-local'
+        ))
     );
 
     protected $input;

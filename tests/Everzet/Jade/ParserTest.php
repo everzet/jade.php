@@ -529,6 +529,8 @@ HTML;
         $this->assertEquals('<input type="text" value="Search" />', $this->parse('input:text( value="Search" )'));
         $this->assertEquals('<input type="checkbox" />', $this->parse('input:checkbox'));
         $this->assertEquals('<input type="submit" value="Send" />', $this->parse('input:submit( value="Send" )'));
+        $this->assertEquals('<link rel="stylesheet" type="text/css" href="/css/screen.css" media="screen" />', $this->parse('link:css(href:"/css/screen.css", media="screen")'));
+        $this->assertEquals('<script type="text/javascript" charset="UTF8" src="http://stats.test.com/scripts/stat.js"></script>', $this->parse('script:js(  charset  =  "UTF8",   src:"http://stats.test.com/scripts/stat.js"  )'));
     }
 
     public function testHTMLComments()
