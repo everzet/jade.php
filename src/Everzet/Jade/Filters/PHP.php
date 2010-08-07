@@ -30,11 +30,8 @@ class PHP implements BlockFilterInterface, TextFilterInterface
 
     public function filter($str, $indentation = 0)
     {
-        $php = <<<PHP
-<?php
-$str
-?>
-PHP;
+        $str = preg_replace("/\n/", "\n" . str_repeat('  ', $indentation + 1), "\n" . $str);
+        $php = sprintf("<?php%s?>", $str . "\n");
         return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), $php);
     }
 }

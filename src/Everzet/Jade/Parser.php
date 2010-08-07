@@ -9,6 +9,7 @@ use \Everzet\Jade\Filters\TextFilterInterface as TextFilter;
 use \Everzet\Jade\Filters\PHP;
 use \Everzet\Jade\Filters\CDATA;
 use \Everzet\Jade\Filters\JavaScript;
+use \Everzet\Jade\Filters\CSS;
 
 /*
  * This file is part of the Jade package.
@@ -133,6 +134,7 @@ class Parser
         $this->setFilter('php', new PHP());
         $this->setFilter('cdata', new CDATA());
         $this->setFilter('javascript', new JavaScript());
+        $this->setFilter('style', new CSS());
     }
 
     /**

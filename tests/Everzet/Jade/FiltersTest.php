@@ -21,7 +21,7 @@ class FiltersTest extends \PHPUnit_Framework_TestCase
     public function testFilterCodeInsertion()
     {
         $this->assertEquals(
-            "<script type=\"text/javascript\">\n//<![CDATA[\nvar name = \"<?php echo \$name ?>\";\n//]]>\n</script>",
+            "<script type=\"text/javascript\">\n//<![CDATA[\n  var name = \"<?php echo \$name ?>\";\n//]]>\n</script>",
             $this->parse(<<<Jade
 :javascript
   | var name = "{{\$name}}";
@@ -64,7 +64,7 @@ Jade
     public function testJavaScriptFilter()
     {
         $this->assertEquals(
-            "<script type=\"text/javascript\">\n//<![CDATA[\nalert('foo')\n//]]>\n</script>",
+            "<script type=\"text/javascript\">\n//<![CDATA[\n  alert('foo')\n//]]>\n</script>",
             $this->parse(<<<Jade
 :javascript
   | alert('foo')
@@ -73,10 +73,32 @@ Jade
         );
     }
 
+    public function testCSSFilter()
+    {
+        $this->assertEquals(
+            "<style type=\"text/css\">\n  body {\n    color:#000;\n  }\n</style>",
+            $this->parse(<<<Jade
+:style
+  | body {
+  |   color:#000;
+  | }
+Jade
+            )
+        );
+        $this->assertEquals(
+            "<style type=\"text/css\">\n  body {color:#000;}\n</style>",
+            $this->parse(<<<Jade
+:style
+  | body {color:#000;}
+Jade
+            )
+        );
+    }
+
     public function testPHPFilter()
     {
         $this->assertEquals(
-            "<?php\n\$bar = 10;\n\$bar++;\necho \$bar;\n?>",
+            "<?php\n  \$bar = 10;\n  \$bar++;\n  echo \$bar;\n?>",
             $this->parse(<<<Jade
 :php
   | \$bar = 10;

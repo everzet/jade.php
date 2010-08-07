@@ -13,22 +13,17 @@ use \Everzet\Jade\Filters\BlockFilterInterface;
  */
 
 /**
- * JavaScript filter.
+ * CSS filter.
  *
  * @package     Jade
  * @author      Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class JavaScript implements BlockFilterInterface
+class CSS implements BlockFilterInterface
 {
     public function filter($str, $indentation = 0)
     {
         $str = preg_replace("/\n/", "\n" . str_repeat('  ', $indentation + 1), "\n" . $str);
-        $js = <<<JS
-<script type="text/javascript">
-//<![CDATA[$str
-//]]>
-</script>
-JS;
-        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), $js);
+        $css = sprintf('<style type="text/css">%s</style>', $str . "\n");
+        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), $css);
     }
 }
