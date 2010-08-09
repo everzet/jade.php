@@ -63,14 +63,14 @@ class Parser
      * @var     array
      */
     protected $blocks = array(
-        "/^ *if *\([^\)]+\) *\: *$/"        => 'endif',
-        "/^ *else *\: *$/"                  => 'endif',
-        "/^ *elseif *\: *$/"                => 'endif',
-        "/^ *while *\([^\)]+\) *\: *$/"     => 'endwhile',
-        "/^ *for *\([^\)]+\) *\: *$/"       => 'endfor',
-        "/^ *foreach *\([^\)]+\) *\: *$/"   => 'endforeach',
-        "/^ *switch *\([^\)]+\) *\: *$/"    => 'endswitch',
-        "/^ *case *.* *\: *$/"              => 'break'
+        "/^ *if *.*\: *$/"        => 'endif',
+        "/^ *else *\: *$/"        => 'endif',
+        "/^ *elseif *\: *$/"      => 'endif',
+        "/^ *while *.*\: *$/"     => 'endwhile',
+        "/^ *for *.*\: *$/"       => 'endfor',
+        "/^ *foreach *.*\: *$/"   => 'endforeach',
+        "/^ *switch *.*\: *$/"    => 'endswitch',
+        "/^ *case *.* *\: *$/"    => 'break'
     );
     /**
      * Autoreplaceable tags

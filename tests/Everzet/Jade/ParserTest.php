@@ -332,12 +332,12 @@ HTML;
 
         $jade = <<<Jade
 - \$foo = "<script>";
-- if (null !== \$foo):
+- if ('' !== \$form['login']->renderHelp()):
   = \$foo
 Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
-<?php if (null !== \$foo): ?>
+<?php if ('' !== \$form['login']->renderHelp()): ?>
   <?php echo \$foo ?>
 <?php endif; ?>
 HTML;
