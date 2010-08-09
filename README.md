@@ -175,7 +175,7 @@ Jade supports sharp comments (`// COMMENT`). So jade block:
 	// JADE
 	- $foo = "<script>";
 	p
-	##### COMMENTS ARE SUPPER! ######
+	// ##### COMMENTS ARE SUPPER! ######
 	  - switch ($foo)
 	    -case 2
 	      p.foo= $foo
