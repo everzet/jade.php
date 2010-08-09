@@ -261,9 +261,9 @@ Renders:
 
 	<body>
 	  <?php
-	  $data = 40;
-	  $data /= 2;
-	  echo $data;
+	    $data = 40;
+	    $data /= 2;
+	    echo $data;
 	  ?>
 	</body>
 
@@ -271,41 +271,45 @@ Renders:
 
 ### Buffered / Non-buffered output
 
-Jade currently supports three classifications of executable code. The first
+Jade currently supports two classifications of executable code. The first
 is prefixed by `-`, and is not buffered:
 
 	- var $foo = 'bar';
 
 This can be used for conditionals, or iteration:
 
-	- foreach ($items as $item)
+	- foreach ($items as $item):
 	  p= $item
 
 Due to Jade's buffering techniques the following is valid as well:
 
-	- if ($foo)
+	- if ($foo):
 	  ul
 	    li yay
 	    li foo
 	    li worked
-	- else
+	- else:
 	  p hey! didnt work
 
-Next up we have buffered code, which is used to
-buffer a return value, which is prefixed by `=`:
+Second is echoed code, which is used to
+echo a return value, which is prefixed by `=`:
 
 	- $foo = 'bar'
 	= $foo
 	h1= $foo
 
-Which outputs `bar<h1>bar<h1/>`.
+Which outputs
+
+	<?php $foo = 'bar' ?>
+	<?php echo $foo ?>
+	<h1><?php echo $foo ?></h1>
 
 ### Code blocks
 
 Also, Jade has Code Blocks, that supports basic PHP template syntax:
 
 	ul
-	  - while (true)
+	  - while (true):
 	    li item
 
 Will be rendered to:
@@ -316,6 +320,8 @@ Will be rendered to:
 	  <?php endwhile; ?>
 	</ul>
 
+But don't forget about colons `:` after instructions start (`- if(true) :`).
+
 There's bunch of default ones: `if`, `else`, `elseif`, `while`, `for`, `foreach`, `switch`, `case`. And you can add new with:
 
-	$parser->setBlockEnd('slot', 'endslot');
+	$parser->setBlockEnd("/^ *slot[ \(].*$/", 'endslot');

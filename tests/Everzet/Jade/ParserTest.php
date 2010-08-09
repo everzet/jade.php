@@ -332,12 +332,12 @@ HTML;
 
         $jade = <<<Jade
 - \$foo = "<script>";
-- if (null !== \$foo)
+- if (null !== \$foo):
   = \$foo
 Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
-<?php if (null !== \$foo) ?>
+<?php if (null !== \$foo): ?>
   <?php echo \$foo ?>
 <?php endif; ?>
 HTML;
@@ -346,13 +346,13 @@ HTML;
         $jade = <<<Jade
 - \$foo = "<script>";
 p
-  - if (null !== \$foo)
+  - if (null !== \$foo):
     = \$foo
 Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
-  <?php if (null !== \$foo) ?>
+  <?php if (null !== \$foo): ?>
     <?php echo \$foo ?>
   <?php endif; ?>
 </p>
@@ -398,17 +398,17 @@ HTML;
         $jade = <<<Jade
 - \$foo = "<script>";
 p
-  - if (null !== \$foo)
+  - if (null !== \$foo):
     strong= \$foo
-  - else
+  - else   :
     h2= \$foo / 2
 Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
-  <?php if (null !== \$foo) ?>
+  <?php if (null !== \$foo): ?>
     <strong><?php echo \$foo ?></strong>
-  <?php else ?>
+  <?php else   : ?>
     <h2><?php echo \$foo / 2 ?></h2>
   <?php endif; ?>
 </p>
@@ -418,30 +418,30 @@ HTML;
         $jade = <<<Jade
 - \$foo = "<script>";
 p
-  - switch (\$foo)
+  - switch (\$foo) :
 
-    -case 2
+    -case 2 :
         
       p.foo= \$foo
 
-    - case 'strong'
+    - case 'strong':
             
       strong#name= \$foo * 2
 
-    -   case 5
+    -   case 5   :
       p some text
 Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
-  <?php switch (\$foo) ?>
-    <?php case 2 ?>
+  <?php switch (\$foo) : ?>
+    <?php case 2 : ?>
       <p class="foo"><?php echo \$foo ?></p>
     <?php break; ?>
-    <?php case 'strong' ?>
+    <?php case 'strong': ?>
       <strong id="name"><?php echo \$foo * 2 ?></strong>
     <?php break; ?>
-    <?php case 5 ?>
+    <?php case 5   : ?>
       <p>some text</p>
     <?php break; ?>
   <?php endswitch; ?>
@@ -632,22 +632,22 @@ HTML;
 - \$foo = "<script>";
 p
 //##### COMMENTS ARE SUPPER! ######
-  - switch (\$foo)
-    -case 2
+  - switch (\$foo):
+    -case 2:
       p.foo= \$foo
-//    - case 'strong'
+//    - case 'strong':
   //      strong#name= \$foo * 2
-    -   case 5
+    -   case 5:
       p some text
 Jade;
         $html = <<<HTML
 <?php \$foo = "<script>"; ?>
 <p>
-  <?php switch (\$foo) ?>
-    <?php case 2 ?>
+  <?php switch (\$foo): ?>
+    <?php case 2: ?>
       <p class="foo"><?php echo \$foo ?></p>
     <?php break; ?>
-    <?php case 5 ?>
+    <?php case 5: ?>
       <p>some text</p>
     <?php break; ?>
   <?php endswitch; ?>

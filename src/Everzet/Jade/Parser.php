@@ -63,14 +63,14 @@ class Parser
      * @var     array
      */
     protected $blocks = array(
-        'if'        => 'endif',
-        'else'      => 'endif',
-        'elseif'    => 'endif',
-        'while'     => 'endwhile',
-        'for'       => 'endfor',
-        'foreach'   => 'endforeach',
-        'switch'    => 'endswitch',
-        'case'      => 'break'
+        "/^ *if *\([^\)]+\) *\: *$/"        => 'endif',
+        "/^ *else *\: *$/"                  => 'endif',
+        "/^ *elseif *\: *$/"                => 'endif',
+        "/^ *while *\([^\)]+\) *\: *$/"     => 'endwhile',
+        "/^ *for *\([^\)]+\) *\: *$/"       => 'endfor',
+        "/^ *foreach *\([^\)]+\) *\: *$/"   => 'endforeach',
+        "/^ *switch *\([^\)]+\) *\: *$/"    => 'endswitch',
+        "/^ *case *.* *\: *$/"              => 'break'
     );
     /**
      * Autoreplaceable tags
@@ -78,6 +78,7 @@ class Parser
      * @var     array
      */
     protected $autotags = array(
+        'form:post'         => array('tag' => 'form', 'attrs' => array('method' => 'POST')),
         'link:css'          => array('tag' => 'link', 'attrs' => array(
             'rel'   => 'stylesheet',
             'type'  => 'text/css'
@@ -161,7 +162,7 @@ class Parser
     /**
      * Sets custom Code block ending.
      *
-     * @param   string  $begin  code block begin ('if' for example)
+     * @param   string  $begin  code block begin regexp
      * @param   string  $end    code block end ('endif' for example)
      */
     public function setBlockEnd($begin, $end)
@@ -468,9 +469,10 @@ class Parser
                     $beg = preg_replace(array("/^ */", "/ *$/"), '', $val);
                     $end = null;
                     $indents = $this->getIndentation();
-                    foreach ($this->blocks as $open => $close) {
-                        if (false !== mb_strpos($beg, $open)) {
+                    foreach ($this->blocks as $regexp => $close) {
+                        if (preg_match($regexp, $beg)) {
                             $end = $close;
+                            break;
                         }
                     }
                     $buf = sprintf('<?php %s', $beg);
