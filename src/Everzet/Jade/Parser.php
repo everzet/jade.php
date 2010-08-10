@@ -461,37 +461,34 @@ class Parser
             case 'code':
                 $tok = $this->advance();
                 $val = $tok->val;
-                if ($tok->buffer) {
-                    $buf = sprintf("<?php echo %s ?>\n",
-                        preg_replace(array("/^ */", "/ *$/"), '', $val)
-                    );
-                } else {
-                    $beg = preg_replace(array("/^ */", "/ *$/"), '', $val);
-                    $end = null;
-                    $indents = $this->getIndentation();
-                    foreach ($this->blocks as $regexp => $close) {
-                        if (preg_match($regexp, $beg)) {
-                            $end = $close;
-                            break;
-                        }
-                    }
-                    $buf = sprintf('<?php %s', $beg);
-                    $this->skipNewlines();
-                    if ('indent' === $this->peek()->type) {
-                        $buf .= (null === $end ? '{' : '') . " ?>\n";
-                        $buf .= $this->parseBlock();
-                        $buf  = preg_replace(array("/^ */", "/ *$/"), '', $buf);
-                        $peek = $this->peek();
-                        if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
-                            $buf .= sprintf("%s<?php %s ?>\n",
-                                $indents,
-                                null === $end ? '}' : $end . ';'
-                            );
-                        }
-                    } else {
-                        $buf .= " ?>\n";
+                $buf = $tok->buffer ? '<?php echo ' : '<?php ';
+
+                $beg = preg_replace(array("/^ */", "/ *$/"), '', $val);
+                $end = null;
+                $indents = $this->getIndentation();
+                foreach ($this->blocks as $regexp => $close) {
+                    if (preg_match($regexp, $beg)) {
+                        $end = $close;
+                        break;
                     }
                 }
+                $buf .= $beg;
+                $this->skipNewlines();
+                if ('indent' === $this->peek()->type) {
+                    $buf .= (null === $end ? '{' : '') . " ?>\n";
+                    $buf .= $this->parseBlock();
+                    $buf  = preg_replace(array("/^ */", "/ *$/"), '', $buf);
+                    $peek = $this->peek();
+                    if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
+                        $buf .= sprintf("%s<?php %s ?>\n",
+                            $indents,
+                            null === $end ? '}' : $end . ';'
+                        );
+                    }
+                } else {
+                    $buf .= " ?>\n";
+                }
+
                 return $buf;
             case 'comment':
                 $tok = $this->advance();
