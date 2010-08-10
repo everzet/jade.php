@@ -35,7 +35,7 @@ class Renderer
         if (false !== file_put_contents($htmlFile, $parsed)) {
             return $htmlFile;
         } else {
-            throw new RuntimeException(sprintf('Can\'t write to "%s"', $htmlFile));
+            throw new \RuntimeException(sprintf('Can\'t write to "%s"', $htmlFile));
         }
     }
 }
