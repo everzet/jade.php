@@ -344,6 +344,22 @@ HTML;
         $this->assertEquals($html, $this->parse($jade));
 
         $jade = <<<Jade
+- if (\$sf_user->hasFlash('notice')):
+  p.notice= \$sf_user->getFlash('notice')
+
+- elseif (\$sf_user->hasFlash('error')):
+  p.error= \$sf_user->getFlash('error')
+Jade;
+        $html = <<<HTML
+<?php if (\$sf_user->hasFlash('notice')): ?>
+  <p class="notice"><?php echo \$sf_user->getFlash('notice') ?></p>
+<?php elseif (\$sf_user->hasFlash('error')): ?>
+  <p class="error"><?php echo \$sf_user->getFlash('error') ?></p>
+<?php endif; ?>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
 - \$foo = "<script>";
 p
   - if (null !== \$foo):

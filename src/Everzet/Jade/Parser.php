@@ -65,7 +65,7 @@ class Parser
     protected $blocks = array(
         "/^ *if *.*\: *$/"        => 'endif',
         "/^ *else *\: *$/"        => 'endif',
-        "/^ *elseif *\: *$/"      => 'endif',
+        "/^ *else *if *.*\: *$/"  => 'endif',
         "/^ *while *.*\: *$/"     => 'endwhile',
         "/^ *for *.*\: *$/"       => 'endfor',
         "/^ *foreach *.*\: *$/"   => 'endforeach',
