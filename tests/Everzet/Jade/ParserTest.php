@@ -331,6 +331,42 @@ HTML;
         $this->assertEquals($html, $this->parse($jade));
 
         $jade = <<<Jade
+
+input
+input:hidden( name="sf_method", value="PUT" )
+
+Jade;
+        $html = <<<HTML
+<input />
+<input type="hidden" name="sf_method" value="PUT" />
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+
+input
+= \$form->renderHiddenFields()
+
+Jade;
+        $html = <<<HTML
+<input />
+<?php echo \$form->renderHiddenFields() ?>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+
+input:hidden( name="sf_method", value="PUT" )
+= \$form->renderHiddenFields()
+
+Jade;
+        $html = <<<HTML
+<input type="hidden" name="sf_method" value="PUT" />
+<?php echo \$form->renderHiddenFields() ?>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
 - \$foo = "<script>";
 - if ('' !== \$form['login']->renderHelp()):
   = \$foo

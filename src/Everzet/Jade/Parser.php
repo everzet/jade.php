@@ -692,9 +692,6 @@ class Parser
             }
         }
 
-        // Skip newlines
-        $this->skipNewlines();
-
         // Text?
         if ('text' === $this->peek()->type) {
             $val = preg_replace(array("/^ */", "/ *$/"), '', $this->advance()->val);
@@ -703,19 +700,22 @@ class Parser
             }
         }
 
-        // (code | block)
-        switch ($this->peek()->type) {
-            case 'code':
-                $tok = $this->advance();
-                if ($tok->buffer) {
-                    $buf[] = '<?php echo' . $tok->val . ' ?>';
-                } else {
-                    $buf[] = '<?php' . $tok->val . ' ?>';
-                }
-                break;
-            case 'indent':
-                $buf[] = $this->parseBlock();
-                break;
+        // Code?
+        if ('code' === $this->peek()->type) {
+            $tok = $this->advance();
+            if ($tok->buffer) {
+                $buf[] = '<?php echo' . $tok->val . ' ?>';
+            } else {
+                $buf[] = '<?php' . $tok->val . ' ?>';
+            }
+        }
+
+        // Skip newlines
+        $this->skipNewlines();
+
+        // Block?
+        if ('indent' === $this->peek()->type) {
+            $buf[] = $this->parseBlock();
         }
 
         // Build attrs
