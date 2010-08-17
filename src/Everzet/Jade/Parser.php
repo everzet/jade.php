@@ -633,9 +633,7 @@ class Parser
         $buf = array();
         $this->expect('indent');
         while ('outdent' !== $this->peek()->type) {
-            $buf[] = $this->getIndentation() . $this->filterText(
-                preg_replace("/^ */", '', $this->parseExpr())
-            );
+            $buf[] = $this->getIndentation() . preg_replace("/^ */", '', $this->parseExpr());
         }
         $this->expect('outdent');
         return implode('', $buf);
