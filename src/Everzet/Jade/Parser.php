@@ -78,6 +78,9 @@ class Parser
      * @var     array
      */
     protected $autotags = array(
+        'a:void'            => array('tag' => 'a', 'attrs' => array(
+            'href' => 'javascript:void(0)'
+        )),
         'form:post'         => array('tag' => 'form', 'attrs' => array('method' => 'POST')),
         'link:css'          => array('tag' => 'link', 'attrs' => array(
             'rel'   => 'stylesheet',

@@ -729,4 +729,9 @@ Jade;
 HTML;
         $this->assertEquals($html, $this->parse($jade));
     }
+
+    public function testJSLinkTag()
+    {
+        $this->assertEquals('<a href="javascript:void(0)" value="hello"></a>', $this->parse('a:void( value="hello" )'));
+    }
 }
