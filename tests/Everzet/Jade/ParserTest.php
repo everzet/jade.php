@@ -355,6 +355,28 @@ HTML;
         $this->assertEquals($html, $this->parse($jade));
 
         $jade = <<<Jade
+- foreach(\$contacts as \$contact):
+  - include_partial('contactForm', array('contact' => \$contact))
+Jade;
+        $html = <<<HTML
+<?php foreach(\$contacts as \$contact): ?>
+  <?php include_partial('contactForm', array('contact' => \$contact)) ?>
+<?php endforeach; ?>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+- for(\$i = 0; \$i < count(\$contacts); \$i++):
+  - include_partial('contactForm', array('contact' => \$contacts[\$i]))
+Jade;
+        $html = <<<HTML
+<?php for(\$i = 0; \$i < count(\$contacts); \$i++): ?>
+  <?php include_partial('contactForm', array('contact' => \$contacts[\$i])) ?>
+<?php endfor; ?>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
 
 input:hidden( name="sf_method", value="PUT" )
 = \$form->renderHiddenFields()
