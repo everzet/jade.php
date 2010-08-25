@@ -330,6 +330,7 @@ class Parser
             $tok = $this->token('attrs', $matches);
             $attrs = preg_split("/ *, *(?=[\w-]+ *[:=]|[\w-]+ *$)/", $tok->val);
             $tok->attrs = array();
+
             foreach ($attrs as $pair) {
                 // Support = and :
                 $colon = mb_strpos($pair, ':');
