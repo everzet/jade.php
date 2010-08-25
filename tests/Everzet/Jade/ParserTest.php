@@ -151,6 +151,17 @@ Jade;
 </ul>
 HTML;
         $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+div#loading
+  div.loading-indicator
+Jade;
+        $html = <<<HTML
+<div id="loading">
+  <div class="loading-indicator"></div>
+</div>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testVariableLengthNewlines()
@@ -308,6 +319,19 @@ HTML;
             $this->parse("p('class'='foo')"), 'Keys with single quotes');
         $this->assertEquals('<p class="foo"></p>',
             $this->parse("p(\"class\": 'foo')"), 'Keys with double quotes');
+
+//        $this->assertEquals(
+//          '<meta name="viewport" content="width=device-width, user-scalable=no" />',
+//          $this->parse(
+//            "meta(name: 'viewport', content:\"width=device-width, user-scalable=no\")"
+//          ), 'Commas in attrs'
+//        );
+//        $this->assertEquals(
+//          '<meta name="viewport" content="width=device-width, user-scalable=no" />',
+//          $this->parse(
+//            "meta(name: 'viewport', content:'width=device-width, user-scalable=no')"
+//          ), 'Commas in attrs'
+//        );
     }
 
     public function testCodeAttrs()
