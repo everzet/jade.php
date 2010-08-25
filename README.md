@@ -15,8 +15,9 @@ and implemented for PHP 5.3.
   - filters
     - :php
     - :cdata
+    - :css
     - :javascript
-	- you even can write & add own filters throught API
+  - you even can write & add own filters throught API
   - [TextMate Bundle](http://github.com/everzet/Jade-tmbundle)
 
 ## Public API
