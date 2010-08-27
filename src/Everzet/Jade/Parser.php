@@ -757,7 +757,7 @@ class Parser
 
         // Build the tag
         if (in_array($name, $this->selfClosing)) {
-            return $indents . '<' . $name . $attrBuf . ($html5 ? '' : ' /') . '>';
+            return $indents . '<' . $name . $attrBuf . ' />';
         } else {
             $buf = implode("\n", $buf);
 

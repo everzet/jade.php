@@ -269,9 +269,9 @@ HTML;
 
     public function testHtml5Mode()
     {
-        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" checked>", $this->parse("!!! 5\ninput(type=\"checkbox\", checked)"));
-        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" checked>", $this->parse("!!! 5\ninput(type=\"checkbox\", checked: true)"));
-        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\">", $this->parse("!!! 5\ninput(type=\"checkbox\", checked: false)"));
+        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" checked />", $this->parse("!!! 5\ninput(type=\"checkbox\", checked)"));
+        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" checked />", $this->parse("!!! 5\ninput(type=\"checkbox\", checked: true)"));
+        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" />", $this->parse("!!! 5\ninput(type=\"checkbox\", checked: false)"));
     }
 
     public function testAttrs()
