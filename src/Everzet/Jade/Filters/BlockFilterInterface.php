@@ -20,5 +20,5 @@ use \Everzet\Jade\Filters\BaseFilterInterface;
  */
 interface BlockFilterInterface extends BaseFilterInterface
 {
-    public function filter($str, $indentation = 0);
+    public function filter($str);
 }

@@ -20,8 +20,11 @@ use \Everzet\Jade\Filters\BlockFilterInterface;
  */
 class CDATA implements BlockFilterInterface
 {
-    public function filter($str, $indentation = 0)
+    public function filter($str)
     {
-        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), "<![CDATA[\n$str\n]]>");
+        // Add block indentation
+        $str = preg_replace("/\n/", "\n  ", "\n" . $str);
+
+        return sprintf("<![CDATA[%s\n]]>", $str);
     }
 }

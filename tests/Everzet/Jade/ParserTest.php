@@ -624,6 +624,8 @@ HTML;
 
     public function testAutotags()
     {
+        $this->assertEquals('<link rel="stylesheet" type="text/css" media="screen" src="/css/ie6.css" />',
+          $this->parse('link:css( media="screen", src="/css/ie6.css" )'));
         $this->assertEquals('<input type="text" value="Search" />', $this->parse('input:text( value="Search" )'));
         $this->assertEquals('<input type="checkbox" />', $this->parse('input:checkbox'));
         $this->assertEquals('<input type="submit" value="Send" />', $this->parse('input:submit( value="Send" )'));
@@ -719,6 +721,17 @@ Jade;
     <![endif]-->
   </head>
 </html>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+/[if lt IE 7]
+  link:css( src="/less/ie6.less" )
+Jade;
+        $html = <<<HTML
+<!--[if lt IE 7]>
+  <link rel="stylesheet" type="text/css" src="/less/ie6.less" />
+<![endif]-->
 HTML;
         $this->assertEquals($html, $this->parse($jade));
     }

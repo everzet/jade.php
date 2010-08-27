@@ -20,10 +20,11 @@ use \Everzet\Jade\Filters\BlockFilterInterface;
  */
 class CSS implements BlockFilterInterface
 {
-    public function filter($str, $indentation = 0)
+    public function filter($str)
     {
-        $str = preg_replace("/\n/", "\n" . str_repeat('  ', $indentation + 1), "\n" . $str);
-        $css = sprintf('<style type="text/css">%s</style>', $str . "\n");
-        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), $css);
+        // Add block indentation
+        $str = preg_replace("/\n/", "\n  ", "\n" . $str);
+
+        return sprintf("<style type=\"text/css\">%s\n</style>", $str);
     }
 }

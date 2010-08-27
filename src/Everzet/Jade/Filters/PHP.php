@@ -28,10 +28,11 @@ class PHP implements BlockFilterInterface, TextFilterInterface
         }, $str);
     }
 
-    public function filter($str, $indentation = 0)
+    public function filter($str)
     {
-        $str = preg_replace("/\n/", "\n" . str_repeat('  ', $indentation + 1), "\n" . $str);
-        $php = sprintf("<?php%s?>", $str . "\n");
-        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), $php);
+        // Add block indentation
+        $str = preg_replace("/\n/", "\n  ", "\n" . $str);
+
+        return sprintf("<?php%s\n?>", $str);
     }
 }

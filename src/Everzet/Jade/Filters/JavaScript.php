@@ -20,15 +20,11 @@ use \Everzet\Jade\Filters\BlockFilterInterface;
  */
 class JavaScript implements BlockFilterInterface
 {
-    public function filter($str, $indentation = 0)
+    public function filter($str)
     {
-        $str = preg_replace("/\n/", "\n" . str_repeat('  ', $indentation + 1), "\n" . $str);
-        $js = <<<JS
-<script type="text/javascript">
-//<![CDATA[$str
-//]]>
-</script>
-JS;
-        return preg_replace("/\n/", "\n" . str_repeat('  ', $indentation), $js);
+        // Add block indentation
+        $str = preg_replace("/\n/", "\n  ", "\n" . $str);
+
+        return sprintf("<script type=\"text/javascript\">%s\n</script>", $str);
     }
 }

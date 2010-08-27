@@ -284,7 +284,9 @@ class Parser
 
         // Filter
         if (preg_match("/^:(\w+)/", $this->input, $matches)) {
-            return $this->token('filter', $matches);
+            $tok = $this->token('filter', $matches);
+            $tok->indents = $this->lastIndents;
+            return $tok;
         }
 
         // Code
@@ -506,6 +508,7 @@ class Parser
                     $beg = "<!--";
                     $end = "-->";
                 }
+                $this->skipNewlines();
                 if ('indent' === $this->peek()->type) {
                     $buf = $beg . "\n";
                     if ('' !== $val) {
@@ -589,11 +592,14 @@ class Parser
      */
     protected function parseFilter()
     {
-        $name = $this->expect('filter')->val;
+        $tok = $this->expect('filter');
+        $name = $tok->val;
         if (isset($this->filters[$name])) {
             $filter = $this->filters[$name];
             if ($filter instanceof BlockFilter) {
-                return $filter->filter($this->parseTextBlock(), $this->lastIndents);
+                return preg_replace("/([\n^])/", "$1" . str_repeat('  ', $tok->indents),
+                  $filter->filter($this->parseTextBlock())
+                );
             } else {
                 throw new ParserException(
                     sprintf('Filter: "%s" must implements BlockFilterInterface', $name)
@@ -634,7 +640,7 @@ class Parser
         $buf = array();
         $this->expect('indent');
         while ('outdent' !== $this->peek()->type) {
-            $buf[] = $this->getIndentation() . preg_replace("/^ */", '', $this->parseExpr());
+            $buf[] = preg_replace("/^ */", $this->getIndentation(), $this->parseExpr());
         }
         $this->expect('outdent');
         return implode('', $buf);

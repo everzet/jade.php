@@ -21,7 +21,7 @@ class FiltersTest extends \PHPUnit_Framework_TestCase
     public function testFilterCodeInsertion()
     {
         $this->assertEquals(
-            "<script type=\"text/javascript\">\n//<![CDATA[\n  var name = \"<?php echo \$name ?>\";\n//]]>\n</script>",
+            "<script type=\"text/javascript\">\n  var name = \"<?php echo \$name ?>\";\n</script>",
             $this->parse(<<<Jade
 :javascript
   | var name = "{{\$name}}";
@@ -33,7 +33,7 @@ Jade
     public function testCDATAFilter()
     {
         $this->assertEquals(
-            "<![CDATA[\nfoo\n]]>",
+            "<![CDATA[\n  foo\n]]>",
             $this->parse(<<<Jade
 :cdata
   | foo
@@ -41,7 +41,7 @@ Jade
             )
         );
         $this->assertEquals(
-            "<![CDATA[\nfoo\nbar\n]]>",
+            "<![CDATA[\n  foo\n  bar\n]]>",
             $this->parse(<<<Jade
 :cdata
   | foo
@@ -50,7 +50,7 @@ Jade
             )
         );
         $this->assertEquals(
-            "<![CDATA[\nfoo\nbar\n]]>\n<p>something else</p>",
+            "<![CDATA[\n  foo\n  bar\n]]>\n<p>something else</p>",
             $this->parse(<<<Jade
 :cdata
   | foo
@@ -64,7 +64,7 @@ Jade
     public function testJavaScriptFilter()
     {
         $this->assertEquals(
-            "<script type=\"text/javascript\">\n//<![CDATA[\n  alert('foo')\n//]]>\n</script>",
+            "<script type=\"text/javascript\">\n  alert('foo')\n</script>",
             $this->parse(<<<Jade
 :javascript
   | alert('foo')
@@ -93,6 +93,86 @@ Jade
 Jade
             )
         );
+
+        $jade = <<<Jade
+body
+  p
+    link:css( type="text/css", src="/css/ie6.css" )
+    :style
+      | img, div, a, input {
+      |     behavior: url(/css/iepngfix.htc);
+      | }
+Jade;
+        $html = <<<HTML
+<body>
+  <p>
+    <link rel="stylesheet" type="text/css" src="/css/ie6.css" />
+    <style type="text/css">
+      img, div, a, input {
+          behavior: url(/css/iepngfix.htc);
+      }
+    </style>
+  </p>
+</body>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+body
+  p
+    link:css( type="text/css", src="/css/ie6.css" )
+    :style
+      | img, div, a, input {
+      |     behavior: url(/css/iepngfix.htc);
+      | }
+  p
+    script:js( src="/js/html5.js" )
+Jade;
+        $html = <<<HTML
+<body>
+  <p>
+    <link rel="stylesheet" type="text/css" src="/css/ie6.css" />
+    <style type="text/css">
+      img, div, a, input {
+          behavior: url(/css/iepngfix.htc);
+      }
+    </style>
+  </p>
+  <p>
+    <script type="text/javascript" src="/js/html5.js"></script>
+  </p>
+</body>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
+
+        $jade = <<<Jade
+head
+  /[if lt IE 7]
+    link:css( type="text/css", src="/css/ie6.css" )
+    :style
+      | img, div, a, input {
+      |     behavior: url(/css/iepngfix.htc);
+      | }
+
+  /[if lt IE 9]
+    script:js( src="/js/html5.js" )
+Jade;
+        $html = <<<HTML
+<head>
+  <!--[if lt IE 7]>
+    <link rel="stylesheet" type="text/css" src="/css/ie6.css" />
+    <style type="text/css">
+      img, div, a, input {
+          behavior: url(/css/iepngfix.htc);
+      }
+    </style>
+  <![endif]-->
+  <!--[if lt IE 9]>
+    <script type="text/javascript" src="/js/html5.js"></script>
+  <![endif]-->
+</head>
+HTML;
+        $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testPHPFilter()
