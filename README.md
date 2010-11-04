@@ -22,10 +22,21 @@ and implemented for PHP 5.3.
 
 ## Public API
 
-	$parser = new \Everzet\Jade\Parser();
+    $dumper = new PHPDumper();
+    $dumper->registerVisitor('tag', new AutotagsVisitor());
+    $dumper->registerFilter('javascript', new JavaScriptFilter());
+    $dumper->registerFilter('cdata', new CDATAFilter());
+    $dumper->registerFilter('php', new PHPFilter());
+    $dumper->registerFilter('style', new CSSFilter());
+    
+    // Initialize parser & register PHP dumper
+    $lexer  = new Lexer();
+    $jade   = new Jade($lexer);
+    $jade->registerDumper('php', $dumper);
 	
 	// Parse a string
-	echo $parser->parse('!!! 5');
+    $jade->load($value);
+    echo $jade->dump('php');
 
 ## Syntax
 
@@ -171,17 +182,17 @@ defined by default, which can easily be extended:
 
 ### Jade Comments
 
-Jade supports sharp comments (`// COMMENT`). So jade block:
+Jade supports sharp comments (`//- COMMENT`). So jade block:
 
-	// JADE
+	//- JADE
 	- $foo = "<script>";
 	p
-	// ##### COMMENTS ARE SUPPER! ######
+	//- ##### COMMENTS ARE SUPPER! ######
 	  - switch ($foo)
 	    -case 2
 	      p.foo= $foo
-	//    - case 'strong'
-	  //      strong#name= $foo * 2
+	//-    - case 'strong'
+	  //-      strong#name= $foo * 2
 	    -   case 5
 	      p some text
 
@@ -201,10 +212,10 @@ will be compiled into:
 
 ### HTML Comments
 
-Jade supports HTML comments (`/ comment`). So block:
+Jade supports HTML comments (`// comment`). So block:
 
 	peanutbutterjelly
-	  / This is the peanutbutterjelly element
+	  // This is the peanutbutterjelly element
 	  | I like sandwiches!
 
 will become:
@@ -216,7 +227,7 @@ will become:
 
 As with multiline comments:
 
-	/
+	//
 	  p This doesn't render...
 	  div
 	    h1 Because it's commented out!
@@ -234,7 +245,7 @@ that compile to:
 
 Also, Jade supports IE conditional comments, so:
 
-	/[if IE]
+	// [if IE]
 	  a( href = 'http://www.mozilla.com/en-US/firefox/' )
 	    h1 Get Firefox
 
@@ -323,6 +334,4 @@ Will be rendered to:
 
 But don't forget about colons `:` after instructions start (`- if(true) :`).
 
-There's bunch of default ones: `if`, `else`, `elseif`, `while`, `for`, `foreach`, `switch`, `case`. And you can add new with:
-
-	$parser->setBlockEnd("/^ *slot[ \(].*$/", 'endslot');
+There's bunch of default ones: `if`, `else`, `elseif`, `while`, `for`, `foreach`, `switch`, `case`.

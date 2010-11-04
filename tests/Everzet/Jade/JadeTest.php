@@ -1,33 +1,41 @@
 <?php
 
-use \Everzet\Jade\Parser;
+use Everzet\Jade\Jade;
+use Everzet\Jade\Lexer\Lexer;
+use Everzet\Jade\Dumper\PHPDumper;
+use Everzet\Jade\Visitor\AutotagsVisitor;
 
 /*
- * This file is part of the Jade package.
+ * This file is part of the Jade.php.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-class ParserTest extends \PHPUnit_Framework_TestCase
+/**
+ * Parser/Dumper test. 
+ */
+class JadeTest extends \PHPUnit_Framework_TestCase
 {
     protected function parse($value)
     {
-        $parser = new Parser($value);
-        return $parser->parse();
+        $lexer  = new Lexer();
+        $jade   = new Jade($lexer);
+
+        $dumper = new PHPDumper();
+        $dumper->registerVisitor('tag', new AutotagsVisitor());
+
+        $jade->registerDumper('php', $dumper);
+        $jade->load($value);
+
+        return $jade->dump('php');
     }
 
     public function testDoctypes()
     {
-        $this->assertEquals('<?xml version="1.0" encoding="utf-8" ?>', $this->parse('!!! xml'));
-        $this->assertEquals('<!DOCTYPE html>', $this->parse('!!! 5'));
-    }
-
-    public function testUnknownFilter()
-    {
-        $this->setExpectedException("Everzet\\Jade\\ParserException");
-        $this->parse(":doesNotExist\n");
+        $this->assertEquals('<?xml version="1.0" encoding="utf-8" ?>' , $this->parse('!!! xml'));
+        $this->assertEquals('<!DOCTYPE html>' , $this->parse('!!! 5'));
     }
 
     public function testLineEndings()
@@ -80,9 +88,9 @@ Jade
         $this->assertEquals('<div id="bar" class="foo"></div>', 
             $this->parse('div(id="bar").foo'));
         $this->assertEquals('<div class="foo bar baz"></div>', $this->parse('div.foo.bar.baz'));
-        $this->assertEquals('<div class="bar baz foo"></div>',
+        $this->assertEquals('<div class="foo bar baz"></div>',
             $this->parse('div(class="foo").bar.baz'));
-        $this->assertEquals('<div class="foo baz bar"></div>',
+        $this->assertEquals('<div class="foo bar baz"></div>',
             $this->parse('div.foo(class="bar").baz'));
         $this->assertEquals('<div class="foo bar baz"></div>',
             $this->parse('div.foo.bar(class="baz")'));
@@ -136,7 +144,7 @@ HTML;
         $this->assertEquals($html, $this->parse($jade));
 
         $jade = <<<Jade
-ul  
+ul      
   li  one
   ul two
     li three
@@ -195,7 +203,7 @@ Jade;
 HTML;
         $this->assertEquals($html, $this->parse($jade));
     }
-
+    
     public function testNewlines()
     {
         $jade = <<<Jade
@@ -233,7 +241,7 @@ HTML;
 
         $jade = <<<Jade
 ul
-  li visit 
+  li visit
     a(href="/foo") foo
 Jade;
         $html = <<<HTML
@@ -246,7 +254,7 @@ Jade;
 HTML;
         $this->assertEquals($html, $this->parse($jade));
     }
-
+    
     public function testTagText()
     {
         $this->assertEquals('some random text', $this->parse('| some random text'));
@@ -261,26 +269,26 @@ HTML;
 
     public function testTagTextCodeInsertion()
     {
-        $this->assertEquals('yo, <?php echo $jade ?> is cool', $this->parse('| yo, {{$jade}} is cool'));
-        $this->assertEquals('<p>yo, <?php echo $jade ?> is cool</p>', $this->parse('p yo, {{$jade}} is cool'));
-        $this->assertEquals('<p>yo, <?php echo $jade || $jade ?> is cool</p>', $this->parse('p yo, {{$jade || $jade}} is cool'));
-        $this->assertEquals('yo, <?php echo $jade || $jade ?> is cool', $this->parse('| yo, {{$jade || $jade}} is cool'));
+        $this->assertEquals('yo, <?php echo $jade ?> is cool', $this->parse('| yo, <?php echo $jade ?> is cool'));
+        $this->assertEquals('<p>yo, <?php echo $jade ?> is cool</p>', $this->parse('p yo, <?php echo $jade ?> is cool'));
+        $this->assertEquals('<p>yo, <?php echo $jade || $jade ?> is cool</p>', $this->parse('p yo, <?php echo $jade || $jade ?> is cool'));
+        $this->assertEquals('yo, <?php echo $jade || $jade ?> is cool', $this->parse('| yo, <?php echo $jade || $jade ?> is cool'));
     }
 
     public function testHtml5Mode()
     {
-        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" checked />", $this->parse("!!! 5\ninput(type=\"checkbox\", checked)"));
-        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" checked />", $this->parse("!!! 5\ninput(type=\"checkbox\", checked: true)"));
+        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" checked=\"checked\" />", $this->parse("!!! 5\ninput(type=\"checkbox\", checked)"));
+        $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" checked=\"checked\" />", $this->parse("!!! 5\ninput(type=\"checkbox\", checked: true)"));
         $this->assertEquals("<!DOCTYPE html>\n<input type=\"checkbox\" />", $this->parse("!!! 5\ninput(type=\"checkbox\", checked: false)"));
     }
-
+    
     public function testAttrs()
     {
         $this->assertEquals('<img src="&lt;script&gt;" />', $this->parse('img(src="<script>")'), 'Test attr escaping');
         $this->assertEquals('<a data-attr="bar"></a>', $this->parse('a(data-attr:"bar")'));
         $this->assertEquals('<a data-attr="bar" data-attr-2="baz"></a>', $this->parse('a(data-attr:"bar", data-attr-2:"baz")'));
         $this->assertEquals('<a title="foo,bar"></a>', $this->parse('a(title: "foo,bar")'));
-        $this->assertEquals('<a title="foo,bar"></a>', $this->parse('a(title: "foo,bar" )'));
+        $this->assertEquals('<a title="foo , bar"></a>', $this->parse('a(title: "foo , bar" )'));
         $this->assertEquals('<a title="foo,bar" href="#"></a>', $this->parse('a(title: "foo,bar", href="#")'));
 
         $this->assertEquals('<p class="foo"></p>', $this->parse("p(class='foo')"), 'Test single quoted attrs');
@@ -333,7 +341,7 @@ HTML;
 //          ), 'Commas in attrs'
 //        );
     }
-
+    
     public function testCodeAttrs()
     {
         $this->assertEquals('<p id="<?php echo $name ?>"></p>', $this->parse('p(id: {{$name}})'));
@@ -341,7 +349,7 @@ HTML;
         $this->assertEquals('<p foo="<?php echo $name || "<default />" ?>"></p>', $this->parse('p(foo: {{$name || "<default />"}})'));
         $this->assertEquals('<p id="<?php echo \'name \' . $name . " =)" ?>">Hello, (bracket =) )</p>', $this->parse('p(id: {{\'name \' . $name . " =)"}}) Hello, (bracket =) )'));
     }
-
+    
     public function testCode()
     {
         $jade = <<<Jade
@@ -362,7 +370,7 @@ input:hidden( name="sf_method", value="PUT" )
 Jade;
         $html = <<<HTML
 <input />
-<input type="hidden" name="sf_method" value="PUT" />
+<input name="sf_method" value="PUT" type="hidden" />
 HTML;
         $this->assertEquals($html, $this->parse($jade));
 
@@ -407,7 +415,7 @@ input:hidden( name="sf_method", value="PUT" )
 
 Jade;
         $html = <<<HTML
-<input type="hidden" name="sf_method" value="PUT" />
+<input name="sf_method" value="PUT" type="hidden" />
 <?php echo \$form->renderHiddenFields() ?>
 HTML;
         $this->assertEquals($html, $this->parse($jade));
@@ -519,11 +527,9 @@ p
   - switch (\$foo) :
 
     -case 2 :
-        
       p.foo= \$foo
 
     - case 'strong':
-            
       strong#name= \$foo * 2
 
     -   case 5   :
@@ -621,23 +627,23 @@ HTML;
         $this->assertEquals('<input type="text" value="Search" />', $this->parse('input( type="text", value="Search" )'));
         $this->assertEquals('<input type="текст" value="Поиск" />', $this->parse('input( type="текст", value="Поиск" )'));
     }
-
+    
     public function testAutotags()
     {
-        $this->assertEquals('<link rel="stylesheet" type="text/css" media="screen" src="/css/ie6.css" />',
+        $this->assertEquals('<link media="screen" src="/css/ie6.css" rel="stylesheet" type="text/css" />',
           $this->parse('link:css( media="screen", src="/css/ie6.css" )'));
-        $this->assertEquals('<input type="text" value="Search" />', $this->parse('input:text( value="Search" )'));
+        $this->assertEquals('<input value="Search" type="text" />', $this->parse('input:text( value="Search" )'));
         $this->assertEquals('<input type="checkbox" />', $this->parse('input:checkbox'));
-        $this->assertEquals('<input type="submit" value="Send" />', $this->parse('input:submit( value="Send" )'));
-        $this->assertEquals('<link rel="stylesheet" type="text/css" href="/css/screen.css" media="screen" />', $this->parse('link:css(href:"/css/screen.css", media="screen")'));
-        $this->assertEquals('<script type="text/javascript" charset="UTF8" src="http://stats.test.com/scripts/stat.js"></script>', $this->parse('script:js(  charset  =  "UTF8",   src:"http://stats.test.com/scripts/stat.js"  )'));
+        $this->assertEquals('<input value="Send" type="submit" />', $this->parse('input:submit( value="Send" )'));
+        $this->assertEquals('<link href="/css/screen.css" media="screen" rel="stylesheet" type="text/css" />', $this->parse('link:css(href:"/css/screen.css", media="screen")'));
+        $this->assertEquals('<script charset="UTF8" src="http://stats.test.com/scripts/stat.js" type="text/javascript"></script>', $this->parse('script:js(  charset  =  "UTF8",   src:"http://stats.test.com/scripts/stat.js"  )'));
     }
-
+    
     public function testHTMLComments()
     {
         $jade = <<<Jade
 peanutbutterjelly
-  / This is the peanutbutterjelly element
+  // This is the peanutbutterjelly element
   | I like sandwiches!
 Jade;
         $html = <<<HTML
@@ -649,7 +655,7 @@ HTML;
         $this->assertEquals($html, $this->parse($jade));
 
         $jade = <<<Jade
-/
+//
   p This doesn't render...
   div
     h1 Because it's commented out!
@@ -669,7 +675,7 @@ HTML;
     public function testHTMLConditionalComments()
     {
         $jade = <<<Jade
-/[if IE]
+// [if IE]
   a( href = 'http://www.mozilla.com/en-US/firefox/' )
     h1 Get Firefox
 Jade;
@@ -694,9 +700,13 @@ html
     - include_less_stylesheets()
     - include_javascripts()
 
-    /[if lt IE 9]
+    //-
+      p
+        | Not printed
+
+    // [if lt IE 9]
       script( src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js" )
-    /[if IE]
+    // [if IE]
       script( src="http://html5shiv.googlecode.com/svn/trunk/html5.js" )
       script( src="http://html5shiv.googlecode.com/svn/trunk/html6.js" )
       script( src="http://html5shiv.googlecode.com/svn/trunk/html7.js" )
@@ -725,50 +735,19 @@ HTML;
         $this->assertEquals($html, $this->parse($jade));
 
         $jade = <<<Jade
-/[if lt IE 7]
+// [if lt IE 7]
   link:css( src="/less/ie6.less" )
 Jade;
         $html = <<<HTML
 <!--[if lt IE 7]>
-  <link rel="stylesheet" type="text/css" src="/less/ie6.less" />
+  <link src="/less/ie6.less" rel="stylesheet" type="text/css" />
 <![endif]-->
-HTML;
-        $this->assertEquals($html, $this->parse($jade));
-    }
-
-    public function testJadeComments()
-    {
-        $jade = <<<Jade
-// JADE
-- \$foo = "<script>";
-p
-//##### COMMENTS ARE SUPPER! ######
-  - switch (\$foo):
-    -case 2:
-      p.foo= \$foo
-//    - case 'strong':
-  //      strong#name= \$foo * 2
-    -   case 5:
-      p some text
-Jade;
-        $html = <<<HTML
-<?php \$foo = "<script>"; ?>
-<p>
-  <?php switch (\$foo): ?>
-    <?php case 2: ?>
-      <p class="foo"><?php echo \$foo ?></p>
-    <?php break; ?>
-    <?php case 5: ?>
-      <p>some text</p>
-    <?php break; ?>
-  <?php endswitch; ?>
-</p>
 HTML;
         $this->assertEquals($html, $this->parse($jade));
     }
 
     public function testJSLinkTag()
     {
-        $this->assertEquals('<a href="javascript:void(0)" value="hello"></a>', $this->parse('a:void( value="hello" )'));
+        $this->assertEquals('<a value="hello" href="javascript:void(0)"></a>', $this->parse('a:void( value="hello" )'));
     }
 }

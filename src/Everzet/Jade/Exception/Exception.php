@@ -1,9 +1,9 @@
 <?php
 
-namespace Everzet\Jade\Filters;
+namespace Everzet\Jade\Exception;
 
 /*
- * This file is part of the Jade package.
+ * This file is part of the Jade.php.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -11,11 +11,8 @@ namespace Everzet\Jade\Filters;
  */
 
 /**
- * Base filter interface.
- *
- * @package     Jade
- * @author      Konstantin Kudryashov <ever.zet@gmail.com>
+ * Jade exception. 
  */
-interface BaseFilterInterface
+class Exception extends \Exception
 {
 }

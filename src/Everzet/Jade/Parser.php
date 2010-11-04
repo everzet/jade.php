@@ -2,17 +2,20 @@
 
 namespace Everzet\Jade;
 
-use \Everzet\Jade\ParserException;
-use \Everzet\Jade\Filters\BaseFilterInterface as Filter;
-use \Everzet\Jade\Filters\BlockFilterInterface as BlockFilter;
-use \Everzet\Jade\Filters\TextFilterInterface as TextFilter;
-use \Everzet\Jade\Filters\PHP;
-use \Everzet\Jade\Filters\CDATA;
-use \Everzet\Jade\Filters\JavaScript;
-use \Everzet\Jade\Filters\CSS;
+use Everzet\Jade\Exception\Exception;
+
+use Everzet\Jade\Lexer\LexerInterface;
+
+use Everzet\Jade\Node\BlockNode;
+use Everzet\Jade\Node\CodeNode;
+use Everzet\Jade\Node\CommentNode;
+use Everzet\Jade\Node\DoctypeNode;
+use Everzet\Jade\Node\FilterNode;
+use Everzet\Jade\Node\TagNode;
+use Everzet\Jade\Node\TextNode;
 
 /*
- * This file is part of the Jade package.
+ * This file is part of the Jade.php.
  * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,753 +23,296 @@ use \Everzet\Jade\Filters\CSS;
  */
 
 /**
- * Jade Parser.
- *
- * @package     Jade
- * @author      Konstantin Kudryashov <ever.zet@gmail.com>
+ * Jade Parser. 
  */
 class Parser
 {
-    /**
-     * Tags to self-close (<hr "/">).
-     *
-     * @var     array
-     */
-    protected $selfClosing = array(
-        'meta', 'img', 'link', 'br', 'hr', 'input', 'area', 'base'
-    );
-    /**
-     * Doctypes.
-     *
-     * @var     array
-     */
-    protected $doctypes = array(
-        '5' => '<!DOCTYPE html>',
-        'xml' => '<?xml version="1.0" encoding="utf-8" ?>',
-        'default' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-        'transitional' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-        'strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-        'frameset' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
-        '1.1' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
-        'basic' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
-        'mobile' => '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
-    );
-    /**
-     * Available filters.
-     *
-     * @var     array
-     */
-    protected $filters = array();
-    /**
-     * Block definitions (begin => end: if => endif, for => endfor...).
-     *
-     * @var     array
-     */
-    protected $blocks = array(
-        "/^ *if[ \(]+.*\: *$/"        => 'endif',
-        "/^ *else *\: *$/"            => 'endif',
-        "/^ *else *if[ \(]+.*\: *$/"  => 'endif',
-        "/^ *while *.*\: *$/"         => 'endwhile',
-        "/^ *for[ \(]+.*\: *$/"       => 'endfor',
-        "/^ *foreach[ \(]+.*\: *$/"   => 'endforeach',
-        "/^ *switch[ \(]+.*\: *$/"    => 'endswitch',
-        "/^ *case *.* *\: *$/"        => 'break'
-    );
-    /**
-     * Autoreplaceable tags
-     *
-     * @var     array
-     */
-    protected $autotags = array(
-        'a:void'            => array('tag' => 'a', 'attrs' => array(
-            'href' => 'javascript:void(0)'
-        )),
-        'form:post'         => array('tag' => 'form', 'attrs' => array('method' => 'POST')),
-        'link:css'          => array('tag' => 'link', 'attrs' => array(
-            'rel'   => 'stylesheet',
-            'type'  => 'text/css'
-        )),
-        'script:js'         => array('tag' => 'script', 'attrs' => array(
-            'type'  => 'text/javascript'
-        )),
-        'input:button'      => array('tag' => 'input', 'attrs' => array('type' => 'button')),
-        'input:checkbox'    => array('tag' => 'input', 'attrs' => array('type' => 'checkbox')),
-        'input:file'        => array('tag' => 'input', 'attrs' => array('type' => 'file')),
-        'input:hidden'      => array('tag' => 'input', 'attrs' => array('type' => 'hidden')),
-        'input:image'       => array('tag' => 'input', 'attrs' => array('type' => 'image')),
-        'input:password'    => array('tag' => 'input', 'attrs' => array('type' => 'password')),
-        'input:radio'       => array('tag' => 'input', 'attrs' => array('type' => 'radio')),
-        'input:reset'       => array('tag' => 'input', 'attrs' => array('type' => 'reset')),
-        'input:submit'      => array('tag' => 'input', 'attrs' => array('type' => 'submit')),
-        'input:text'        => array('tag' => 'input', 'attrs' => array('type' => 'text')),
-        'input:search'      => array('tag' => 'input', 'attrs' => array('type' => 'search')),
-        'input:tel'         => array('tag' => 'input', 'attrs' => array('type' => 'tel')),
-        'input:url'         => array('tag' => 'input', 'attrs' => array('type' => 'url')),
-        'input:email'       => array('tag' => 'input', 'attrs' => array('type' => 'email')),
-        'input:datetime'    => array('tag' => 'input', 'attrs' => array('type' => 'datetime')),
-        'input:date'        => array('tag' => 'input', 'attrs' => array('type' => 'date')),
-        'input:month'       => array('tag' => 'input', 'attrs' => array('type' => 'month')),
-        'input:week'        => array('tag' => 'input', 'attrs' => array('type' => 'week')),
-        'input:time'        => array('tag' => 'input', 'attrs' => array('type' => 'time')),
-        'input:number'      => array('tag' => 'input', 'attrs' => array('type' => 'number')),
-        'input:range'       => array('tag' => 'input', 'attrs' => array('type' => 'range')),
-        'input:color'       => array('tag' => 'input', 'attrs' => array('type' => 'color')),
-        'input:datetime-local' => array('tag' => 'input', 'attrs' => array(
-            'type'  => 'datetime-local'
-        ))
-    );
-
-    protected $input;
-    protected $deferredTokens = array();
-    protected $lastIndents = 0;
-    protected $lineno = 1;
-    protected $stash;
-    protected $mode;
+    protected $lexer;
 
     /**
-     * Inits Jade parser with the given input string.
-     *
-     * @param   string  $input  Jade string
-     */
-    public function __construct($input = null)
-    {
-        if (null !== $input) {
-            $this->setInput($input);
-        }
-
-        // Set basic filters
-        $this->setFilter('php', new PHP());
-        $this->setFilter('cdata', new CDATA());
-        $this->setFilter('javascript', new JavaScript());
-        $this->setFilter('style', new CSS());
-    }
-
-    /**
-     * Sets parser mode
-     *
-     * @param   string  $mode
-     */
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
-    }
-
-    /**
-     * Define filter class by filter's name.
-     *
-     * @param   string  $name   filter name
-     * @param   Filter  $class  filter object
-     */
-    public function setFilter($name, Filter $class)
-    {
-        $this->filters[$name] = $class;
-    }
-
-    /**
-     * Sets custom Code block ending.
-     *
-     * @param   string  $begin  code block begin regexp
-     * @param   string  $end    code block end ('endif' for example)
-     */
-    public function setBlockEnd($begin, $end)
-    {
-        $this->blocks[$begin] = $end;
-    }
-
-    /**
-     * Sets custom autotag for further autoreplaces
-     *
-     * @param   string  $holder     tag holder (input:text for example)
-     * @param   string  $tagName    output tag name (input)
-     * @param   array   $attrs      output tag attributes (array('type' => 'text'))
-     */
-    public function setAutotag($holder, $tagName, array $attrs)
-    {
-        $this->autotags[$holder] = array('tag' => $tagName, 'attrs' => $attrs);
-    }
-
-    /**
-     * Sets Jade string to parse
-     *
-     * @param   string  $input  Jade to parse
-     */
-    public function setInput($input)
-    {
-        $this->input = preg_replace("/\r\n|\r/", "\n", $input);
-    }
-
-    /**
-     * Parse input string.
-     *
-     * @param   string  $input  Jade string
-     *
-     * @return  string          HTML
-     */
-    public function parse($input = null)
-    {
-        if (function_exists('mb_internal_encoding')) {
-            $mbEncoding = mb_internal_encoding();
-            mb_internal_encoding('UTF-8');
-        }
-
-        if (null !== $input) {
-            $this->setInput($input);
-        }
-        $this->deferredTokens = array();
-        $this->lastIndents = 0;
-        $this->lineno = 1;
-        $this->stash = null;
-        $this->mode = null;
-
-        $buf = array();
-        while ('eos' !== $this->peek()->type) {
-            $buf[] = $this->parseExpr();
-        }
-        $html = implode('', $buf);
-        $html = preg_replace(array("/^\n/", "/\n$/", "/^ */", "/ *$/"), '', $html);
-
-        if (isset($mbEncoding)) {
-            mb_internal_encoding($mbEncoding);
-        }
-
-        return $html;
-    }
-
-    /**
-     * Generate token object.
+     * Initialize Parser. 
      * 
-     * @param   string  $type       token type
-     * @param   array   $matches    regex matches
-     * 
-     * @return  stdClass
+     * @param   LexerInterface  $lexer  lexer object
      */
-    protected function token($type, array $matches = array('', ''))
+    public function __construct(LexerInterface $lexer)
     {
-        $this->input = mb_substr($this->input, mb_strlen($matches[0]));
-        return (object) array(
-            'type'  => $type,
-            'line'  => $this->lineno,
-            'val'   => isset($matches[1]) ? $matches[1] : null
-        );
+        $this->lexer = $lexer;
     }
 
     /**
-     * Returns the next token object.
+     * Parse input returning block node. 
+     * 
+     * @param   string          $input  jade document
      *
-     * @return  stdClass
+     * @return  BlockNode
      */
-    protected function advance()
+    public function parse($input)
     {
-        $matches = array();
-        if (null !== $this->stash) {
-            $tok = $this->stash;
-            $this->stash = null;
-            return $tok;
-        }
+        $this->lexer->setInput($input);
 
-        if (count($this->deferredTokens)) {
-            return array_shift($this->deferredTokens);
-        }
+        $node = new BlockNode($this->lexer->getCurrentLine());
 
-        // EOS
-        if (!mb_strlen($this->input)) {
-            if (0 < $this->lastIndents--) {
-                return (object) array('type' => 'outdent', 'line' => $this->lineno);
+        while ('eos' !== $this->lexer->predictToken()->type) {
+            if ('newline' === $this->lexer->predictToken()->type) {
+                $this->lexer->getAdvancedToken();
             } else {
-                return (object) array('type' => 'eos', 'line' => $this->lineno);
+                $node->addChild($this->parseExpression());
             }
         }
 
-        // Tag
-        if (preg_match("/^(\w[:\w]*)/", $this->input, $matches)) {
-            return $this->token('tag', $matches);
-        }
-
-        // Filter
-        if (preg_match("/^:(\w+)/", $this->input, $matches)) {
-            $tok = $this->token('filter', $matches);
-            $tok->indents = $this->lastIndents;
-            return $tok;
-        }
-
-        // Code
-        if (preg_match("/^(!?=|-)([^\n]+)/", $this->input, $matches)) {
-            $flags = $matches[1];
-            $matches[1] = $matches[2];
-            $tok = $this->token('code', $matches);
-            $tok->buffer = 
-                (isset($flags[0]) && '=' === $flags[0]) || (isset($flags[1]) && '=' === $flags[1]);
-            return $tok;
-        }
-
-        // Doctype
-        if (preg_match("/^!!! *(\w+)?/", $this->input, $matches)) {
-            return $this->token('doctype', $matches);
-        }
-
-        // Id
-        if (preg_match("/^#([\w-]+)/", $this->input, $matches)) {
-            return $this->token('id', $matches);
-        }
-
-        // Class
-        if (preg_match("/^\.([\w-]+)/", $this->input, $matches)) {
-            return $this->token('class', $matches);
-        }
-
-        // Starting attributes RegEx
-        $attrRegex  = "/^\( *((?:";
-        // Paired brackets
-        $attrRegex .= "(?:\([^\)]*\))|";
-        // Brackets inside double quotes
-        $attrRegex .= "(?:\"[^\"]*\")|";
-        // Brackets inside single quotes
-        $attrRegex .= "(?:'[^']*')|";
-        // Not brackets
-        $attrRegex .= "[^\)]";
-        // Ending attributes RegEx
-        $attrRegex .= ")+) *\)/";
-
-        // Attributes
-        if (preg_match($attrRegex, $this->input, $matches)) {
-            $tok = $this->token('attrs', $matches);
-            $attrs = preg_split("/ *, *(?=[\w-]+ *[:=]|[\w-]+ *$)/", $tok->val);
-            $tok->attrs = array();
-
-            foreach ($attrs as $pair) {
-                // Support = and :
-                $colon = mb_strpos($pair, ':');
-                $equal = mb_strpos($pair, '=');
-
-                // Boolean
-                if (false === $colon && false === $equal) {
-                    $key = $pair;
-                    $val = true;
-                } else {
-                    // Split on first = or :
-                    $split = false !== $equal ? $equal : $colon;
-                    if (false !== $colon && $colon < $equal) {
-                        $split = $colon;
-                    }
-                    $key = mb_substr($pair, 0, $split);
-                    $val = preg_replace("/^\s*(?:['\"])?|(?:['\"])?\s*$/", '', 
-                        mb_substr($pair, ++$split, mb_strlen($pair))
-                    );
-                }
-                $tok->attrs[preg_replace("/^ +| +$|^['\"]|['\"]$/", '', $key)] = $val;
-            }
-            return $tok;
-        }
-
-        // Jade comment
-        if (preg_match("/^(?:\n)? *\/\/([^\n]*)/", $this->input, $matches)) {
-            return $this->token('newline', $matches);
-        }
-
-        // Indent
-        if (preg_match("/^\n( *)/", $this->input, $matches)) {
-            ++$this->lineno;
-            $tok = $this->token('indent', $matches);
-            $indents = mb_strlen($tok->val) / 2;
-            if (mb_strlen($this->input) && "\n" === $this->input[0]) {
-                $tok->type = 'newline';
-                return $tok;
-            } elseif (0 !== $indents % 1) {
-                throw new ParserException(sprintf(
-                    'Invalid indentation, got %d space%s, must be a multiple or two.',
-                    $count = mb_strlen($tok->val), $count > 1 ? 's' : ''
-                ));
-            } elseif ($indents === $this->lastIndents) {
-                $tok->type = 'newline';
-            } elseif ($indents > $this->lastIndents + 1) {
-                throw new ParserException(sprintf(
-                    'Invalid indentation, got %d expected %d.',
-                    $indents, ($this->lastIndents + 1)
-                ));
-            } elseif ($indents < $this->lastIndents) {
-                $n = $this->lastIndents - $indents;
-                $tok->type = 'outdent';
-                while (--$n) {
-                    $this->deferredTokens[] = (object) array(
-                        'type'  => 'outdent',
-                        'line'  => $this->lineno
-                    );
-                }
-            }
-            $this->lastIndents = $indents;
-            return $tok;
-        }
-
-        // HTML comment
-        if (preg_match("/^\/([^\n]*)/", $this->input, $matches)) {
-            return $this->token('comment', $matches);
-        }
-
-        // Text
-        if (preg_match("/^(?:\| ?)?([^\n]+)/", $this->input, $matches)) {
-            return $this->token('text', $matches);
-        }
+        return $node;
     }
 
     /**
-     * Single token lookahead.
-     *
-     * @return  stdClass
-     */
-    protected function peek()
-    {
-        return $this->stash = $this->advance();
-    }
-
-    /**
-     * Expect the given type, or throw an exception.
-     *
-     * @param   string  $type   token type
+     * Expect given type or throw Exception. 
      * 
-     * @return  stdClass
-     * 
-     * @throws  \Everzet\Jade\ParserException
+     * @param   string  $type   type
      */
-    protected function expect($type)
+    protected function expectTokenType($type)
     {
-        if ($type === $this->peek()->type) {
-            return $this->advance();
+        if ($type === $this->lexer->predictToken()->type) {
+            return $this->lexer->getAdvancedToken();
         } else {
-            throw new ParserException(sprintf('Expected "%s", but got "%s"',
-                $type, $this->peek()->type
-            ));
+            throw new Exception(sprintf('Expected %s, but got %s', $type, $this->lexer->predictToken()->type));
+        }
+    }
+    
+    /**
+     * Accept given type. 
+     * 
+     * @param   string  $type   type
+     */
+    protected function acceptTokenType($type)
+    {
+        if ($type === $this->lexer->predictToken()->type) {
+            return $this->lexer->getAdvancedToken();
         }
     }
 
     /**
-     * Parse current token expression.
-     *
-     * @return  string
+     * Parse current expression & return Node. 
+     * 
+     * @return  Node
      */
-    protected function parseExpr()
+    protected function parseExpression()
     {
-        switch ($this->peek()->type) {
+        switch ($this->lexer->predictToken()->type) {
             case 'tag':
-                return $this->parseTag() . "\n";
+                return $this->parseTag();
             case 'doctype':
-                return $this->parseDoctype() . "\n";
+                return $this->parseDoctype();
             case 'filter':
-                return $this->parseFilter() . "\n";
+                return $this->parseFilter();
+            case 'comment':
+                return $this->parseComment();
             case 'text':
-                return $this->filterText($this->advance()->val) . "\n";
+                return $this->parseText();
+            case 'code':
+                return $this->parseCode();
             case 'id':
             case 'class':
-                $tok = $this->advance();
-                $this->deferredTokens[] = (object) array(
-                    'type'  => 'tag',
-                    'val'   => 'div',
-                    'line'  => $this->lineno
-                );
-                $this->deferredTokens[] = $tok;
-                return $this->parseExpr();
-            case 'code':
-                $tok = $this->advance();
-                $val = $tok->val;
-                $buf = $tok->buffer ? '<?php echo ' : '<?php ';
+                $token = $this->lexer->getAdvancedToken();
+                $this->lexer->deferToken($this->lexer->takeToken('tag', 'div'));
+                $this->lexer->deferToken($token);
 
-                $beg = preg_replace(array("/^ */", "/ *$/"), '', $val);
-                $end = null;
-                $indents = $this->getIndentation();
-                foreach ($this->blocks as $regexp => $close) {
-                    if (preg_match($regexp, $beg)) {
-                        $end = $close;
-                        break;
-                    }
-                }
-                $buf .= $beg;
-                $this->skipNewlines();
-                if ('indent' === $this->peek()->type) {
-                    $buf .= (null === $end ? '{' : '') . " ?>\n";
-                    $buf .= $this->parseBlock();
-                    $buf  = preg_replace(array("/^ */", "/ *$/"), '', $buf);
-                    $peek = $this->peek();
-                    if ('code' !== $peek->type || false === strpos($peek->val, 'else')) {
-                        $buf .= sprintf("%s<?php %s ?>\n",
-                            $indents,
-                            null === $end ? '}' : $end . ';'
-                        );
-                    }
-                } else {
-                    $buf .= " ?>\n";
-                }
-
-                return $buf;
-            case 'comment':
-                $tok = $this->advance();
-                $val = preg_replace(array("/^ */", "/ *$/"), '', $tok->val);
-                $indents = $this->getIndentation();
-                if (preg_match("/^\[if[^\]]+\]$/", $val)) {
-                    $beg = sprintf('<!--%s>', $val);
-                    $end = '<![endif]-->';
-                    $val = '';
-                } else {
-                    $beg = "<!--";
-                    $end = "-->";
-                }
-                $this->skipNewlines();
-                if ('indent' === $this->peek()->type) {
-                    $buf = $beg . "\n";
-                    if ('' !== $val) {
-                        $buf .= $indents . $val . "\n";
-                    }
-                    $buf .= $this->parseBlock();
-                    $buf .= $indents . $end;
-                } else {
-                    $buf = sprintf("<!-- %s -->", $val);
-                }
-                return $buf . "\n";
-            case 'newline':
-                $this->advance();
-                return $this->parseExpr();
+                return $this->parseExpression();
         }
     }
 
     /**
-     * Skipping newlines
-     *
-     */
-    protected function skipNewlines()
-    {
-        while ('newline' === $this->peek()->type) {
-            $this->advance();
-        }
-    }
-
-    /**
-     * Calculates & generates indentation string.
-     *
-     * @param   integer $plus   adding indentation
+     * Parse next text token. 
      * 
-     * @return  string          left spaces
+     * @return  TextNode
      */
-    protected function getIndentation($plus = 0)
+    protected function parseText()
     {
-        return str_repeat('  ', $this->lastIndents + intval($plus));
+        $token = $this->expectTokenType('text');
+
+        return new TextNode(preg_replace('/^ +/', '', $token->value), $this->lexer->getCurrentLine());
     }
 
     /**
-     * Filter text with all filters, that implements TextFilter interface
-     *
-     * @param   string  $text   text to filter
+     * Parse next code token. 
      * 
-     * @return  string          filtered text
+     * @return  CodeNode
      */
-    protected function filterText($text)
+    protected function parseCode()
     {
-        foreach ($this->filters as $filter) {
-            if ($filter instanceof TextFilter) {
-                $text = $filter->filterText($text);
-            }
+        $token  = $this->expectTokenType('code');
+        $node   = new CodeNode($token->value, $token->buffer, $this->lexer->getCurrentLine());
+
+        // Skip newlines
+        while ('newline' === $this->lexer->predictToken()->type) {
+            $this->lexer->getAdvancedToken();
         }
 
-        return $text;
+        if ('indent' === $this->lexer->predictToken()->type) {
+            $node->setBlock($this->parseBlock());
+        }
+
+        return $node;
     }
 
     /**
-     * Parse Doctype.
-     *
-     * @return  string
+     * Parse next commend token. 
+     * 
+     * @return  CommentNode
+     */
+    protected function parseComment()
+    {
+        $token  = $this->expectTokenType('comment');
+        $node   = new CommentNode(preg_replace('/^ +| +$/', '', $token->value), $token->buffer, $this->lexer->getCurrentLine());
+
+        // Skip newlines
+        while ('newline' === $this->lexer->predictToken()->type) {
+            $this->lexer->getAdvancedToken();
+        }
+
+        if ('indent' === $this->lexer->predictToken()->type) {
+            $node->setBlock($this->parseBlock());
+        }
+
+        return $node;
+    }
+
+    /**
+     * Parse next doctype token. 
+     * 
+     * @return  DoctypeNode
      */
     protected function parseDoctype()
     {
-        $name = $this->expect('doctype')->val;
-        if ('5' === $name) {
-            $this->mode = 'html 5';
-        } elseif (null === $name) {
-            $name = 'default';
-        } elseif (!isset($this->doctypes[$name])) {
-            throw new ParserException(sprintf('Unknown Doctype: "%s"', $name));
-        }
-        return $this->doctypes[$name];
+        $token = $this->expectTokenType('doctype');
+
+        return new DoctypeNode($token->value, $this->lexer->getCurrentLine());
     }
 
     /**
-     * Parse & execute filter.
-     *
-     * @return  string
+     * Parse next filter token. 
+     * 
+     * @return  FilterNode
      */
     protected function parseFilter()
     {
-        $tok = $this->expect('filter');
-        $name = $tok->val;
-        if (isset($this->filters[$name])) {
-            $filter = $this->filters[$name];
-            if ($filter instanceof BlockFilter) {
-                return preg_replace("/([\n^])/", "$1" . str_repeat('  ', $tok->indents),
-                  $filter->filter($this->parseTextBlock())
-                );
-            } else {
-                throw new ParserException(
-                    sprintf('Filter: "%s" must implements BlockFilterInterface', $name)
-                );
-            }
+        $block      = null;
+        $token      = $this->expectTokenType('filter');
+        $attributes = $this->acceptTokenType('attributes');
+
+        if ('text' === $this->lexer->predictToken(2)->type) {
+            $block = $this->parseTextBlock();
         } else {
-            throw new ParserException(sprintf('Unknown filter: "%s"', $name));
+            $block = $this->parseBlock();
         }
+
+        $node = new FilterNode(
+            $token->value, null !== $attributes ? $attributes->attributes : array(), $this->lexer->getCurrentLine()
+        );
+        $node->setBlock($block);
+
+        return $node;
     }
 
     /**
-     * Parse text block.
-     *
-     * @return  string
+     * Parse next indented? text token. 
+     * 
+     * @return  TextToken
      */
     protected function parseTextBlock()
     {
-        $buf = array();
-        $this->expect('indent');
-        while ('text' === $this->peek()->type || 'newline' === $this->peek()->type) {
-            if ('newline' === $this->peek()->type) {
-                $this->advance();
+        $node = new TextNode(null, $this->lexer->getCurrentLine());
+
+        $this->expectTokenType('indent');
+        while ('text' === $this->lexer->predictToken()->type || 'newline' === $this->lexer->predictToken()->type) {
+            if ('newline' === $this->lexer->predictToken()->type) {
+                $this->lexer->getAdvancedToken();
             } else {
-                $buf[] = $this->filterText($this->advance()->val);
+                $node->addLine($this->lexer->getAdvancedToken()->value);
             }
         }
-        $this->expect('outdent');
-        return implode("\n", $buf);
+        $this->expectTokenType('outdent');
+
+        return $node;
     }
 
     /**
-     * Parse indented block.
-     *
-     * @return  string
+     * Parse indented block token. 
+     * 
+     * @return  BlockNode
      */
     protected function parseBlock()
     {
-        $buf = array();
-        $this->expect('indent');
-        while ('outdent' !== $this->peek()->type) {
-            $buf[] = preg_replace("/^ */", $this->getIndentation(), $this->parseExpr());
+        $node = new BlockNode($this->lexer->getCurrentLine());
+
+        $this->expectTokenType('indent');
+        while ('outdent' !== $this->lexer->predictToken()->type) {
+            if ('newline' === $this->lexer->predictToken()->type) {
+                $this->lexer->getAdvancedToken();
+            } else {
+                $node->addChild($this->parseExpression());
+            }
         }
-        $this->expect('outdent');
-        return implode('', $buf);
+        $this->expectTokenType('outdent');
+
+        return $node;
     }
 
     /**
-     * Parse tag.
-     *
-     * @return  string
+     * Parse tag token. 
+     * 
+     * @return  TagNode
      */
     protected function parseTag()
     {
-        $name = $this->advance()->val;
-        $html5 = 'html 5' === $this->mode;
-        $hasAttrs = false;
-        $attrBuf = '';
-        $codeClass = null;
-        $classes = array();
-        $attrs = array();
-        $buf = array();
-        $indents = $this->getIndentation();
+        $name = $this->lexer->getAdvancedToken()->value;
+        $node = new TagNode($name, $this->lexer->getCurrentLine());
 
-        // autoreplace tag definition with autotag
-        if (array_key_exists($name, $this->autotags)) {
-            $autotag = $this->autotags[$name];
-            $name = $autotag['tag'];
-
-            if (isset($autotag['attrs']) && count($autotag['attrs'])) {
-                $hasAttrs = true;
-                $attrs = array_merge($attrs, $autotag['attrs']);
-            }
-        }
-
-        // (attrs | class | id)*
+        // Parse id, class, attributes token
         while (true) {
-            switch ($this->peek()->type) {
+            switch ($this->lexer->predictToken()->type) {
                 case 'id':
-                    $hasAttrs = true;
-                    $attrs['id'] = $this->advance()->val;
-                    continue;
                 case 'class':
-                    $hasAttrs = true;
-                    $classes[] = $this->advance()->val;
+                    $token = $this->lexer->getAdvancedToken();
+                    $node->setAttribute($token->type, $token->value);
                     continue;
-                case 'attrs':
-                    $hasAttrs = true;
-                    foreach ($this->advance()->attrs as $key => $val) {
-                        if ('class' === $key) {
-                            $codeClass = $val;
-                        } else {
-                            $attrs[$key] = null === $val ? true : $val;
-                        }
+                case 'attributes':
+                    foreach ($this->lexer->getAdvancedToken()->attributes as $name => $value) {
+                        $node->setAttribute($name, $value);
                     }
                     continue;
                 default:
-                    break 2;
+                    break(2);
             }
         }
 
-        // Text?
-        if ('text' === $this->peek()->type) {
-            $val = preg_replace(array("/^ */", "/ *$/"), '', $this->advance()->val);
-            if ('' !== $val) {
-                $buf[] = $indents . '  ' . $this->filterText($val);
-            }
-        }
-
-        // Code?
-        if ('code' === $this->peek()->type) {
-            $tok = $this->advance();
-            if ($tok->buffer) {
-                $buf[] = '<?php echo' . $tok->val . ' ?>';
-            } else {
-                $buf[] = '<?php' . $tok->val . ' ?>';
-            }
+        // Parse text/code token
+        switch ($this->lexer->predictToken()->type) {
+            case 'text':
+                $node->setText($this->parseText());
+                break;
+            case 'code':
+                $node->setCode($this->parseCode());
+                break;
         }
 
         // Skip newlines
-        $this->skipNewlines();
-
-        // Block?
-        if ('indent' === $this->peek()->type) {
-            $buf[] = $this->parseBlock();
+        while ('newline' === $this->lexer->predictToken()->type) {
+            $this->lexer->getAdvancedToken();
         }
 
-        // Build attrs
-        if ($hasAttrs) {
-            if (count($classes)) {
-                $attrs['class'] = implode(' ', $classes);
-            }
-            if (null !== $codeClass) {
-                if (isset($attrs['class'])) {
-                    $attrs['class'] .= ' ' . $codeClass;
-                } else {
-                    $attrs['class'] = $codeClass;
-                }
-            }
-
-            // Attributes
-            $attributes = array();
-            foreach ($attrs as $key => $value) {
-                if (true === $value || 'true' === $value) {
-                    $attributes[] = $html5 ? $key : sprintf('%s="%s"', $key, $key);
-                } elseif (false !== $value && 'false' !== $value && 'null' !== $value && '' !== $value) {
-                    $attributes[] = sprintf('%s="%s"', $key,
-                        $this->filterText(htmlentities($value, ENT_COMPAT, 'UTF-8'))
-                    );
-                }
-            }
-            if (count($attributes)) {
-                $attrBuf .= ' ' . implode(' ', $attributes);
-            }
-        }
-
-        // Build the tag
-        if (in_array($name, $this->selfClosing)) {
-            return $indents . '<' . $name . $attrBuf . ' />';
-        } else {
-            $buf = implode("\n", $buf);
-
-            if (false === mb_strpos($buf, "\n")) {
-                return '<' . $name . $attrBuf . '>' .
-                    preg_replace(array("/^ */", "/ *$/"), '', $buf) . '</' . $name . '>';
+        // Tag text on newline
+        if ('text' === $this->lexer->predictToken()->type) {
+            if ($text = $node->getText()) {
+                $text->addLine('');
             } else {
-                return '<' . $name . $attrBuf . ">\n" . preg_replace("/\n *$/", "\n", $buf) . $indents . '</' . $name . '>';
+                $node->setText(new TextNode('', $this->lexer->getCurrentLine()));
             }
         }
+
+        // Parse block indentation
+        if ('indent' === $this->lexer->predictToken()->type) {
+            $node->addChild($this->parseBlock());
+        }
+
+        return $node;
     }
 }
