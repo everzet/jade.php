@@ -274,7 +274,7 @@ class Lexer implements LexerInterface
      */
     protected function scanText()
     {
-        return $this->scanInput('/^(?:\|)? *([^\n]+)/', 'text');
+        return $this->scanInput('/^(?:\|)? ?([^\n]+)/', 'text');
     }
 
     /**

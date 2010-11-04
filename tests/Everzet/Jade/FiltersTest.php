@@ -64,11 +64,11 @@ Jade
             )
         );
         $this->assertEquals(
-            "<![CDATA[\n  foo\n  bar\n]]>",
+            "<![CDATA[\n  foo\n   bar\n]]>",
             $this->parse(<<<Jade
 :cdata
   | foo
-  | bar
+  |  bar
 Jade
             )
         );
@@ -99,11 +99,11 @@ Jade
     public function testCSSFilter()
     {
         $this->assertEquals(
-            "<style type=\"text/css\">\n  body {\n  color:#000;\n  }\n</style>",
+            "<style type=\"text/css\">\n  body {\n    color:#000;\n  }\n</style>",
             $this->parse(<<<Jade
 :style
   | body {
-  | color:#000;
+  |   color:#000;
   | }
 Jade
             )
@@ -132,7 +132,7 @@ Jade;
     <link type="text/css" src="/css/ie6.css" rel="stylesheet" />
     <style type="text/css">
       img, div, a, input {
-      behavior: url(/css/iepngfix.htc);
+          behavior: url(/css/iepngfix.htc);
       }
     </style>
   </p>
@@ -157,7 +157,7 @@ Jade;
     <link type="text/css" src="/css/ie6.css" rel="stylesheet" />
     <style type="text/css">
       img, div, a, input {
-      behavior: url(/css/iepngfix.htc);
+          behavior: url(/css/iepngfix.htc);
       }
     </style>
   </p>
@@ -186,7 +186,7 @@ Jade;
     <link type="text/css" src="/css/ie6.css" rel="stylesheet" />
     <style type="text/css">
       img, div, a, input {
-      behavior: url(/css/iepngfix.htc);
+          behavior: url(/css/iepngfix.htc);
       }
     </style>
   <![endif]-->

@@ -263,7 +263,7 @@ HTML;
 
     public function testTagTextBlock()
     {
-        $this->assertEquals("<p>\n  foo\n  bar\n  baz\n</p>", $this->parse("p\n  | foo\n  | bar\n  | baz"));
+        $this->assertEquals("<p>\n  foo\n     bar\n   baz\n</p>", $this->parse("p\n  | foo\n  |    bar\n  |  baz"));
         $this->assertEquals("<label>\n  Password:\n  <input />\n</label>", $this->parse("label\n  | Password:\n  input"));
     }
 

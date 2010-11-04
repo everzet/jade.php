@@ -124,11 +124,12 @@ class Parser
      * 
      * @return  TextNode
      */
-    protected function parseText()
+    protected function parseText($trim = false)
     {
         $token = $this->expectTokenType('text');
+        $value = $trim ? preg_replace('/^ +/', '', $token->value) : $token->value;
 
-        return new TextNode(preg_replace('/^ +/', '', $token->value), $this->lexer->getCurrentLine());
+        return new TextNode($value, $this->lexer->getCurrentLine());
     }
 
     /**
@@ -287,7 +288,7 @@ class Parser
         // Parse text/code token
         switch ($this->lexer->predictToken()->type) {
             case 'text':
-                $node->setText($this->parseText());
+                $node->setText($this->parseText(true));
                 break;
             case 'code':
                 $node->setCode($this->parseCode());
