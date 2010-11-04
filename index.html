@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+        <title>jade.php - templating engine for PHP</title>
+
+        <link href='http://fonts.googleapis.com/css?family=Molengo' rel='stylesheet' type='text/css'/> 
+        <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'/> 
+        <link href='http://fonts.googleapis.com/css?family=Neuton' rel='stylesheet' type='text/css'/> 
+        <link rel="stylesheet" type="text/css" href="css/style.css" media="all"/>
+        <link rel="stylesheet" type="text/css" href="css/pygments.css" media="all"/>
+    </head>
+
+    <body>
+        <a class="fork" href="http://github.com/everzet/jade.php"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+        <div id="container">
+
+            <h1>
+                <a href="http://everzet.com/jade.php">jade<span>.php</span></a>
+                <span class="description">YAML-inspired templates for PHP</span>
+            </h1>
+            <br/>
+
+<h2>tags</h2>
+<div class="code-container">
+<div class="hlcode from">
+<div class="syntax">
+            <pre class="from">
+#content
+  .left.column
+    h2 Welcome to our site!
+    p= printTitle()
+  .right.column
+    = date('d.m.Y')
+            </pre>
+    </div></div>
+
+    <div class="hlcode to">
+        <div class="syntax"><pre><span class="x">&lt;div id='content'&gt;</span>
+<span class="x">  &lt;div class='left column'&gt;</span>
+<span class="x">    &lt;h2&gt;Welcome to our site!&lt;/h2&gt;</span>
+<span class="x">    &lt;p&gt;</span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nx">printTitle()</span> <span class="cp">?&gt;</span><span class="x">&lt;/p&gt;</span>
+<span class="x">  &lt;/div&gt;</span>
+<span class="x">  &lt;div class="right column"&gt;</span>
+<span class="x">    </span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nb">date</span><span class="p">(</span><span class="s1">'d.m.Y'</span>) <span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">  &lt;/div&gt;</span>
+<span class="x">&lt;/div&gt;</span>
+</pre></div>
+
+    </div>
+</div>
+
+<h2>text</h2>
+<div class="code-container">
+<div class="hlcode from">
+<div class="syntax">
+            <pre>
+p
+  | foo bar baz
+  | rawr rawr
+  | super cool
+  | go Jade go
+            </pre>
+    </div></div>
+
+<div class="hlcode to">
+<div class="syntax"><pre><span class="x">&lt;p&gt;</span>
+<span class="x">  foo bar baz</span>
+<span class="x">  rawr rawr</span>
+<span class="x">  super cool</span>
+<span class="x">  go Jade go</span>
+<span class="x">&lt;/p&gt;</span>
+</pre></div>
+
+</div>
+</div>
+
+<h2>conditions</h2>
+<div class="code-container">
+<div class="hlcode from">
+<div class="syntax">
+            <pre>
+- if (null !== $items-&gt;getItem()):
+  p some items
+- elseif (!empty($items-&gt;getItem()):
+  strong some non-empty items
+- else:
+  span no items
+            </pre>
+    </div></div>
+<div class="hlcode to">
+<div class="syntax"><pre><span class="cp">&lt;?php</span> <span class="k">if</span> <span class="p">(</span><span class="k">null</span> <span class="o">!==</span> <span class="nv">$items</span><span class="o">-&gt;</span><span class="na">getItem</span><span class="p">())</span><span class="o">:</span> <span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">  &lt;p&gt;some items&lt;/p&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">elseif</span> <span class="p">(</span><span class="o">!</span><span class="k">empty</span><span class="p">(</span><span class="nv">$items</span><span class="o">-&gt;</span><span class="na">getItem</span><span class="p">())</span><span class="o">:</span> <span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">  &lt;strong&gt;some non-empty items&lt;/strong&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">else</span><span class="o">:</span> <span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">  &lt;span&gt;no items&lt;/span&gt;</span>
+<span class="cp">&lt;?php</span> <span class="k">endif</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x"></span>
+</pre></div> </div>
+
+</div>
+
+<h2>cycles</h2>
+<div class="code-container">
+<div class="hlcode from">
+<div class="syntax">
+            <pre>
+ul
+  - while (true):
+    li item
+            </pre>
+    </div></div>
+
+<div class="hlcode to">
+<div class="syntax"><pre><span class="x">&lt;ul&gt;</span>
+<span class="x">  </span><span class="cp">&lt;?php</span> <span class="k">while</span> <span class="p">(</span><span class="k">true</span><span class="p">)</span><span class="o">:</span> <span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">    &lt;li&gt;item&lt;/li&gt;</span>
+<span class="x">  </span><span class="cp">&lt;?php</span> <span class="k">endwhile</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">&lt;/ul&gt;</span>
+</pre></div> </div>
+
+</div>
+
+<h2>nesting</h2>
+<div class="code-container">
+<div class="hlcode from">
+<div class="syntax">
+            <pre>
+ul
+  li text 1
+  li
+    = link_to('Home', '@homepage')
+  li
+    ol
+      li one
+      li
+        | two
+      li
+        span three
+            </pre>
+    </div></div>
+
+<div class="hlcode to">
+<div class="syntax"><pre><span class="x">&lt;ul&gt;</span>
+<span class="x">  &lt;li&gt;text 1&lt;/li&gt;</span>
+<span class="x">  &lt;li&gt;</span>
+<span class="x">    </span><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nx">link_to</span><span class="p">(</span><span class="s1">'Home'</span><span class="p">,</span> <span class="s1">'@homepage'</span><span class="p">)</span> <span class="cp">?&gt;</span><span class="x"></span>
+<span class="x">  &lt;/li&gt;</span>
+<span class="x">  &lt;li&gt;</span>
+<span class="x">    &lt;ol&gt;</span>
+<span class="x">      &lt;li&gt;one&lt;/li&gt;</span>
+<span class="x">      &lt;li&gt;</span>
+<span class="x">        two</span>
+<span class="x">      &lt;/li&gt;</span>
+<span class="x">      &lt;li&gt;</span>
+<span class="x">        &lt;span&gt;three&lt;/span&gt;</span>
+<span class="x">      &lt;/li&gt;</span>
+<span class="x">    &lt;/ol&gt;</span>
+<span class="x">  &lt;/li&gt;</span>
+<span class="x">&lt;/ul&gt;</span>
+</pre></div>
+
+</div>
+    
+</div>
+
+
+<h2>conditions</h2>
+<div class="code-container">
+<div class="hlcode from">
+<div class="syntax">
+            <pre>
+// [if IE]
+  a( href='http://www.mozilla.com/firefox/' )
+    h1 Get Firefox
+            </pre>
+    </div></div>
+
+<div class="hlcode to">
+<div class="syntax"><pre><span class="x">&lt;!--[if IE]&gt;</span>
+<span class="x">  &lt;a href="http://www.mozilla.com/firefox/"&gt;</span>
+<span class="x">    &lt;h1&gt;Get Firefox&lt;/h1&gt;</span>
+<span class="x">  &lt;/a&gt;</span>
+<span class="x">&lt;![endif]--&gt;</span>
+</pre></div>
+
+</div>
+
+</div>
+<br/>
+
+            <span class="copyright">Developed by Konstantin Kudryashov (<a href="http://everzet.com/">everzet</a>), 2010</span>
+        </div>
+
+
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-9685062-1']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+             })();
+        </script>
+    </body>
+</html>

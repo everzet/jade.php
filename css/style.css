@@ -1,0 +1,97 @@
+body {
+    margin:0px;
+    padding:0px;
+    font-family: "Droid Serif", Georgia;
+    color: #000000;
+    line-height:1.5em;
+}
+#container {
+    overflow:hidden;
+    position:relative;
+    opacity:0.9;
+    padding:20px;
+    margin: 0 auto;
+    width: 700px;
+}
+#fixed {
+    margin-top:0px;
+    margin-bottom:0px;
+    position:fixed;
+    top:0px;
+    opacity:0.2;
+}
+h1 {
+    font-family:'Cuprum', arial, serif; font-size: 6em; margin-top: 0px; margin-bottom: 3px;
+    font-weight:bold;
+    text-shadow: 1px 1px 1px #fff;
+    position:relative;
+    width:250px;
+    height:80px;
+    margin-top:55px;
+    margin-left:auto;
+    margin-right:auto;
+}
+a.fork img {
+    z-index:100;
+}
+h1, h2, h3, h4 {
+    font-family:'Molengo';
+    position:relative;
+    z-index:2;
+}
+h1 a {
+    text-decoration: none; color: #000 !important;
+    text-shadow: #000 0px -1px 1px;
+}
+h1 a span {
+    font-size: 0.5em;
+    font-family:arial;
+    font-weight:normal;
+}
+h1 > span {
+    position:absolute;
+    bottom:1px;
+    left:30px;
+    color:#ababab;
+    font-size: 14px;
+    font-weight:normal;
+}
+h2 {
+    font-weight:normal;
+    font-size:36px;
+    padding-left:5px;
+    margin-bottom:0px;
+    text-shadow: #000 0px -1px 1px;
+}
+.code-container {
+    background:#000;
+    border-radius:0px 15px 0px 15px;
+    overflow:hidden;
+}
+.code-container:after {
+    content:'';
+    display:block;
+    clear:both;
+}
+.hlcode.from {
+    width:335px;
+    float:left;
+}
+.hlcode.to {
+    width:363px;
+    border-left:2px solid #fff;
+    float:right;
+}
+pre {
+    color:#EBEFE7;
+    text-shadow: #221E1C 0px -1px 1px;
+    font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace !important;
+    line-height:15px;
+    font-size:12px;
+    font-weight:normal !important;
+}
+.copyright {
+    font-size:12px;
+    float:right;
+    font-family:arial;
+}
