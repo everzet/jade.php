@@ -4,15 +4,12 @@ namespace Everzet\Jade\Lexer;
 
 use Everzet\Jade\Exception\Exception;
 
-/**
- * PHPFilter 
- * 
- * @uses FilterInterface
- * @package 
- * @version $id$
- * @copyright 1997-2005 The PHP Group
- * @author Tobias Schlitt <toby@php.net> 
- * @license PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}
+/*
+ * This file is part of the Jade.php.
+ * (c) 2010 Konstantin Kudryashov <ever.zet@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 /**
