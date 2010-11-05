@@ -18,7 +18,8 @@ and implemented for PHP 5.3.
     - :css
     - :javascript
   - you even can write & add own filters throught API
-  - [TextMate Bundle](http://github.com/everzet/Jade-tmbundle)
+  - [TextMate Bundle](http://github.com/miksago/jade-tmbundle)
+  - [VIM Plugin](http://github.com/vim-scripts/jade.vim.git)
 
 ## Public API
 
