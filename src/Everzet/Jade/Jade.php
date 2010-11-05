@@ -135,7 +135,11 @@ class Jade
     {
         $path = $this->getCachePath($cacheKey);
 
-        return filemtime($path);
+        if (is_file($path)) {
+            return filemtime($path);
+        }
+
+        return false;
     }
 
     /**
