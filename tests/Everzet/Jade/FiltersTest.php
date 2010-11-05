@@ -1,6 +1,7 @@
 <?php
 
 use Everzet\Jade\Jade;
+use Everzet\Jade\Parser;
 use Everzet\Jade\Lexer\Lexer;
 use Everzet\Jade\Dumper\PHPDumper;
 use Everzet\Jade\Visitor\AutotagsVisitor;
@@ -23,22 +24,24 @@ use Everzet\Jade\Filter\CSSFilter;
  */
 class FiltersTest extends \PHPUnit_Framework_TestCase
 {
-    protected function parse($value)
-    {
-        $lexer  = new Lexer();
-        $jade   = new Jade($lexer);
+    protected $jade;
 
+    public function __construct()
+    {
+        $parser = new Parser(new Lexer());
         $dumper = new PHPDumper();
         $dumper->registerVisitor('tag', new AutotagsVisitor());
-
         $dumper->registerFilter('javascript', new JavaScriptFilter());
         $dumper->registerFilter('cdata', new CDATAFilter());
         $dumper->registerFilter('php', new PHPFilter());
         $dumper->registerFilter('style', new CSSFilter());
 
-        $jade->registerDumper('php', $dumper);
-        $jade->load($value);
-        return $jade->dump('php');
+        $this->jade = new Jade($parser, $dumper);
+    }
+
+    protected function parse($value)
+    {
+        return $this->jade->render($value);
     }
 
     public function testFilterCodeInsertion()

@@ -29,14 +29,12 @@ and implemented for PHP 5.3.
     $dumper->registerFilter('php', new PHPFilter());
     $dumper->registerFilter('style', new CSSFilter());
     
-    // Initialize parser & register PHP dumper
-    $lexer  = new Lexer();
-    $jade   = new Jade($lexer);
-    $jade->registerDumper('php', $dumper);
+    // Initialize parser & Jade
+    $parser = new Parser(new Lexer());
+    $jade   = new Jade($parser, $dumper);
 	
-	// Parse a string
-    $jade->load($value);
-    echo $jade->dump('php');
+	// Parse a template (both string & file containers)
+    echo $jade->render($template);
 
 ## Syntax
 

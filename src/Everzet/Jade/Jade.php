@@ -20,103 +20,155 @@ use Everzet\Jade\Dumper\DumperInterface;
 class Jade
 {
     protected $parser;
-    protected $document;
-    protected $dumperName;
-    protected $dumpers = array();
+    protected $dumper;
+    protected $cache;
 
     /**
      * Initialize parser. 
      * 
      * @param   LexerInterface  $lexer  jade lexer
      */
-    public function __construct(LexerInterface $lexer)
+    public function __construct(Parser $parser, DumperInterface $dumper, $cache = null)
     {
-        $this->parser = new Parser($lexer);
+        $this->parser = $parser;
+        $this->dumper = $dumper;
+        $this->cache  = $cache;
     }
 
     /**
-     * Register specific dumper with custom name.
+     * Render provided input to dumped string. 
      * 
-     * @param   string          $name       dumper name
-     * @param   DumperInterface $dumper     dumper
+     * @param   string  $input  input string or file path
      *
-     * @throws  \InvalidArgumentException   if dumper with such name already registered
+     * @return  string          dumped string
      */
-    public function registerDumper($name, DumperInterface $dumper)
+    public function render($input)
     {
-        if (isset($this->dumpers[$name])) {
-            throw new \InvalidArgumentException(sprintf('Dumper with name %s already registered.', $name));
+        $source = $this->getInputSource($input);
+        $parsed = $this->parser->parse($source);
+
+        return $this->dumper->dump($parsed);
+    }
+
+    /**
+     * Get current fresh cache path.
+     * Or render & dump input to new cache & return it's path.
+     * 
+     * @param   string  $input  input string or file path
+     *
+     * @return  string          cache path
+     */
+    public function cache($input)
+    {
+        if (null === $this->cache || !is_dir($this->cache)) {
+            throw new Exception('You must provide correct cache path to Jade for caching.');
         }
 
-        $this->dumpers[$name] = $dumper;
-    }
+        $cacheKey   = $this->getInputCacheKey($input);
+        $cacheTime  = $this->getCacheTime($cacheKey);
 
-    /**
-     * Set default dumper name.
-     * 
-     * @param   string  $name               dumper name
-     *
-     * @throws  \InvalidArgumentException   if dumper with such name not registered
-     */
-    public function setDefaultDumper($name)
-    {
-        if (!isset($this->dumpers[$name])) {
-            throw new \InvalidArgumentException(sprintf('No dumper with %s name registered.', $name));
+        if (false !== $cacheTime && $this->isCacheFresh($input, $cacheTime)) {
+            return $this->getCachePath($cacheKey);
         }
 
-        $this->dumperName = $name;
+        if (!is_writable($this->cache)) {
+            throw new Exception(sprintf('Cache directory must be writable. "%s" is not.', $this->cache));
+        }
+
+        $rendered = $this->render($input);
+
+        return $this->cacheInput($cacheKey, $rendered);
     }
 
     /**
-     * Load & parse jade document. 
+     * Return source from input (Jade template). 
      * 
-     * @param   string  $string jade document
-     *
-     * @throws  Exception   on parsing errors
-     */
-    public function load($string)
-    {
-        $this->document = $this->parser->parse($string);
-    }
-
-    /**
-     * Load & parse jade document from file. 
-     * 
-     * @param   string  $filename   jade document file path
-     */
-    public function loadFile($filename)
-    {
-        $this->load(file_get_contents($filename));
-    }
-
-    /**
-     * Dump jade document with current dumper & return dumped string. 
-     * 
-     * @param   string  $dumperName dumper name (will use default if no provided)
+     * @param   string  $input  input string or file path
      *
      * @return  string
-     *
-     * @throws  Exception           if dumper is not specified
      */
-    public function dump($dumperName = null)
+    protected function getInputSource($input)
     {
-        $dumperName = null !== $dumperName ? $dumperName : $this->dumperName;
-
-        if (null === $dumperName) {
-            throw new Exception('You must specify dumper name');
+        if (is_file($input)) {
+            return file_get_contents($input);
         }
 
-        return $this->dumpers[$dumperName]->dump($this->document);
+        return (string) $input;
     }
 
     /**
-     * Dump jade document with current dumper to specified file. 
+     * Return caching key for input. 
      * 
-     * @param   string  $path       dumping file path
-     * @param   string  $dumperName dumper name (will use default if no provided)
+     * @param   string  $input  input string or file path
+     *
+     * @return  string
      */
-    public function dumpToFile($path, $dumperName = null)
+    protected function getInputCacheKey($input)
     {
-        file_put_contents($path, $this->dump(), $dumperName);
+        if (is_file($input)) {
+            return basename($input, '.jade');
+        } else {
+            throw new \InvalidArgumentException('Only file templates can be cached.');
+        }
+    }
+
+    /**
+     * Return full cache path for specified cache key. 
+     * 
+     * @param   string  $cacheKey   cache key
+     *
+     * @return  string              absolute path
+     */
+    protected function getCachePath($cacheKey)
+    {
+        return $this->cache . '/' . $cacheKey . '.php';
+    }
+
+    /**
+     * Return cache time creation. 
+     * 
+     * @param   string  $cacheKey   cache key
+     *
+     * @return  integer             UNIX timestamp (filemtime used)
+     */
+    protected function getCacheTime($cacheKey)
+    {
+        $path = $this->getCachePath($cacheKey);
+
+        return filemtime($path);
+    }
+
+    /**
+     * Return true if cache, created at specified time is fresh enough for provided input. 
+     * 
+     * @param   string  $input      input string or file
+     * @param   srting  $cacheTime  cache key
+     *
+     * @return  boolean             true if fresh, false otherways
+     */
+    protected function isCacheFresh($input, $cacheTime)
+    {
+        if (is_file($input)) {
+            return filemtime($input) < $cacheTime;
+        }
+
+        return false;
+    }
+
+    /**
+     * Cache rendered input at provided key. 
+     * 
+     * @param   string  $cacheKey   new cache key
+     * @param   string  $rendered   rendered input
+     *
+     * @return  string              new cache path
+     */
+    protected function cacheInput($cacheKey, $rendered)
+    {
+        $path = $this->getCachePath($cacheKey);
+
+        file_put_contents($path, $rendered);
+
+        return $path;
     }
 }

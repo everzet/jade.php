@@ -1,6 +1,7 @@
 <?php
 
 use Everzet\Jade\Jade;
+use Everzet\Jade\Parser;
 use Everzet\Jade\Lexer\Lexer;
 use Everzet\Jade\Dumper\PHPDumper;
 use Everzet\Jade\Visitor\AutotagsVisitor;
@@ -18,18 +19,20 @@ use Everzet\Jade\Visitor\AutotagsVisitor;
  */
 class JadeTest extends \PHPUnit_Framework_TestCase
 {
-    protected function parse($value)
-    {
-        $lexer  = new Lexer();
-        $jade   = new Jade($lexer);
+    protected $jade;
 
+    public function __construct()
+    {
+        $parser = new Parser(new Lexer());
         $dumper = new PHPDumper();
         $dumper->registerVisitor('tag', new AutotagsVisitor());
 
-        $jade->registerDumper('php', $dumper);
-        $jade->load($value);
+        $this->jade = new Jade($parser, $dumper);
+    }
 
-        return $jade->dump('php');
+    protected function parse($value)
+    {
+        return $this->jade->render($value);
     }
 
     public function testDoctypes()
