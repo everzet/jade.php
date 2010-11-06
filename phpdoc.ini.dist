@@ -1,0 +1,14 @@
+files               = "*.php"
+ignore              = "CVS, .svn, .git, _compiled"
+source_path         = "./src"
+doclet              = standard
+overview            = readme.html
+package_comment_dir = ./
+public              = on
+d                   = "api"
+default_package     = "jade.php"
+windowtitle         = "jade.php"
+doctitle            = "jade.php: PHP 5.3 HAML-like templates translator"
+header              = "jade.php"
+footer              = "jade.php"
+tree                = on
