@@ -4,7 +4,7 @@
 <head>
 
 <meta name="generator" content="PHPDoctor 2RC4 (http://phpdoctor.sourceforge.net/)">
-<meta name="when" content="Sun, 07 Nov 2010 00:11:15 +0200">
+<meta name="when" content="Sun, 07 Nov 2010 00:14:57 +0200">
 
 <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
 <link rel="start" href="../../overview-summary.html">
@@ -62,8 +62,7 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <tr><th colspan="2">Method Summary</th></tr>
 <tr>
 <td class="type"> string</td>
-<td class="description"><p class="name"><a href="#cache()">cache</a>(string input)</p><p class="description">Get current fresh cache path.
-</p></td>
+<td class="description"><p class="name"><a href="#cache()">cache</a>(string input)</p><p class="description">Get current fresh cache path or render & dump input to new cache & return it's path.</p></td>
 </tr>
 <tr>
 <td class="type">protected  string</td>
@@ -109,12 +108,11 @@ Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> 
 <hr>
 
 <h2 id="detail_method">Method Detail</h2>
-<div class="location">/Everzet/Jade/Jade.php at line 61</div>
+<div class="location">/Everzet/Jade/Jade.php at line 60</div>
 <h3 id="cache()">cache</h3>
 <code class="signature">public  string <strong>cache</strong>(string input)</code>
 <div class="details">
-<p>Get current fresh cache path.
-Or render & dump input to new cache & return it's path.</p><dl>
+<p>Get current fresh cache path or render & dump input to new cache & return it's path.</p><dl>
 <dt>Parameters:</dt>
 <dd>input - input string or file path</dd>
 <dt>Returns:</dt>
@@ -124,7 +122,7 @@ Or render & dump input to new cache & return it's path.</p><dl>
 
 <hr>
 
-<div class="location">/Everzet/Jade/Jade.php at line 170</div>
+<div class="location">/Everzet/Jade/Jade.php at line 169</div>
 <h3 id="cacheInput()">cacheInput</h3>
 <code class="signature">protected  string <strong>cacheInput</strong>(string cacheKey, string rendered)</code>
 <div class="details">
@@ -139,7 +137,7 @@ Or render & dump input to new cache & return it's path.</p><dl>
 
 <hr>
 
-<div class="location">/Everzet/Jade/Jade.php at line 122</div>
+<div class="location">/Everzet/Jade/Jade.php at line 121</div>
 <h3 id="getCachePath()">getCachePath</h3>
 <code class="signature">protected  string <strong>getCachePath</strong>(string cacheKey)</code>
 <div class="details">
@@ -153,7 +151,7 @@ Or render & dump input to new cache & return it's path.</p><dl>
 
 <hr>
 
-<div class="location">/Everzet/Jade/Jade.php at line 134</div>
+<div class="location">/Everzet/Jade/Jade.php at line 133</div>
 <h3 id="getCacheTime()">getCacheTime</h3>
 <code class="signature">protected  integer <strong>getCacheTime</strong>(string cacheKey)</code>
 <div class="details">
@@ -167,7 +165,7 @@ Or render & dump input to new cache & return it's path.</p><dl>
 
 <hr>
 
-<div class="location">/Everzet/Jade/Jade.php at line 106</div>
+<div class="location">/Everzet/Jade/Jade.php at line 105</div>
 <h3 id="getInputCacheKey()">getInputCacheKey</h3>
 <code class="signature">protected  string <strong>getInputCacheKey</strong>(string input)</code>
 <div class="details">
@@ -179,7 +177,7 @@ Or render & dump input to new cache & return it's path.</p><dl>
 
 <hr>
 
-<div class="location">/Everzet/Jade/Jade.php at line 90</div>
+<div class="location">/Everzet/Jade/Jade.php at line 89</div>
 <h3 id="getInputSource()">getInputSource</h3>
 <code class="signature">protected  string <strong>getInputSource</strong>(string input)</code>
 <div class="details">
@@ -191,7 +189,7 @@ Or render & dump input to new cache & return it's path.</p><dl>
 
 <hr>
 
-<div class="location">/Everzet/Jade/Jade.php at line 153</div>
+<div class="location">/Everzet/Jade/Jade.php at line 152</div>
 <h3 id="isCacheFresh()">isCacheFresh</h3>
 <code class="signature">protected  boolean <strong>isCacheFresh</strong>(string input, srting cacheTime)</code>
 <div class="details">
