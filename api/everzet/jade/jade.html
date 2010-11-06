@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://phpdoctor.sourceforge.net/)">
+<meta name="when" content="Sun, 07 Nov 2010 00:11:15 +0200">
+
+<link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+<link rel="start" href="../../overview-summary.html">
+
+<title>Jade (jade.php)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../overview-summary.html">Overview</a></li>
+<li><a href="../../everzet/jade/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../everzet/jade/package-tree.html">Tree</a></li>
+<li><a href="../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../index.html" target="_top">Frames</a>
+<a href="../../everzet/jade/jade.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Everzet\Jade\Jade</div>
+<div class="location">/Everzet/Jade/Jade.php at line 20</div>
+
+<h1>Class Jade</h1>
+
+<pre class="tree"><strong>Jade</strong><br /></pre>
+
+<hr>
+
+<p class="signature">public  class <strong>Jade</strong></p>
+
+<div class="comment" id="overview_description"><p>Jade.</p></div>
+
+<hr>
+
+<table id="summary_constr">
+<tr><th colspan="2">Constructor Summary</th></tr>
+<tr>
+<td class="description"><p class="name"><a href="#Jade()">Jade</a>(mixed parser, mixed dumper, mixed cache, <a href="../../everzet/jade/lexer/lexerinterface.html">LexerInterface</a> lexer)</p><p class="description">Initialize parser.</p></td>
+</tr>
+</table>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type"> string</td>
+<td class="description"><p class="name"><a href="#cache()">cache</a>(string input)</p><p class="description">Get current fresh cache path.
+</p></td>
+</tr>
+<tr>
+<td class="type">protected  string</td>
+<td class="description"><p class="name"><a href="#cacheInput()">cacheInput</a>(string cacheKey, string rendered)</p><p class="description">Cache rendered input at provided key.</p></td>
+</tr>
+<tr>
+<td class="type">protected  string</td>
+<td class="description"><p class="name"><a href="#getCachePath()">getCachePath</a>(string cacheKey)</p><p class="description">Return full cache path for specified cache key.</p></td>
+</tr>
+<tr>
+<td class="type">protected  integer</td>
+<td class="description"><p class="name"><a href="#getCacheTime()">getCacheTime</a>(string cacheKey)</p><p class="description">Return cache time creation.</p></td>
+</tr>
+<tr>
+<td class="type">protected  string</td>
+<td class="description"><p class="name"><a href="#getInputCacheKey()">getInputCacheKey</a>(string input)</p><p class="description">Return caching key for input.</p></td>
+</tr>
+<tr>
+<td class="type">protected  string</td>
+<td class="description"><p class="name"><a href="#getInputSource()">getInputSource</a>(string input)</p><p class="description">Return source from input (Jade template).</p></td>
+</tr>
+<tr>
+<td class="type">protected  boolean</td>
+<td class="description"><p class="name"><a href="#isCacheFresh()">isCacheFresh</a>(string input, srting cacheTime)</p><p class="description">Return true if cache, created at specified time is fresh enough for provided input.</p></td>
+</tr>
+<tr>
+<td class="type"> string</td>
+<td class="description"><p class="name"><a href="#render()">render</a>(string input)</p><p class="description">Render provided input to dumped string.</p></td>
+</tr>
+</table>
+
+<h2 id="detail_constr">Constructor Detail</h2>
+<div class="location">/Everzet/Jade/Jade.php at line 31</div>
+<h3 id="Jade()">Jade</h3>
+<code class="signature">public <strong>Jade</strong>(mixed parser, mixed dumper, mixed cache, <a href="../../everzet/jade/lexer/lexerinterface.html">LexerInterface</a> lexer)</code>
+<div class="details">
+<p>Initialize parser.</p><dl>
+<dt>Parameters:</dt>
+<dd>lexer - jade lexer</dd>
+</dl>
+</div>
+
+<hr>
+
+<h2 id="detail_method">Method Detail</h2>
+<div class="location">/Everzet/Jade/Jade.php at line 61</div>
+<h3 id="cache()">cache</h3>
+<code class="signature">public  string <strong>cache</strong>(string input)</code>
+<div class="details">
+<p>Get current fresh cache path.
+Or render & dump input to new cache & return it's path.</p><dl>
+<dt>Parameters:</dt>
+<dd>input - input string or file path</dd>
+<dt>Returns:</dt>
+<dd>cache path</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Jade.php at line 170</div>
+<h3 id="cacheInput()">cacheInput</h3>
+<code class="signature">protected  string <strong>cacheInput</strong>(string cacheKey, string rendered)</code>
+<div class="details">
+<p>Cache rendered input at provided key.</p><dl>
+<dt>Parameters:</dt>
+<dd>cacheKey - new cache key</dd>
+<dd>rendered - rendered input</dd>
+<dt>Returns:</dt>
+<dd>new cache path</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Jade.php at line 122</div>
+<h3 id="getCachePath()">getCachePath</h3>
+<code class="signature">protected  string <strong>getCachePath</strong>(string cacheKey)</code>
+<div class="details">
+<p>Return full cache path for specified cache key.</p><dl>
+<dt>Parameters:</dt>
+<dd>cacheKey - cache key</dd>
+<dt>Returns:</dt>
+<dd>absolute path</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Jade.php at line 134</div>
+<h3 id="getCacheTime()">getCacheTime</h3>
+<code class="signature">protected  integer <strong>getCacheTime</strong>(string cacheKey)</code>
+<div class="details">
+<p>Return cache time creation.</p><dl>
+<dt>Parameters:</dt>
+<dd>cacheKey - cache key</dd>
+<dt>Returns:</dt>
+<dd>UNIX timestamp (filemtime used)</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Jade.php at line 106</div>
+<h3 id="getInputCacheKey()">getInputCacheKey</h3>
+<code class="signature">protected  string <strong>getInputCacheKey</strong>(string input)</code>
+<div class="details">
+<p>Return caching key for input.</p><dl>
+<dt>Parameters:</dt>
+<dd>input - input string or file path</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Jade.php at line 90</div>
+<h3 id="getInputSource()">getInputSource</h3>
+<code class="signature">protected  string <strong>getInputSource</strong>(string input)</code>
+<div class="details">
+<p>Return source from input (Jade template).</p><dl>
+<dt>Parameters:</dt>
+<dd>input - input string or file path</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Jade.php at line 153</div>
+<h3 id="isCacheFresh()">isCacheFresh</h3>
+<code class="signature">protected  boolean <strong>isCacheFresh</strong>(string input, srting cacheTime)</code>
+<div class="details">
+<p>Return true if cache, created at specified time is fresh enough for provided input.</p><dl>
+<dt>Parameters:</dt>
+<dd>input - input string or file</dd>
+<dd>cacheTime - cache key</dd>
+<dt>Returns:</dt>
+<dd>true if fresh, false otherways</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Jade.php at line 45</div>
+<h3 id="render()">render</h3>
+<code class="signature">public  string <strong>render</strong>(string input)</code>
+<div class="details">
+<p>Render provided input to dumped string.</p><dl>
+<dt>Parameters:</dt>
+<dd>input - input string or file path</dd>
+<dt>Returns:</dt>
+<dd>dumped string</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../overview-summary.html">Overview</a></li>
+<li><a href="../../everzet/jade/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../everzet/jade/package-tree.html">Tree</a></li>
+<li><a href="../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../index.html" target="_top">Frames</a>
+<a href="../../everzet/jade/jade.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

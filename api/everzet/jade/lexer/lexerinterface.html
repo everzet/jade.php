@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://phpdoctor.sourceforge.net/)">
+<meta name="when" content="Sun, 07 Nov 2010 00:11:15 +0200">
+
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+<link rel="start" href="../../../overview-summary.html">
+
+<title>LexerInterface (jade.php)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../everzet/jade/lexer/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../everzet/jade/lexer/package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../everzet/jade/lexer/lexerinterface.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Everzet\Jade\Lexer\LexerInterface</div>
+<div class="location">/Everzet/Jade/Lexer/LexerInterface.php at line 16</div>
+
+<h1>Interface LexerInterface</h1>
+
+<pre class="tree"><strong>LexerInterface</strong><br /></pre>
+
+<hr>
+
+<p class="signature">public  interface <strong>LexerInterface</strong></p>
+
+<div class="comment" id="overview_description"><p>Jade Lexer Interface.</p></div>
+
+<hr>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#deferToken()">deferToken</a>(Object token)</p><p class="description">Defer token.</p></td>
+</tr>
+<tr>
+<td class="type"> Object</td>
+<td class="description"><p class="name"><a href="#getAdvancedToken()">getAdvancedToken</a>()</p><p class="description">Return next token or previously stashed one.</p></td>
+</tr>
+<tr>
+<td class="type"> integer</td>
+<td class="description"><p class="name"><a href="#getCurrentLine()">getCurrentLine</a>()</p><p class="description">Return current line number.</p></td>
+</tr>
+<tr>
+<td class="type"> Object</td>
+<td class="description"><p class="name"><a href="#predictToken()">predictToken</a>(integer number)</p><p class="description">Predict for number of tokens.</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setInput()">setInput</a>(string input)</p><p class="description">Set lexer input.</p></td>
+</tr>
+<tr>
+<td class="type"> Object</td>
+<td class="description"><p class="name"><a href="#takeToken()">takeToken</a>(string type, string value)</p><p class="description">Construct token with specified parameters.</p></td>
+</tr>
+</table>
+
+<h2 id="detail_method">Method Detail</h2>
+<div class="location">/Everzet/Jade/Lexer/LexerInterface.php at line 44</div>
+<h3 id="deferToken()">deferToken</h3>
+<code class="signature">public  void <strong>deferToken</strong>(Object token)</code>
+<div class="details">
+<p>Defer token.</p><dl>
+<dt>Parameters:</dt>
+<dd>token - token to defer</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/LexerInterface.php at line 30</div>
+<h3 id="getAdvancedToken()">getAdvancedToken</h3>
+<code class="signature">public  Object <strong>getAdvancedToken</strong>()</code>
+<div class="details">
+<p>Return next token or previously stashed one.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/LexerInterface.php at line 37</div>
+<h3 id="getCurrentLine()">getCurrentLine</h3>
+<code class="signature">public  integer <strong>getCurrentLine</strong>()</code>
+<div class="details">
+<p>Return current line number.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/LexerInterface.php at line 53</div>
+<h3 id="predictToken()">predictToken</h3>
+<code class="signature">public  Object <strong>predictToken</strong>(integer number)</code>
+<div class="details">
+<p>Predict for number of tokens.</p><dl>
+<dt>Parameters:</dt>
+<dd>number - number of tokens to predict</dd>
+<dt>Returns:</dt>
+<dd>predicted token</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/LexerInterface.php at line 23</div>
+<h3 id="setInput()">setInput</h3>
+<code class="signature">public  void <strong>setInput</strong>(string input)</code>
+<div class="details">
+<p>Set lexer input.</p><dl>
+<dt>Parameters:</dt>
+<dd>input - input string</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/LexerInterface.php at line 63</div>
+<h3 id="takeToken()">takeToken</h3>
+<code class="signature">public  Object <strong>takeToken</strong>(string type, string value)</code>
+<div class="details">
+<p>Construct token with specified parameters.</p><dl>
+<dt>Parameters:</dt>
+<dd>type - token type</dd>
+<dd>value - token value</dd>
+<dt>Returns:</dt>
+<dd>new token object</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../everzet/jade/lexer/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../everzet/jade/lexer/package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../everzet/jade/lexer/lexerinterface.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

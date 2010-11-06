@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://phpdoctor.sourceforge.net/)">
+<meta name="when" content="Sun, 07 Nov 2010 00:11:15 +0200">
+
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+<link rel="start" href="../../../overview-summary.html">
+
+<title>FilterNode (jade.php)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../everzet/jade/node/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../everzet/jade/node/package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../everzet/jade/node/filternode.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Everzet\Jade\Node\FilterNode</div>
+<div class="location">/Everzet/Jade/Node/FilterNode.php at line 16</div>
+
+<h1>Class FilterNode</h1>
+
+<pre class="tree">Class:FilterNode - Superclass: Node
+<a href="../../../everzet/jade/node/node.html">Node</a><br>   &lfloor;&nbsp;<strong>FilterNode</strong><br /></pre>
+
+<hr>
+
+<p class="signature">public  class <strong>FilterNode</strong><br>extends <a href="../../../everzet/jade/node/node.html">Node</a>
+
+</p>
+
+<div class="comment" id="overview_description"><p>Filter Node.</p></div>
+
+<hr>
+
+<table id="summary_constr">
+<tr><th colspan="2">Constructor Summary</th></tr>
+<tr>
+<td class="description"><p class="name"><a href="#FilterNode()">FilterNode</a>(string name, array attributes, integer line)</p><p class="description">Initialize Filter node.</p></td>
+</tr>
+</table>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type"> array</td>
+<td class="description"><p class="name"><a href="#getAttributes()">getAttributes</a>()</p><p class="description">Return attributes array</p></td>
+</tr>
+<tr>
+<td class="type"> BlockNode|TextNode</td>
+<td class="description"><p class="name"><a href="#getBlock()">getBlock</a>()</p><p class="description">Return block node to filter.</p></td>
+</tr>
+<tr>
+<td class="type"> string</td>
+<td class="description"><p class="name"><a href="#getName()">getName</a>()</p><p class="description">Return filter name.</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setBlock()">setBlock</a>(BlockNode|TextNode node)</p><p class="description">Set block node to filter.</p></td>
+</tr>
+</table>
+
+<table class="inherit">
+<tr><th colspan="2">Methods inherited from Everzet\Jade\Node\Node</th></tr>
+<tr><td><a href="../../../everzet/jade/node/node.html#getLine()">getLine</a></td></tr></table>
+
+<h2 id="detail_constr">Constructor Detail</h2>
+<div class="location">/Everzet/Jade/Node/FilterNode.php at line 29</div>
+<h3 id="FilterNode()">FilterNode</h3>
+<code class="signature">public <strong>FilterNode</strong>(string name, array attributes, integer line)</code>
+<div class="details">
+<p>Initialize Filter node.</p><dl>
+<dt>Parameters:</dt>
+<dd>name - filter name</dd>
+<dd>attributes - filter attributes</dd>
+<dd>line - source line</dd>
+</dl>
+</div>
+
+<hr>
+
+<h2 id="detail_method">Method Detail</h2>
+<div class="location">/Everzet/Jade/Node/FilterNode.php at line 72</div>
+<h3 id="getAttributes()">getAttributes</h3>
+<code class="signature">public  array <strong>getAttributes</strong>()</code>
+<div class="details">
+<p>Return attributes array</p><dl>
+<dt>Returns:</dt>
+<dd>associative array of attributes</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/FilterNode.php at line 52</div>
+<h3 id="getBlock()">getBlock</h3>
+<code class="signature">public  BlockNode|TextNode <strong>getBlock</strong>()</code>
+<div class="details">
+<p>Return block node to filter.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/FilterNode.php at line 62</div>
+<h3 id="getName()">getName</h3>
+<code class="signature">public  string <strong>getName</strong>()</code>
+<div class="details">
+<p>Return filter name.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/FilterNode.php at line 42</div>
+<h3 id="setBlock()">setBlock</h3>
+<code class="signature">public  void <strong>setBlock</strong>(BlockNode|TextNode node)</code>
+<div class="details">
+<p>Set block node to filter.</p><dl>
+<dt>Parameters:</dt>
+<dd>node - filtering node</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../everzet/jade/node/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../everzet/jade/node/package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../everzet/jade/node/filternode.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

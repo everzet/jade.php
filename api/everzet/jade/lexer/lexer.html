@@ -1,0 +1,406 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://phpdoctor.sourceforge.net/)">
+<meta name="when" content="Sun, 07 Nov 2010 00:11:15 +0200">
+
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+<link rel="start" href="../../../overview-summary.html">
+
+<title>Lexer (jade.php)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../everzet/jade/lexer/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../everzet/jade/lexer/package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../everzet/jade/lexer/lexer.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Everzet\Jade\Lexer\Lexer</div>
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 18</div>
+
+<h1>Class Lexer</h1>
+
+<pre class="tree"><strong>Lexer</strong><br /></pre>
+
+<hr>
+
+<p class="signature">public  class <strong>Lexer</strong></p>
+
+<div class="comment" id="overview_description"><p>Jade Lexer.</p></div>
+
+<hr>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type">protected  void</td>
+<td class="description"><p class="name"><a href="#consumeInput()">consumeInput</a>(integer length)</p><p class="description">Consume input.</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#deferToken()">deferToken</a>(Object token)</p><p class="description">Defer token.</p></td>
+</tr>
+<tr>
+<td class="type"> Object</td>
+<td class="description"><p class="name"><a href="#getAdvancedToken()">getAdvancedToken</a>()</p><p class="description">Return next token or previously stashed one.</p></td>
+</tr>
+<tr>
+<td class="type"> integer</td>
+<td class="description"><p class="name"><a href="#getCurrentLine()">getCurrentLine</a>()</p><p class="description">Return current line number.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|boolean</td>
+<td class="description"><p class="name"><a href="#getDeferredToken()">getDeferredToken</a>()</p><p class="description">Return deferred token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  integer</td>
+<td class="description"><p class="name"><a href="#getDelimitersIndex()">getDelimitersIndex</a>(string begin, string end)</p><p class="description">Return the index of begin/end delimiters.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object</td>
+<td class="description"><p class="name"><a href="#getNextToken()">getNextToken</a>()</p><p class="description">Return next token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|boolean</td>
+<td class="description"><p class="name"><a href="#getStashedToken()">getStashedToken</a>()</p><p class="description">Return stashed token.</p></td>
+</tr>
+<tr>
+<td class="type"> Object</td>
+<td class="description"><p class="name"><a href="#predictToken()">predictToken</a>(integer number)</p><p class="description">Predict for number of tokens.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanAttributes()">scanAttributes</a>()</p><p class="description">Scan attributes from input & return them if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanClass()">scanClass</a>()</p><p class="description">Scan class from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanCode()">scanCode</a>()</p><p class="description">Scan code from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanComment()">scanComment</a>()</p><p class="description">Scan comment from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanDoctype()">scanDoctype</a>()</p><p class="description">Scan doctype from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanEOS()">scanEOS</a>()</p><p class="description">Scan EOS from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanFilter()">scanFilter</a>()</p><p class="description">Scan tag from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanId()">scanId</a>()</p><p class="description">Scan id from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanIndentation()">scanIndentation</a>()</p><p class="description">Scan indentation from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanInput()">scanInput</a>(string regex, string type)</p><p class="description">Scan for token with specified regex.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanTag()">scanTag</a>()</p><p class="description">Scan tag from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type">protected  Object|null</td>
+<td class="description"><p class="name"><a href="#scanText()">scanText</a>()</p><p class="description">Scan text from input & return it if found.</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setInput()">setInput</a>(string input)</p><p class="description">Set lexer input.</p></td>
+</tr>
+<tr>
+<td class="type"> Object</td>
+<td class="description"><p class="name"><a href="#takeToken()">takeToken</a>(string type, string value)</p><p class="description">Construct token with specified parameters.</p></td>
+</tr>
+</table>
+
+<h2 id="detail_method">Method Detail</h2>
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 165</div>
+<h3 id="consumeInput()">consumeInput</h3>
+<code class="signature">protected  void <strong>consumeInput</strong>(integer length)</code>
+<div class="details">
+<p>Consume input.</p><dl>
+<dt>Parameters:</dt>
+<dd>length - length of input to consume</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 69</div>
+<h3 id="deferToken()">deferToken</h3>
+<code class="signature">public  void <strong>deferToken</strong>(Object token)</code>
+<div class="details">
+<p>Defer token.</p><dl>
+<dt>Parameters:</dt>
+<dd>token - token to defer</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 45</div>
+<h3 id="getAdvancedToken()">getAdvancedToken</h3>
+<code class="signature">public  Object <strong>getAdvancedToken</strong>()</code>
+<div class="details">
+<p>Return next token or previously stashed one.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 59</div>
+<h3 id="getCurrentLine()">getCurrentLine</h3>
+<code class="signature">public  integer <strong>getCurrentLine</strong>()</code>
+<div class="details">
+<p>Return current line number.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 124</div>
+<h3 id="getDeferredToken()">getDeferredToken</h3>
+<code class="signature">protected  Object|boolean <strong>getDeferredToken</strong>()</code>
+<div class="details">
+<p>Return deferred token.</p><dl>
+<dt>Returns:</dt>
+<dd>token if has deferred, false otherways</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 418</div>
+<h3 id="getDelimitersIndex()">getDelimitersIndex</h3>
+<code class="signature">protected  integer <strong>getDelimitersIndex</strong>(string begin, string end)</code>
+<div class="details">
+<p>Return the index of begin/end delimiters.</p><dl>
+<dt>Parameters:</dt>
+<dd>begin - befin delimiter</dd>
+<dd>end - end delimiter</dd>
+<dt>Returns:</dt>
+<dd>position index</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 134</div>
+<h3 id="getNextToken()">getNextToken</h3>
+<code class="signature">protected  Object <strong>getNextToken</strong>()</code>
+<div class="details">
+<p>Return next token.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 114</div>
+<h3 id="getStashedToken()">getStashedToken</h3>
+<code class="signature">protected  Object|boolean <strong>getStashedToken</strong>()</code>
+<div class="details">
+<p>Return stashed token.</p><dl>
+<dt>Returns:</dt>
+<dd>token if has stashed, false otherways</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 81</div>
+<h3 id="predictToken()">predictToken</h3>
+<code class="signature">public  Object <strong>predictToken</strong>(integer number)</code>
+<div class="details">
+<p>Predict for number of tokens.</p><dl>
+<dt>Parameters:</dt>
+<dd>number - number of tokens to predict</dd>
+<dt>Returns:</dt>
+<dd>predicted token</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 305</div>
+<h3 id="scanAttributes()">scanAttributes</h3>
+<code class="signature">protected  Object|null <strong>scanAttributes</strong>()</code>
+<div class="details">
+<p>Scan attributes from input & return them if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 265</div>
+<h3 id="scanClass()">scanClass</h3>
+<code class="signature">protected  Object|null <strong>scanClass</strong>()</code>
+<div class="details">
+<p>Scan class from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 285</div>
+<h3 id="scanCode()">scanCode</h3>
+<code class="signature">protected  Object|null <strong>scanCode</strong>()</code>
+<div class="details">
+<p>Scan code from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 207</div>
+<h3 id="scanComment()">scanComment</h3>
+<code class="signature">protected  Object|null <strong>scanComment</strong>()</code>
+<div class="details">
+<p>Scan comment from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 245</div>
+<h3 id="scanDoctype()">scanDoctype</h3>
+<code class="signature">protected  Object|null <strong>scanDoctype</strong>()</code>
+<div class="details">
+<p>Scan doctype from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 193</div>
+<h3 id="scanEOS()">scanEOS</h3>
+<code class="signature">protected  Object|null <strong>scanEOS</strong>()</code>
+<div class="details">
+<p>Scan EOS from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 235</div>
+<h3 id="scanFilter()">scanFilter</h3>
+<code class="signature">protected  Object|null <strong>scanFilter</strong>()</code>
+<div class="details">
+<p>Scan tag from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 255</div>
+<h3 id="scanId()">scanId</h3>
+<code class="signature">protected  Object|null <strong>scanId</strong>()</code>
+<div class="details">
+<p>Scan id from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 367</div>
+<h3 id="scanIndentation()">scanIndentation</h3>
+<code class="signature">protected  Object|null <strong>scanIndentation</strong>()</code>
+<div class="details">
+<p>Scan indentation from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 178</div>
+<h3 id="scanInput()">scanInput</h3>
+<code class="signature">protected  Object|null <strong>scanInput</strong>(string regex, string type)</code>
+<div class="details">
+<p>Scan for token with specified regex.</p><dl>
+<dt>Parameters:</dt>
+<dd>regex - regular expression</dd>
+<dd>type - expected token type</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 225</div>
+<h3 id="scanTag()">scanTag</h3>
+<code class="signature">protected  Object|null <strong>scanTag</strong>()</code>
+<div class="details">
+<p>Scan tag from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 275</div>
+<h3 id="scanText()">scanText</h3>
+<code class="signature">protected  Object|null <strong>scanText</strong>()</code>
+<div class="details">
+<p>Scan text from input & return it if found.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 31</div>
+<h3 id="setInput()">setInput</h3>
+<code class="signature">public  void <strong>setInput</strong>(string input)</code>
+<div class="details">
+<p>Set lexer input.</p><dl>
+<dt>Parameters:</dt>
+<dd>input - input string</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Lexer/Lexer.php at line 100</div>
+<h3 id="takeToken()">takeToken</h3>
+<code class="signature">public  Object <strong>takeToken</strong>(string type, string value)</code>
+<div class="details">
+<p>Construct token with specified parameters.</p><dl>
+<dt>Parameters:</dt>
+<dd>type - token type</dd>
+<dd>value - token value</dd>
+<dt>Returns:</dt>
+<dd>new token object</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../everzet/jade/lexer/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../everzet/jade/lexer/package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../everzet/jade/lexer/lexer.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

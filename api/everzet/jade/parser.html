@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://phpdoctor.sourceforge.net/)">
+<meta name="when" content="Sun, 07 Nov 2010 00:11:15 +0200">
+
+<link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+<link rel="start" href="../../overview-summary.html">
+
+<title>Parser (jade.php)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../overview-summary.html">Overview</a></li>
+<li><a href="../../everzet/jade/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../everzet/jade/package-tree.html">Tree</a></li>
+<li><a href="../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../index.html" target="_top">Frames</a>
+<a href="../../everzet/jade/parser.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Everzet\Jade\Parser</div>
+<div class="location">/Everzet/Jade/Parser.php at line 28</div>
+
+<h1>Class Parser</h1>
+
+<pre class="tree"><strong>Parser</strong><br /></pre>
+
+<hr>
+
+<p class="signature">public  class <strong>Parser</strong></p>
+
+<div class="comment" id="overview_description"><p>Jade Parser.</p></div>
+
+<hr>
+
+<table id="summary_constr">
+<tr><th colspan="2">Constructor Summary</th></tr>
+<tr>
+<td class="description"><p class="name"><a href="#Parser()">Parser</a>(<a href="../../everzet/jade/lexer/lexerinterface.html">LexerInterface</a> lexer)</p><p class="description">Initialize Parser.</p></td>
+</tr>
+</table>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type">protected  void</td>
+<td class="description"><p class="name"><a href="#acceptTokenType()">acceptTokenType</a>(string type)</p><p class="description">Accept given type.</p></td>
+</tr>
+<tr>
+<td class="type">protected  void</td>
+<td class="description"><p class="name"><a href="#expectTokenType()">expectTokenType</a>(string type)</p><p class="description">Expect given type or throw Exception.</p></td>
+</tr>
+<tr>
+<td class="type"> <a href="../../everzet/jade/node/blocknode.html">BlockNode</a></td>
+<td class="description"><p class="name"><a href="#parse()">parse</a>(string input)</p><p class="description">Parse input returning block node.</p></td>
+</tr>
+<tr>
+<td class="type">protected  <a href="../../everzet/jade/node/blocknode.html">BlockNode</a></td>
+<td class="description"><p class="name"><a href="#parseBlock()">parseBlock</a>()</p><p class="description">Parse indented block token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  <a href="../../everzet/jade/node/codenode.html">CodeNode</a></td>
+<td class="description"><p class="name"><a href="#parseCode()">parseCode</a>()</p><p class="description">Parse next code token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  <a href="../../everzet/jade/node/commentnode.html">CommentNode</a></td>
+<td class="description"><p class="name"><a href="#parseComment()">parseComment</a>()</p><p class="description">Parse next commend token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  <a href="../../everzet/jade/node/doctypenode.html">DoctypeNode</a></td>
+<td class="description"><p class="name"><a href="#parseDoctype()">parseDoctype</a>()</p><p class="description">Parse next doctype token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  <a href="../../everzet/jade/node/node.html">Node</a></td>
+<td class="description"><p class="name"><a href="#parseExpression()">parseExpression</a>()</p><p class="description">Parse current expression & return Node.</p></td>
+</tr>
+<tr>
+<td class="type">protected  <a href="../../everzet/jade/node/filternode.html">FilterNode</a></td>
+<td class="description"><p class="name"><a href="#parseFilter()">parseFilter</a>()</p><p class="description">Parse next filter token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  <a href="../../everzet/jade/node/tagnode.html">TagNode</a></td>
+<td class="description"><p class="name"><a href="#parseTag()">parseTag</a>()</p><p class="description">Parse tag token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  <a href="../../everzet/jade/node/textnode.html">TextNode</a></td>
+<td class="description"><p class="name"><a href="#parseText()">parseText</a>(mixed trim)</p><p class="description">Parse next text token.</p></td>
+</tr>
+<tr>
+<td class="type">protected  TextToken</td>
+<td class="description"><p class="name"><a href="#parseTextBlock()">parseTextBlock</a>()</p><p class="description">Parse next indented? text token.</p></td>
+</tr>
+</table>
+
+<h2 id="detail_constr">Constructor Detail</h2>
+<div class="location">/Everzet/Jade/Parser.php at line 37</div>
+<h3 id="Parser()">Parser</h3>
+<code class="signature">public <strong>Parser</strong>(<a href="../../everzet/jade/lexer/lexerinterface.html">LexerInterface</a> lexer)</code>
+<div class="details">
+<p>Initialize Parser.</p><dl>
+<dt>Parameters:</dt>
+<dd>lexer - lexer object</dd>
+</dl>
+</div>
+
+<hr>
+
+<h2 id="detail_method">Method Detail</h2>
+<div class="location">/Everzet/Jade/Parser.php at line 85</div>
+<h3 id="acceptTokenType()">acceptTokenType</h3>
+<code class="signature">protected  void <strong>acceptTokenType</strong>(string type)</code>
+<div class="details">
+<p>Accept given type.</p><dl>
+<dt>Parameters:</dt>
+<dd>type - type</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 71</div>
+<h3 id="expectTokenType()">expectTokenType</h3>
+<code class="signature">protected  void <strong>expectTokenType</strong>(string type)</code>
+<div class="details">
+<p>Expect given type or throw Exception.</p><dl>
+<dt>Parameters:</dt>
+<dd>type - type</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 49</div>
+<h3 id="parse()">parse</h3>
+<code class="signature">public  <a href="../../everzet/jade/node/blocknode.html">BlockNode</a> <strong>parse</strong>(string input)</code>
+<div class="details">
+<p>Parse input returning block node.</p><dl>
+<dt>Parameters:</dt>
+<dd>input - jade document</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 243</div>
+<h3 id="parseBlock()">parseBlock</h3>
+<code class="signature">protected  <a href="../../everzet/jade/node/blocknode.html">BlockNode</a> <strong>parseBlock</strong>()</code>
+<div class="details">
+<p>Parse indented block token.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 140</div>
+<h3 id="parseCode()">parseCode</h3>
+<code class="signature">protected  <a href="../../everzet/jade/node/codenode.html">CodeNode</a> <strong>parseCode</strong>()</code>
+<div class="details">
+<p>Parse next code token.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 162</div>
+<h3 id="parseComment()">parseComment</h3>
+<code class="signature">protected  <a href="../../everzet/jade/node/commentnode.html">CommentNode</a> <strong>parseComment</strong>()</code>
+<div class="details">
+<p>Parse next commend token.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 184</div>
+<h3 id="parseDoctype()">parseDoctype</h3>
+<code class="signature">protected  <a href="../../everzet/jade/node/doctypenode.html">DoctypeNode</a> <strong>parseDoctype</strong>()</code>
+<div class="details">
+<p>Parse next doctype token.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 97</div>
+<h3 id="parseExpression()">parseExpression</h3>
+<code class="signature">protected  <a href="../../everzet/jade/node/node.html">Node</a> <strong>parseExpression</strong>()</code>
+<div class="details">
+<p>Parse current expression & return Node.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 196</div>
+<h3 id="parseFilter()">parseFilter</h3>
+<code class="signature">protected  <a href="../../everzet/jade/node/filternode.html">FilterNode</a> <strong>parseFilter</strong>()</code>
+<div class="details">
+<p>Parse next filter token.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 265</div>
+<h3 id="parseTag()">parseTag</h3>
+<code class="signature">protected  <a href="../../everzet/jade/node/tagnode.html">TagNode</a> <strong>parseTag</strong>()</code>
+<div class="details">
+<p>Parse tag token.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 127</div>
+<h3 id="parseText()">parseText</h3>
+<code class="signature">protected  <a href="../../everzet/jade/node/textnode.html">TextNode</a> <strong>parseText</strong>(mixed trim)</code>
+<div class="details">
+<p>Parse next text token.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Parser.php at line 221</div>
+<h3 id="parseTextBlock()">parseTextBlock</h3>
+<code class="signature">protected  TextToken <strong>parseTextBlock</strong>()</code>
+<div class="details">
+<p>Parse next indented? text token.</p></div>
+
+<hr>
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../overview-summary.html">Overview</a></li>
+<li><a href="../../everzet/jade/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../everzet/jade/package-tree.html">Tree</a></li>
+<li><a href="../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../index.html" target="_top">Frames</a>
+<a href="../../everzet/jade/parser.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>

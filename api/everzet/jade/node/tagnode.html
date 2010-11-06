@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+
+<meta name="generator" content="PHPDoctor 2RC4 (http://phpdoctor.sourceforge.net/)">
+<meta name="when" content="Sun, 07 Nov 2010 00:11:15 +0200">
+
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css">
+<link rel="start" href="../../../overview-summary.html">
+
+<title>TagNode (jade.php)</title>
+
+</head>
+<body id="definition" onload="parent.document.title=document.title;">
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../everzet/jade/node/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../everzet/jade/node/package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../everzet/jade/node/tagnode.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<div class="qualifiedName">Everzet\Jade\Node\TagNode</div>
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 16</div>
+
+<h1>Class TagNode</h1>
+
+<pre class="tree">Class:TagNode - Superclass: BlockNode
+Class:BlockNode - Superclass: Node
+<a href="../../../everzet/jade/node/node.html">Node</a><br>   &lfloor;&nbsp;<a href="../../../everzet/jade/node/blocknode.html">BlockNode</a><br>      &lfloor;&nbsp;<strong>TagNode</strong><br /></pre>
+
+<hr>
+
+<p class="signature">public  class <strong>TagNode</strong><br>extends <a href="../../../everzet/jade/node/blocknode.html">BlockNode</a>
+
+</p>
+
+<div class="comment" id="overview_description"><p>Tag Node.</p></div>
+
+<hr>
+
+<table id="summary_constr">
+<tr><th colspan="2">Constructor Summary</th></tr>
+<tr>
+<td class="description"><p class="name"><a href="#TagNode()">TagNode</a>(string name, integer line)</p><p class="description">Initialize tag node.</p></td>
+</tr>
+</table>
+
+<table id="summary_method">
+<tr><th colspan="2">Method Summary</th></tr>
+<tr>
+<td class="type"> array</td>
+<td class="description"><p class="name"><a href="#getAttributes()">getAttributes</a>()</p><p class="description">Return all attributes.</p></td>
+</tr>
+<tr>
+<td class="type"> <a href="../../../everzet/jade/node/codenode.html">CodeNode</a></td>
+<td class="description"><p class="name"><a href="#getCode()">getCode</a>()</p><p class="description">Return inner code node.</p></td>
+</tr>
+<tr>
+<td class="type"> string</td>
+<td class="description"><p class="name"><a href="#getName()">getName</a>()</p><p class="description">Return tag name.</p></td>
+</tr>
+<tr>
+<td class="type"> TextNode|null</td>
+<td class="description"><p class="name"><a href="#getText()">getText</a>()</p><p class="description">Return inner text node.</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setAttribute()">setAttribute</a>(string key, string value)</p><p class="description">Set tag attribute to value.</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setCode()">setCode</a>(<a href="../../../everzet/jade/node/codenode.html">CodeNode</a> node)</p><p class="description">Set inner code node.</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setName()">setName</a>(string name)</p><p class="description">Set tag name.</p></td>
+</tr>
+<tr>
+<td class="type"> void</td>
+<td class="description"><p class="name"><a href="#setText()">setText</a>(<a href="../../../everzet/jade/node/textnode.html">TextNode</a> node)</p><p class="description">Set inner text node.</p></td>
+</tr>
+</table>
+
+<table class="inherit">
+<tr><th colspan="2">Methods inherited from Everzet\Jade\Node\BlockNode</th></tr>
+<tr><td><a href="../../../everzet/jade/node/blocknode.html#addChild()">addChild</a>, <a href="../../../everzet/jade/node/blocknode.html#getChilds()">getChilds</a></td></tr></table>
+
+<table class="inherit">
+<tr><th colspan="2">Methods inherited from Everzet\Jade\Node\Node</th></tr>
+<tr><td><a href="../../../everzet/jade/node/node.html#getLine()">getLine</a></td></tr></table>
+
+<h2 id="detail_constr">Constructor Detail</h2>
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 29</div>
+<h3 id="TagNode()">TagNode</h3>
+<code class="signature">public <strong>TagNode</strong>(string name, integer line)</code>
+<div class="details">
+<p>Initialize tag node.</p><dl>
+<dt>Parameters:</dt>
+<dd>name - tag name</dd>
+<dd>line - source line</dd>
+</dl>
+</div>
+
+<hr>
+
+<h2 id="detail_method">Method Detail</h2>
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 80</div>
+<h3 id="getAttributes()">getAttributes</h3>
+<code class="signature">public  array <strong>getAttributes</strong>()</code>
+<div class="details">
+<p>Return all attributes.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 120</div>
+<h3 id="getCode()">getCode</h3>
+<code class="signature">public  <a href="../../../everzet/jade/node/codenode.html">CodeNode</a> <strong>getCode</strong>()</code>
+<div class="details">
+<p>Return inner code node.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 51</div>
+<h3 id="getName()">getName</h3>
+<code class="signature">public  string <strong>getName</strong>()</code>
+<div class="details">
+<p>Return tag name.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 100</div>
+<h3 id="getText()">getText</h3>
+<code class="signature">public  TextNode|null <strong>getText</strong>()</code>
+<div class="details">
+<p>Return inner text node.</p></div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 62</div>
+<h3 id="setAttribute()">setAttribute</h3>
+<code class="signature">public  void <strong>setAttribute</strong>(string key, string value)</code>
+<div class="details">
+<p>Set tag attribute to value.</p><dl>
+<dt>Parameters:</dt>
+<dd>key - attribute name</dd>
+<dd>value - attribute value</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 110</div>
+<h3 id="setCode()">setCode</h3>
+<code class="signature">public  void <strong>setCode</strong>(<a href="../../../everzet/jade/node/codenode.html">CodeNode</a> node)</code>
+<div class="details">
+<p>Set inner code node.</p><dl>
+<dt>Parameters:</dt>
+<dd>node - inner code</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 41</div>
+<h3 id="setName()">setName</h3>
+<code class="signature">public  void <strong>setName</strong>(string name)</code>
+<div class="details">
+<p>Set tag name.</p><dl>
+<dt>Parameters:</dt>
+<dd>name - tag name</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="location">/Everzet/Jade/Node/TagNode.php at line 90</div>
+<h3 id="setText()">setText</h3>
+<code class="signature">public  void <strong>setText</strong>(<a href="../../../everzet/jade/node/textnode.html">TextNode</a> node)</code>
+<div class="details">
+<p>Set inner text node.</p><dl>
+<dt>Parameters:</dt>
+<dd>node - inner text</dd>
+</dl>
+</div>
+
+<hr>
+
+<div class="header">
+<h1>jade.php</h1>
+<ul>
+<li><a href="../../../overview-summary.html">Overview</a></li>
+<li><a href="../../../everzet/jade/node/package-summary.html">Namespace</a></li>
+<li class="active">Class</li>
+<li><a href="../../../everzet/jade/node/package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+</ul>
+</div>
+
+<div class="small_links">
+<a href="../../../index.html" target="_top">Frames</a>
+<a href="../../../everzet/jade/node/tagnode.html" target="_top">No frames</a>
+</div>
+<div class="small_links">
+Summary: <a href="#summary_field">Field</a> | <a href="#summary_method">Method</a> | <a href="#summary_constr">Constr</a>
+Detail: <a href="#detail_field">Field</a> | <a href="#detail_method">Method</a> | <a href="#summary_constr">Constr</a>
+</div>
+<hr>
+
+<p id="footer">This document was generated by <a href="http://peej.github.com/phpdoctor/">PHPDoctor: The PHP Documentation Creator</a></p>
+
+</body>
+
+</html>
