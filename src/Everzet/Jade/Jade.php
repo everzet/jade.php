@@ -51,8 +51,7 @@ class Jade
     }
 
     /**
-     * Get current fresh cache path.
-     * Or render & dump input to new cache & return it's path.
+     * Get current fresh cache path or render & dump input to new cache & return it's path.
      * 
      * @param   string  $input  input string or file path
      *
