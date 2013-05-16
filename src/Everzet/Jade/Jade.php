@@ -105,7 +105,7 @@ class Jade
     protected function getInputCacheKey($input)
     {
         if (is_file($input)) {
-            return basename($input, '.jade');
+            return str_replace('/', '.', substr($input, 1));
         } else {
             throw new \InvalidArgumentException('Only file templates can be cached.');
         }
