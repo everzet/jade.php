@@ -308,12 +308,13 @@ class Lexer implements LexerInterface
             $index      = $this->getDelimitersIndex('(', ')');
             $input      = mb_substr($this->input, 1, $index - 1);
             $token      = $this->takeToken('attributes', $input);
-            $attributes = preg_split('/ *, *(?=[\'"\w-]+ *[:=]|[\w-]+ *$)/', $token->value);
+            $attributes = preg_split('/ *(?<!\\\\), *(?=[\'"\w-]+ *[:=]|[\w-]+ *$)/', $token->value);
             $this->consumeInput($index + 1);
             $token->attributes = array();
 
             foreach ($attributes as $i => $pair) {
                 $pair = preg_replace('/^ *| *$/', '', $pair);
+                $pair = str_replace('\,', ',', $pair);
                 $colon = mb_strpos($pair, ':');
                 $equal = mb_strpos($pair, '=');
 
