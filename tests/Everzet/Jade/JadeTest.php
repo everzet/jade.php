@@ -331,18 +331,18 @@ HTML;
         $this->assertEquals('<p class="foo"></p>',
             $this->parse("p(\"class\": 'foo')"), 'Keys with double quotes');
 
-//        $this->assertEquals(
-//          '<meta name="viewport" content="width=device-width, user-scalable=no" />',
-//          $this->parse(
-//            "meta(name: 'viewport', content:\"width=device-width, user-scalable=no\")"
-//          ), 'Commas in attrs'
-//        );
-//        $this->assertEquals(
-//          '<meta name="viewport" content="width=device-width, user-scalable=no" />',
-//          $this->parse(
-//            "meta(name: 'viewport', content:'width=device-width, user-scalable=no')"
-//          ), 'Commas in attrs'
-//        );
+        $this->assertEquals(
+          '<meta name="viewport" content="width=device-width, user-scalable=no" />',
+          $this->parse(
+            "meta(name: 'viewport', content:\"width=device-width\\, user-scalable=no\")"
+          ), 'Commas in attrs'
+        );
+        $this->assertEquals(
+          '<meta name="viewport" content="width=device-width, user-scalable=no" />',
+          $this->parse(
+            "meta(name: 'viewport', content:'width=device-width\\, user-scalable=no')"
+          ), 'Commas in attrs'
+        );
     }
     
     public function testCodeAttrs()
