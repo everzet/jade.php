@@ -23,19 +23,22 @@ and implemented for PHP 5.3.
 
 ## Public API
 
-    $dumper = new PHPDumper();
-    $dumper->registerVisitor('tag', new AutotagsVisitor());
-    $dumper->registerFilter('javascript', new JavaScriptFilter());
-    $dumper->registerFilter('cdata', new CDATAFilter());
-    $dumper->registerFilter('php', new PHPFilter());
-    $dumper->registerFilter('style', new CSSFilter());
+```php
+<?php
+$dumper = new PHPDumper();
+$dumper->registerVisitor('tag', new AutotagsVisitor());
+$dumper->registerFilter('javascript', new JavaScriptFilter());
+$dumper->registerFilter('cdata', new CDATAFilter());
+$dumper->registerFilter('php', new PHPFilter());
+$dumper->registerFilter('style', new CSSFilter());
     
-    // Initialize parser & Jade
-    $parser = new Parser(new Lexer());
-    $jade   = new Jade($parser, $dumper);
+// Initialize parser & Jade
+$parser = new Parser(new Lexer());
+$jade   = new Jade($parser, $dumper);
 	
-	// Parse a template (both string & file containers)
-    echo $jade->render($template);
+// Parse a template (both string & file containers)
+echo $jade->render($template);
+```
 
 ## Syntax
 
@@ -165,17 +168,20 @@ Will output the _transitional_ doctype, however:
 Will output html 5's doctype. Below are the doctypes
 defined by default, which can easily be extended:
 
-	$doctypes = array(
-	       '5' => '<!DOCTYPE html>',
-	       'xml' => '<?xml version="1.0" encoding="utf-8" ?>',
-	       'default' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-	       'transitional' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
-	       'strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
-	       'frameset' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
-	       '1.1' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
-	       'basic' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
-	       'mobile' => '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
-	   );
+```php
+<?php
+$doctypes = array(
+       '5' => '<!DOCTYPE html>',
+       'xml' => '<?xml version="1.0" encoding="utf-8" ?>',
+       'default' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+       'transitional' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+       'strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
+       'frameset' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
+       '1.1' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">',
+       'basic' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd">',
+       'mobile' => '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">'
+);
+```
 
 ## Comments
 
@@ -197,17 +203,19 @@ Jade supports sharp comments (`//- COMMENT`). So jade block:
 
 will be compiled into:
 
-	<?php $foo = "<script>"; ?>
-	<p>
-	  <?php switch ($foo) ?>
-	    <?php case 2 ?>
-	      <p class="foo"><?php echo $foo ?></p>
-	    <?php break; ?>
-	    <?php case 5 ?>
-	      <p>some text</p>
-	    <?php break; ?>
-	  <?php endswitch; ?>
-	</p>
+```php
+<?php $foo = "<script>"; ?>
+<p>
+  <?php switch ($foo) ?>
+    <?php case 2 ?>
+      <p class="foo"><?php echo $foo ?></p>
+    <?php break; ?>
+    <?php case 5 ?>
+      <p>some text</p>
+    <?php break; ?>
+  <?php endswitch; ?>
+</p>
+```
 
 ### HTML Comments
 
@@ -219,10 +227,12 @@ Jade supports HTML comments (`// comment`). So block:
 
 will become:
 
-	<peanutbutterjelly>
-	  <!-- This is the peanutbutterjelly element -->
-	  I like sandwiches!
-	</peanutbutterjelly>
+```html
+<peanutbutterjelly>
+  <!-- This is the peanutbutterjelly element -->
+  I like sandwiches!
+</peanutbutterjelly>
+```
 
 As with multiline comments:
 
@@ -233,12 +243,14 @@ As with multiline comments:
 
 that compile to:
 
-	<!--
-	  <p>This doesn't render...</p>
-	  <div>
-	    <h1>Because it's commented out!</h1>
-	  </div>
-	-->
+```html
+<!--
+  <p>This doesn't render...</p>
+  <div>
+    <h1>Because it's commented out!</h1>
+  </div>
+-->
+```
 
 ### IE Conditional Comments
 
@@ -250,11 +262,13 @@ Also, Jade supports IE conditional comments, so:
 
 will be parsed to:
 
-	<!--[if IE]>
-	  <a href="http://www.mozilla.com/en-US/firefox/">
-	    <h1>Get Firefox</h1>
-	  </a>
-	<![endif]-->
+```html
+<!--[if IE]>
+  <a href="http://www.mozilla.com/en-US/firefox/">
+    <h1>Get Firefox</h1>
+  </a>
+<![endif]-->
+```
 
 ## Filters
 
@@ -270,13 +284,15 @@ at the top of this document for available filters.
 
 Renders:
 
-	<body>
-	  <?php
-	    $data = 40;
-	    $data /= 2;
-	    echo $data;
-	  ?>
-	</body>
+```php
+<body>
+  <?php
+    $data = 40;
+    $data /= 2;
+    echo $data;
+  ?>
+</body>
+```
 
 ## Code
 
@@ -311,9 +327,11 @@ echo a return value, which is prefixed by `=`:
 
 Which outputs
 
-	<?php $foo = 'bar' ?>
-	<?php echo $foo ?>
-	<h1><?php echo $foo ?></h1>
+```php
+<?php $foo = 'bar' ?>
+<?php echo $foo ?>
+<h1><?php echo $foo ?></h1>
+```
 
 ### Code blocks
 
@@ -325,11 +343,13 @@ Also, Jade has Code Blocks, that supports basic PHP template syntax:
 
 Will be rendered to:
 
-	<ul>
-	  <?php while (true): ?>
-	    <li>item</li>
-	  <?php endwhile; ?>
-	</ul>
+```php
+<ul>
+  <?php while (true): ?>
+    <li>item</li>
+  <?php endwhile; ?>
+</ul>
+```
 
 But don't forget about colons `:` after instructions start (`- if(true) :`).
 
